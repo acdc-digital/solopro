@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "npm-run-all --parallel dev:frontend dev:backend",
+    "dev": "next dev",
     "dev:frontend": "next dev",
-    "dev:backend": "convex dev",
-    "predev": "convex dev --until-success && convex dev --once --run-sh \"node setup.mjs --once\" && convex dashboard",
+    "dev:convex": "convex dev",
+    "predev": "echo \"Convex should be started from the repo root, not here.\"",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -21,6 +21,7 @@
     "next": "15.2.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "stripe": "^18.1.1",
     "tailwind-merge": "^3.3.0"
   },
   "devDependencies": {

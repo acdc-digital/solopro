@@ -46,7 +46,7 @@ export const Hero = () => {
               Track. Reflect. Forecast.
             </h1>
             <p className="text-lg text-gray-600 mb-8">
-              Soloist turns your everyday thoughts into color-coded insights and automated Forecasts, so you always know where you stand and prepare for what&apos;s coming next.
+              Soloist turns your everyday thoughts into color-coded insights and automated Forecasts, so you always know where you stand and you can prepare for what&apos;s coming next.
             </p>
           </div>
 

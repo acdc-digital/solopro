@@ -4,16 +4,14 @@ import {
   nextjsMiddlewareRedirect,
 } from "@convex-dev/auth/nextjs/server";
 
-const isSignInPage = createRouteMatcher(["/signin"]);
-const isProtectedRoute = createRouteMatcher(["/", "/server"]);
+// Updated to only protect the dashboard and server routes, not the landing page
+const isProtectedRoute = createRouteMatcher(["/dashboard", "/server"]);
 
 export default convexAuthNextjsMiddleware(
   async (request, { convexAuth }) => {
-    if (isSignInPage(request) && (await convexAuth.isAuthenticated())) {
-      return nextjsMiddlewareRedirect(request, "/");
-    }
+    // Only redirect from protected routes to home page, where the modal will be available
     if (isProtectedRoute(request) && !(await convexAuth.isAuthenticated())) {
-      return nextjsMiddlewareRedirect(request, "/signin");
+      return nextjsMiddlewareRedirect(request, "/");
     }
   },
   { cookieConfig: { maxAge: 60 * 60 * 24 * 30 } } // 30 days
