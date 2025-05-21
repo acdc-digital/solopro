@@ -9,7 +9,7 @@ import { Download, ChevronRight } from "lucide-react";
 type ButtonProps = {
   children: React.ReactNode;
   className?: string;
-  variant?: 'default' | 'outline';
+  variant?: 'default' | 'outline' | 'emerald' | 'light-emerald';
   // Temporarily commenting out this prop while the feature is disabled
   // withBottomLine?: boolean;
 }
@@ -19,7 +19,9 @@ const Button = ({ children, className, variant = "default" }: ButtonProps) => {
   const baseStyles = "font-medium rounded-full transition-colors px-4 py-2";
   const variantStyles = {
     default: "bg-primary text-primary-foreground hover:bg-primary/90",
-    outline: "border border-gray-200 hover:bg-gray-50"
+    outline: "border border-gray-200 hover:bg-gray-50",
+    emerald: "bg-emerald-700 text-white hover:bg-emerald-600",
+    "light-emerald": "bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100"
   };
   
   // Commented out button outline effect - can be re-enabled later
@@ -46,16 +48,16 @@ export const Hero = () => {
               Track. Reflect. Forecast.
             </h1>
             <p className="text-lg text-gray-600 mb-8">
-              Soloist turns your everyday thoughts into color-coded insights and automated Forecasts, so you always know where you stand and you can prepare for what&apos;s coming next.
+              Soloist turns your everyday thoughts into color-coded insights and automated Forecasts, so you always know where you stand and be prepared for what&apos;s coming next.
             </p>
           </div>
 
           <div className="flex flex-wrap gap-4">
-            <Button className="h-12 flex items-center gap-2">
+            <Button variant="emerald" className="h-12 flex items-center gap-2">
               <Download size={18} aria-hidden="true" />
               Download App
             </Button>
-            <Button variant="outline" className="h-12 flex items-center gap-2">
+            <Button variant="light-emerald" className="h-12 flex items-center gap-2">
               Try Online Free <ChevronRight size={16} aria-hidden="true" />
             </Button>
           </div>

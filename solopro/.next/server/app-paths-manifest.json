@@ -1,6 +1,5 @@
 {
-  "/api/create-checkout-session/route": "app/api/create-checkout-session/route.js",
   "/page": "app/page.js",
-  "/dashboard/page": "app/dashboard/page.js",
-  "/server/page": "app/server/page.js"
+  "/server/page": "app/server/page.js",
+  "/dashboard/page": "app/dashboard/page.js"
 }

@@ -65,7 +65,7 @@ export function OpenSource() {
               href="https://github.com/get-convex/convex"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex h-9 items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
+              className="inline-flex h-9 items-center justify-center rounded-md bg-indigo-700 px-4 text-sm font-medium text-white shadow transition-colors hover:bg-indigo-800 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-purple-500 disabled:pointer-events-none disabled:opacity-50"
             >
               <Github className="mr-2 h-4 w-4" />
               View on GitHub
