@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import {
   Download,
   ChevronRight,
-  ArrowRight,
   CheckCircle,
   XCircle,
   X,
@@ -14,6 +13,7 @@ import {
 import { Navbar } from "@/components/Navbar";
 import { Hero } from "@/components/Hero";
 import { OpenSource } from "@/components/OpenSource";
+import { Features } from "@/components/Features";
 import Pricing from "@/components/Pricing";
 import { getCheckoutSession } from "@/lib/services/PaymentService";
 
@@ -223,81 +223,7 @@ export default function LandingPage() {
         <OpenSource />
 
         {/* Features Section */}
-        <section id="features" className="py-16 container mx-auto px-4 mt-8">
-          {/* Feature 1 */}
-          <div className="flex flex-col md:flex-row gap-8 mb-24">
-            <div className="md:w-1/2 space-y-4">
-              <h3 className="text-2xl font-bold">
-                Your Daily Well-Being at a Glance.
-              </h3>
-              <p className="text-muted-foreground">
-                The color-coded heatmap turns 365 scattered journal entries into
-                one elegant, scrollable canvas. Instantly spot winning streaks,
-                analyze looming slumps, and forecast your mood for tomorrow.
-              </p>
-              <div className="pt-4">
-                <button className="flex items-center gap-2 p-0 font-medium text-primary hover:underline">
-                  Learn more <ArrowRight size={16} aria-hidden="true" />
-                </button>
-              </div>
-            </div>
-            <div className="md:w-1/2 aspect-video w-full">
-              <div className="h-full w-full flex items-center justify-center text-muted-foreground">
-                <div className="rounded-lg border border-border p-8 flex items-center justify-center bg-muted/30 w-[85%] h-[85%]">
-                  <span className="text-lg">Feature Screenshot</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Feature 2 & 3 (Side by side) */}
-          <div className="grid md:grid-cols-2 gap-8">
-            {/* Feature 2 */}
-            <div className="space-y-4">
-              <h3 className="text-2xl font-bold">
-                Review the Past, Ready the Future.
-              </h3>
-              <p className="text-muted-foreground">
-                SoloPro's Playground lets you look back to learn—and gear up for
-                what's coming next.
-              </p>
-              <div className="pt-4 mb-6"></div>
-              <div className="aspect-video w-full">
-                <div className="h-full w-full flex items-center justify-left text-muted-foreground">
-                  <div className="rounded-lg border border-border p-8 flex items-center justify-center bg-muted/30 w-[95%] h-[85%]">
-                    <span className="text-lg">Feature Screenshot</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Feature 3 */}
-            <div className="space-y-4">
-              <h3 className="text-2xl font-bold">
-                See the Patterns. Shape the Progress.
-              </h3>
-              <p className="text-muted-foreground">
-                Pinpoint why today felt different, watch real-time charts reveal
-                emerging trends, and tag moments before they fade.
-              </p>
-              <div className="pt-4 mb-6"></div>
-              <div className="aspect-video w-full">
-                <div className="h-full w-full flex items-center justify-center text-muted-foreground">
-                  <div className="rounded-lg border border-border p-8 flex items-center justify-center bg-muted/30 w-[90%] h-[85%]">
-                    <img
-                      src="/Feature6.png"
-                      alt="Feature 3 Screenshot"
-                      className="w-[90%] h-auto object-contain rounded-lg transition-shadow"
-                      loading="lazy"
-                      width={1024}
-                      height={768}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+        <Features />
 
         {/* Pricing Section */}
         <Pricing />
