@@ -153,8 +153,8 @@ export default function LandingPage() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Add EnvDebug component */}
-      <EnvDebug />
+      {/* Add EnvDebug component
+      <EnvDebug /> */}
 
       {/* Navigation Bar with Theme Toggle */}
       <Navbar />
