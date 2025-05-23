@@ -96,7 +96,7 @@ export default function LandingPage() {
       setPaymentStatus({
         type: "canceled",
         message:
-          "Payment was canceled. You can try again whenever you're ready.",
+          "Payment was canceled. You can try again whenever you&apos;re ready.",
       });
 
       // Clear the query parameters from the URL without page reload
@@ -127,7 +127,7 @@ export default function LandingPage() {
             setPaymentStatus({
               type: "canceled",
               message:
-                "The checkout was not completed. You can try again whenever you're ready.",
+                "The checkout was not completed. You can try again whenever you&apos;re ready.",
             });
           }
         })
@@ -136,7 +136,7 @@ export default function LandingPage() {
           setPaymentStatus({
             type: "canceled",
             message:
-              "We couldn't verify your payment status. Please contact support if you completed a payment.",
+              "We couldn&apos;t verify your payment status. Please contact support if you completed a payment.",
           });
         })
         .finally(() => {
@@ -245,7 +245,7 @@ export default function LandingPage() {
                 essential features you need to get started.
               </AccordionItem>
               <AccordionItem question="How long does setup take?">
-                Setup takes less than 5 minutes. Just sign up, and you'll be
+                Setup takes less than 5 minutes. Just sign up, and you&apos;ll be
                 ready to start using the platform right away.
               </AccordionItem>
               <AccordionItem question="What devices are supported?">

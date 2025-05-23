@@ -32,8 +32,8 @@ export async function GET(request: Request) {
         customerId: subscription.customer,
         priceId: subscription.items.data[0].price.id,
         productId: subscription.items.data[0].price.product,
-        current_period_end: subscription.current_period_end,
-        cancel_at_period_end: subscription.cancel_at_period_end,
+        current_period_end: (subscription as any).current_period_end,
+        cancel_at_period_end: (subscription as any).cancel_at_period_end,
       });
     }
 

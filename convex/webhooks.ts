@@ -91,16 +91,38 @@ export const processStripeWebhook = mutation({
             
             console.log(`Payment recorded for session: ${sessionId}`);
             
-            // If this is a subscription, also create/update subscription record
-            if (mode === "subscription" && subscription) {
-              await ctx.runMutation(internal.userSubscriptions.createOrUpdateFromStripe, {
+            // Create/update subscription record for any successful payment
+            // This gives the user access regardless of whether it's a one-time payment or subscription
+            try {
+              let subscriptionData: any = {
                 userIdOrEmail: userIdentifier,
-                subscriptionId: subscription,
+                subscriptionId: subscription || sessionId, // Use Stripe subscription ID or session ID as fallback
                 status: "active",
-                customerEmail: customer_details?.email,
-              });
+              };
+
+              // If it's an actual subscription, include the customer email
+              if (customer_details?.email) {
+                subscriptionData.customerEmail = customer_details.email;
+              }
+
+              // For one-time payments, set a far future expiry (e.g., 10 years from now)
+              // For actual subscriptions, use the provided period end
+              if (mode === "subscription" && subscription) {
+                // This is a real subscription - Stripe will manage the period
+                console.log("Creating subscription record for Stripe subscription");
+              } else {
+                // This is a one-time payment - give them long-term access
+                const tenYearsFromNow = Math.floor(Date.now() / 1000) + (10 * 365 * 24 * 60 * 60);
+                subscriptionData.currentPeriodEnd = tenYearsFromNow;
+                console.log("Creating subscription record for one-time payment with 10-year access");
+              }
+
+              await ctx.runMutation(internal.userSubscriptions.createOrUpdateFromStripe, subscriptionData);
               
-              console.log(`Subscription record created/updated: ${subscription}`);
+              console.log(`Subscription record created/updated for user: ${userIdentifier}`);
+            } catch (subscriptionError) {
+              console.error("Error creating subscription record:", subscriptionError);
+              // Don't fail the whole webhook if subscription creation fails
             }
             
             return { success: true, sessionId };

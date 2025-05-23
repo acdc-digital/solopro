@@ -2,7 +2,8 @@
 
 import { Check } from "lucide-react";
 import { useState } from "react";
-import { useConvexAuth } from "convex/react";
+import { useConvexAuth, useQuery } from "convex/react";
+import { api } from "../../convex/_generated/api";
 import { StripeCheckoutModal } from "@/modals/StripeCheckoutModal";
 import { StripeSetupInstructions } from "./StripeSetupInstructions";
 import { SignInModal } from "@/modals/SignInModal";
@@ -21,11 +22,17 @@ interface PricingTier {
 
 export default function Pricing() {
   const { isAuthenticated, isLoading } = useConvexAuth();
+  const hasActiveSubscription = useQuery(api.userSubscriptions.hasActiveSubscription);
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
   const [isSignInModalOpen, setIsSignInModalOpen] = useState(false);
   const [signInFlow, setSignInFlow] = useState<"signIn" | "signUp">("signIn");
   const [selectedTier, setSelectedTier] = useState<PricingTier | null>(null);
   const [showInstructions, setShowInstructions] = useState(false);
+
+  // Debug the subscription state
+  console.log("Pricing component - hasActiveSubscription:", hasActiveSubscription);
+  console.log("Pricing component - isAuthenticated:", isAuthenticated);
+  console.log("Pricing component - isLoading:", isLoading);
 
   const tiers: PricingTier[] = [
     {
@@ -79,6 +86,7 @@ export default function Pricing() {
   const handlePriceSelection = async (tier: PricingTier) => {
     console.log(`handlePriceSelection called for tier: ${tier.name}`);
     console.log(`Auth state - isAuthenticated: ${isAuthenticated}, isLoading: ${isLoading}`);
+    console.log(`Subscription state - hasActiveSubscription: ${hasActiveSubscription}`);
     
     if (tier.name === "Free") {
       // Show sign up modal for free tier
@@ -114,8 +122,22 @@ export default function Pricing() {
         return;
       }
 
-      console.log("User is authenticated, opening checkout modal");
-      // User is authenticated, proceed with checkout
+      // Wait for subscription query to load before checking
+      if (hasActiveSubscription === undefined) {
+        console.log("Subscription state is still loading, waiting...");
+        setTimeout(() => handlePriceSelection(tier), 500);
+        return;
+      }
+
+      // Check if user already has an active subscription
+      if (hasActiveSubscription === true) {
+        console.log("User has active subscription, blocking checkout");
+        alert("You already have an active subscription! No need to purchase again.");
+        return;
+      }
+
+      console.log("User is authenticated and has no active subscription, opening checkout modal");
+      // User is authenticated and doesn't have an active subscription, proceed with checkout
       setIsCheckoutModalOpen(true);
 
       // Check if Stripe public key is set
@@ -230,16 +252,18 @@ export default function Pricing() {
                 <div className="mt-auto">
                   <button
                     onClick={() => handlePriceSelection(tier)}
-                    disabled={tier.name === "Coming Soon"}
+                    disabled={tier.name === "Coming Soon" || (hasActiveSubscription === true && !!tier.priceId)}
                     className={`inline-flex h-10 w-full items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring ${
-                      tier.highlighted
+                      hasActiveSubscription === true && tier.priceId
+                        ? "bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-300 border border-green-300 dark:border-green-600 cursor-default"
+                        : tier.highlighted
                         ? "bg-primary text-primary-foreground shadow hover:bg-primary/90 font-bold"
                         : tier.name === "Coming Soon"
                           ? "bg-muted text-muted-foreground cursor-default"
                           : "border border-input bg-background hover:bg-accent hover:text-accent-foreground"
                     }`}
                   >
-                    {tier.cta}
+                    {hasActiveSubscription === true && tier.priceId ? "✓ Active" : tier.cta}
                   </button>
                 </div>
               </div>
