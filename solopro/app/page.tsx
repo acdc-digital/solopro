@@ -16,6 +16,7 @@ import { OpenSource } from "@/components/OpenSource";
 import { Features } from "@/components/Features";
 import Pricing from "@/components/Pricing";
 import { getCheckoutSession } from "@/lib/services/PaymentService";
+import { EnvDebug } from "@/components/EnvDebug";
 
 type ButtonProps = {
   children: React.ReactNode;
@@ -152,6 +153,9 @@ export default function LandingPage() {
 
   return (
     <div className="flex flex-col min-h-screen">
+      {/* Add EnvDebug component */}
+      <EnvDebug />
+
       {/* Navigation Bar with Theme Toggle */}
       <Navbar />
 

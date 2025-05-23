@@ -77,6 +77,9 @@ export default function Pricing() {
   ];
 
   const handlePriceSelection = async (tier: PricingTier) => {
+    console.log(`handlePriceSelection called for tier: ${tier.name}`);
+    console.log(`Auth state - isAuthenticated: ${isAuthenticated}, isLoading: ${isLoading}`);
+    
     if (tier.name === "Free") {
       // Show sign up modal for free tier
       setSignInFlow("signUp");
@@ -97,6 +100,7 @@ export default function Pricing() {
 
       // Check if user is authenticated
       if (isLoading) {
+        console.log("Auth state is still loading, waiting...");
         // If still loading auth state, wait briefly then try again
         setTimeout(() => handlePriceSelection(tier), 500);
         return;
@@ -110,6 +114,7 @@ export default function Pricing() {
         return;
       }
 
+      console.log("User is authenticated, opening checkout modal");
       // User is authenticated, proceed with checkout
       setIsCheckoutModalOpen(true);
 
@@ -132,6 +137,10 @@ export default function Pricing() {
   };
 
   const handleAuthSuccess = () => {
+    console.log("handleAuthSuccess called");
+    console.log(`Current auth state - isAuthenticated: ${isAuthenticated}, isLoading: ${isLoading}`);
+    console.log(`Selected tier:`, selectedTier);
+    
     // Hide sign-in modal
     setIsSignInModalOpen(false);
 
@@ -144,6 +153,7 @@ export default function Pricing() {
 
       // Add a small delay to ensure UI state is updated properly
       setTimeout(() => {
+        console.log("Delayed opening of checkout modal");
         setIsCheckoutModalOpen(true);
       }, 100);
     }
