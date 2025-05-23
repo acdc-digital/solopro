@@ -20,7 +20,7 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { priceId, paymentMode = "payment", embeddedCheckout = true, userId } = body;
 
-    console.log("Received request with priceId:", priceId, "mode:", paymentMode, "embedded:", embeddedCheckout);
+    console.log("Received request with priceId:", priceId, "mode:", paymentMode, "embedded:", embeddedCheckout, "userId:", userId);
 
     if (!priceId) {
       console.error("API Error: Price ID is required but was not provided");

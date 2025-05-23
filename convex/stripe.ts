@@ -106,7 +106,7 @@ async function handleCheckoutSessionCompleted(ctx: any, session: any) {
           userId,
           subscriptionId,
           status: subscription.status,
-          currentPeriodEnd: subscription.current_period_end
+          currentPeriodEnd: (subscription as any).current_period_end
         });
       }
     }
@@ -136,7 +136,7 @@ async function handleInvoicePaymentSucceeded(ctx: any, invoice: any) {
         userId,
         subscriptionId,
         status: subscription.status,
-        currentPeriodEnd: subscription.current_period_end
+        currentPeriodEnd: (subscription as any).current_period_end
       });
     }
   }
@@ -156,7 +156,7 @@ async function handleSubscriptionUpdated(ctx: any, subscription: any) {
       userId,
       subscriptionId: subscription.id,
       status: subscription.status,
-      currentPeriodEnd: subscription.current_period_end
+      currentPeriodEnd: (subscription as any).current_period_end
     });
   }
 }
@@ -175,7 +175,7 @@ async function handleSubscriptionDeleted(ctx: any, subscription: any) {
       userId,
       subscriptionId: subscription.id,
       status: "canceled",
-      currentPeriodEnd: subscription.current_period_end
+      currentPeriodEnd: (subscription as any).current_period_end
     });
   }
 }

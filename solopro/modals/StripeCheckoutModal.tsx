@@ -4,6 +4,8 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { X, Loader2, CreditCard, CheckCircle } from "lucide-react";
 import { createCheckoutSession } from "@/lib/services/PaymentService";
 import { useConvexUser } from "@/lib/hooks/useConvexUser";
+import { useQuery } from "convex/react";
+import { api } from "../../convex/_generated/api";
 import {
   EmbeddedCheckoutProvider,
   EmbeddedCheckout
@@ -29,6 +31,7 @@ export function StripeCheckoutModal({
   const [error, setError] = useState<string | null>(null);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const { isAuthenticated, isLoading, userId } = useConvexUser();
+  const hasActiveSubscription = useQuery(api.userSubscriptions.hasActiveSubscription);
   const [stripeConfigured, setStripeConfigured] = useState(false);
   const [paymentCompleted, setPaymentCompleted] = useState(false);
   const sessionCreatedRef = useRef(false);
@@ -40,7 +43,8 @@ export function StripeCheckoutModal({
       isLoading,
       userId,
       isOpen,
-      priceId
+      priceId,
+      hasActiveSubscription
     });
 
     // Additional debug info
@@ -48,9 +52,12 @@ export function StripeCheckoutModal({
     console.log("  isLoading:", isLoading);
     console.log("  isAuthenticated:", isAuthenticated);
     console.log("  userId:", userId);
+    console.log("  hasActiveSubscription:", hasActiveSubscription);
+    console.log("  hasActiveSubscription type:", typeof hasActiveSubscription);
     console.log("  Will show auth message:", !isLoading && !isAuthenticated);
+    console.log("  Will show subscription message:", hasActiveSubscription === true);
     console.log("  Modal isOpen:", isOpen);
-  }, [isAuthenticated, isLoading, userId, isOpen, priceId]);
+  }, [isAuthenticated, isLoading, userId, isOpen, priceId, hasActiveSubscription]);
 
   // Check if Stripe is configured
   useEffect(() => {
@@ -87,11 +94,13 @@ export function StripeCheckoutModal({
     // 2. We have a price ID
     // 3. We have a user ID
     // 4. User is authenticated
-    // 5. We haven't already created a session for this modal open
-    if (isOpen && priceId && userId && isAuthenticated && !sessionCreatedRef.current) {
+    // 5. User doesn't have an active subscription (must be explicitly false)
+    // 6. We haven't already created a session for this modal open
+    if (isOpen && priceId && userId && isAuthenticated && hasActiveSubscription === false && !sessionCreatedRef.current) {
       console.log("Creating checkout session effect triggered");
       console.log("Current userId:", userId);
       console.log("isAuthenticated:", isAuthenticated);
+      console.log("hasActiveSubscription:", hasActiveSubscription);
 
       setLoading(true);
       setError(null);
@@ -122,8 +131,18 @@ export function StripeCheckoutModal({
         .finally(() => {
           setLoading(false);
         });
+    } else {
+      // Log why checkout session was not created
+      console.log("Checkout session NOT created because:", {
+        isOpen,
+        priceId: !!priceId,
+        userId: !!userId,
+        isAuthenticated,
+        hasActiveSubscription,
+        sessionCreatedRef: sessionCreatedRef.current
+      });
     }
-  }, [isOpen, priceId, paymentMode, userId, isAuthenticated]); // Added isAuthenticated to dependencies
+  }, [isOpen, priceId, paymentMode, userId, isAuthenticated, hasActiveSubscription]);
 
   // Control body scroll when modal is open
   useEffect(() => {
@@ -177,6 +196,45 @@ export function StripeCheckoutModal({
               className="py-2 px-4 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
             >
               Close
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Check if user already has an active subscription
+  if (hasActiveSubscription === true) {
+    console.log("StripeCheckoutModal - Showing subscription active screen");
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center">
+        <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" onClick={onClose}></div>
+        <div className="relative w-full max-w-md md:max-w-lg bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6">
+          <div className="flex justify-between items-center pb-4 border-b mb-4">
+            <h2 className="text-xl font-bold">Active Subscription</h2>
+            <button
+              onClick={onClose}
+              className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none"
+              aria-label="Close modal"
+            >
+              <X size={24} />
+            </button>
+          </div>
+          <div className="py-4">
+            <div className="flex items-center justify-center mb-4">
+              <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-full">
+                <CheckCircle className="h-8 w-8 text-green-600 dark:text-green-400" />
+              </div>
+            </div>
+            <p className="text-center mb-4">You already have an active subscription! No need to purchase again.</p>
+            <p className="text-center text-sm text-muted-foreground mb-6">
+              You can access all premium features with your current subscription.
+            </p>
+            <button
+              onClick={onClose}
+              className="w-full py-2 px-4 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
+            >
+              Return to Dashboard
             </button>
           </div>
         </div>

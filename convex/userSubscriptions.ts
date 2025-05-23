@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import { internalMutation, internalQuery, query } from "./_generated/server";
 import { Id } from "./_generated/dataModel";
+import { getAuthUserId } from "@convex-dev/auth/server";
 
 /**
  * Create or update a user subscription
@@ -230,32 +231,44 @@ export const getUserIdBySubscriptionId = internalQuery({
 export const hasActiveSubscription = query({
   args: {},
   handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity();
-    
-    if (!identity) {
+    // Use getAuthUserId to get the correct user ID format
+    const userId = await getAuthUserId(ctx);
+
+    console.log("hasActiveSubscription - userId from getAuthUserId:", userId);
+
+    if (!userId) {
+      console.log("hasActiveSubscription - No userId, returning false");
       return false;
     }
-    
-    const userId = identity.subject;
-    
+
     const subscription = await ctx.db
       .query("userSubscriptions")
       .withIndex("by_userId", (q) => q.eq("userId", userId as Id<"users">))
       .first();
-    
+
+    console.log("hasActiveSubscription - subscription found:", subscription);
+
     if (!subscription) {
+      console.log("hasActiveSubscription - No subscription found, returning false");
       return false;
     }
-    
+
     // Check if status is active
-    const isActive = subscription.status === "active" || 
+    const isActive = subscription.status === "active" ||
                     subscription.status === "trialing";
-    
+
     // Check if subscription is not expired (if there's an end date)
-    const isNotExpired = !subscription.currentPeriodEnd || 
-                        subscription.currentPeriodEnd > Date.now() / 1000;
-    
-    return isActive && isNotExpired;
+    const currentTime = Date.now() / 1000;
+    const isNotExpired = !subscription.currentPeriodEnd ||
+                        subscription.currentPeriodEnd > currentTime;
+
+    console.log("hasActiveSubscription - isActive:", isActive, "isNotExpired:", isNotExpired);
+    console.log("hasActiveSubscription - currentTime:", currentTime, "currentPeriodEnd:", subscription.currentPeriodEnd);
+
+    const result = isActive && isNotExpired;
+    console.log("hasActiveSubscription - final result:", result);
+
+    return result;
   }
 });
 
@@ -265,14 +278,13 @@ export const hasActiveSubscription = query({
 export const getCurrentSubscription = query({
   args: {},
   handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity();
-    
-    if (!identity) {
+    // Use getAuthUserId to get the correct user ID format
+    const userId = await getAuthUserId(ctx);
+
+    if (!userId) {
       return null;
     }
-    
-    const userId = identity.subject;
-    
+
     return await ctx.db
       .query("userSubscriptions")
       .withIndex("by_userId", (q) => q.eq("userId", userId as Id<"users">))
