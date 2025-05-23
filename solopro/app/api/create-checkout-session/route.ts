@@ -18,7 +18,7 @@ export async function POST(request: Request) {
     console.log("API: create-checkout-session called");
     
     const body = await request.json();
-    const { priceId, paymentMode = "payment", embeddedCheckout = true } = body;
+    const { priceId, paymentMode = "payment", embeddedCheckout = true, userId } = body;
 
     console.log("Received request with priceId:", priceId, "mode:", paymentMode, "embedded:", embeddedCheckout);
 
@@ -38,7 +38,15 @@ export async function POST(request: Request) {
       );
     }
 
-    console.log(`Creating Stripe checkout session for price ID: ${priceId}`);
+    if (!userId) {
+      console.error("API Error: User ID is required but was not provided");
+      return NextResponse.json(
+        { error: "Authentication required" },
+        { status: 401 }
+      );
+    }
+
+    console.log(`Creating Stripe checkout session for price ID: ${priceId} and user ID: ${userId}`);
     
     // Get the origin for redirect URLs
     const origin = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
@@ -53,11 +61,17 @@ export async function POST(request: Request) {
           quantity: 1,
         },
       ],
-      mode: paymentMode,
+      mode: paymentMode as "payment" | "subscription",
       allow_promotion_codes: true,
       billing_address_collection: "auto",
       phone_number_collection: {
         enabled: true,
+      },
+      // Add client_reference_id to identify the user
+      client_reference_id: userId,
+      // Add metadata for additional information
+      metadata: {
+        userId,
       },
     };
 
@@ -65,6 +79,8 @@ export async function POST(request: Request) {
       // For embedded checkout, we use ui_mode: 'embedded' and return_url
       sessionParams.ui_mode = 'embedded';
       sessionParams.return_url = `${origin}/dashboard?session_id={CHECKOUT_SESSION_ID}`;
+      // Set redirect_on_completion to 'if_required' to allow onComplete callback to be called
+      sessionParams.redirect_on_completion = 'if_required';
     } else {
       // For redirect checkout, we use success_url and cancel_url
       sessionParams.success_url = `${origin}/dashboard?success=true&session_id={CHECKOUT_SESSION_ID}`;
@@ -74,7 +90,7 @@ export async function POST(request: Request) {
     const session = await stripe.checkout.sessions.create(sessionParams);
 
     console.log("Checkout session created successfully:", session.id);
-    
+
     if (embeddedCheckout) {
       console.log("Returning client secret for embedded checkout");
       return NextResponse.json({ 

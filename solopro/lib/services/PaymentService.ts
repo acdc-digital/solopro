@@ -7,12 +7,14 @@
  * @param priceId The Stripe Price ID
  * @param paymentMode The payment mode ('payment' for one-time, 'subscription' for recurring)
  * @param embeddedCheckout Whether to use embedded checkout (true) or redirect checkout (false)
+ * @param userId The Convex user ID to associate with this checkout
  * @returns Object containing the checkout URL or client secret
  */
 export async function createCheckoutSession(
   priceId: string, 
   paymentMode: 'payment' | 'subscription' = 'payment',
-  embeddedCheckout: boolean = true
+  embeddedCheckout: boolean = true,
+  userId: string
 ) {
   try {
     console.log(`Creating checkout session for price ID: ${priceId} with mode: ${paymentMode}, embedded: ${embeddedCheckout}`);
@@ -22,7 +24,12 @@ export async function createCheckoutSession(
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ priceId, paymentMode, embeddedCheckout }),
+      body: JSON.stringify({ 
+        priceId, 
+        paymentMode, 
+        embeddedCheckout,
+        userId 
+      }),
     });
 
     const data = await response.json();

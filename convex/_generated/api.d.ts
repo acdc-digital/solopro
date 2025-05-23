@@ -16,6 +16,10 @@ import type {
 import type * as auth from "../auth.js";
 import type * as http from "../http.js";
 import type * as myFunctions from "../myFunctions.js";
+import type * as payments from "../payments.js";
+import type * as stripe from "../stripe.js";
+import type * as userSubscriptions from "../userSubscriptions.js";
+import type * as webhooks from "../webhooks.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -29,6 +33,10 @@ declare const fullApi: ApiFromModules<{
   auth: typeof auth;
   http: typeof http;
   myFunctions: typeof myFunctions;
+  payments: typeof payments;
+  stripe: typeof stripe;
+  userSubscriptions: typeof userSubscriptions;
+  webhooks: typeof webhooks;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,

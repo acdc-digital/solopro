@@ -51,7 +51,7 @@ export function Features() {
             for what&apos;s coming next.
           </p>
           <div className="pt-4 mb-6"></div>
-          <div className="relative w-full aspect-video max-w-xl mx-auto overflow-hidden">
+          <div className="relative w-full aspect-video max-w-2xl mx-auto overflow-hidden">
             <Image
               src="/Feature2.png"
               alt="Analysis dashboard showing past trends"
@@ -73,7 +73,7 @@ export function Features() {
             emerging trends, and tag moments before they fade.
           </p>
           <div className="pt-4 mb-6"></div>
-          <div className="relative w-full aspect-video max-w-xl mx-auto overflow-hidden">
+          <div className="relative w-full aspect-video max-w-2xl mx-auto overflow-hidden">
             <Image
               src="/Feature6.png"
               alt="Pattern visualization and analytics dashboard"
