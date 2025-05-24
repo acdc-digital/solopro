@@ -25,7 +25,7 @@ pnpm dev
 
 #### Individual services:
 pnpm dev:renderer    # Just the Electron content (port 3002)   
-pnpm dev:website     # Just the website (port 3004)    
+pnpm dev:website      # Just the website (port 3004)    
 pnpm dev:electron    # Just the Electron window
 
 ### Git Update Version Commands
