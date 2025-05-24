@@ -1,0 +1,19 @@
+{
+  "name": "soloist_pro-electron",
+  "version": "0.1.0",
+  "description": "Soloist Pro Electron",
+  "main": "index.js",
+  "scripts": {
+    "dev": "npx electron@latest .",
+    "build": "electron-builder"
+  },
+  "keywords": [],
+  "author": "matthew simon",
+  "license": "GPL-3.0-or-later",
+  "dependencies": {
+    "electron": "^30.0.0"
+  },
+  "devDependencies": {
+    "electron-builder": "^24.13.1"
+  }
+}

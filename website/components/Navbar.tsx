@@ -44,7 +44,7 @@ export function Navbar() {
         <div className="container mx-auto px-4 flex items-center justify-between h-18">
           {/* Logo */}
           <Link href="/" className="text-4xl font-bold">
-            SoloPro.
+            Soloist.
           </Link>
 
           {/* Nav links */}
