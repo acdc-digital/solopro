@@ -36,7 +36,7 @@ pnpm dev:electron    # Just the Electron window
 5. (optional) git reset --hard vx.x.x
 
 **Version History**
-v0.1.0 - Setup Initial Scaffolding
+v1.1.0 - Workspace Init is complete - all directories firing with new Authentication security.
 
 ### Feature Development Instructions:
 1. git checkout -b new-branch
