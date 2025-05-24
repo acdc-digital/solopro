@@ -20,12 +20,12 @@ soloist-pro_v2
 Soloist application professional development repository.
 
 ### Get Started with Commands
-# Start everything (recommended)
+##### Start everything (recommended)
 pnpm dev
 
-# Individual services:
-pnpm dev:renderer    # Just the Electron content (port 3002)
-pnpm dev:website     # Just the website (port 3004) 
+##### Individual services:
+pnpm dev:renderer    # Just the Electron content (port 3002)   
+pnpm dev:website     # Just the website (port 3004)    
 pnpm dev:electron    # Just the Electron window
 
 ### Git Update Version Commands
