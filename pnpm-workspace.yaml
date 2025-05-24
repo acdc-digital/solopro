@@ -1,0 +1,10 @@
+packages:
+  - website
+  - electron
+  - renderer
+ignoredBuiltDependencies:
+  - '@tailwindcss/oxide'
+  - electron
+  - esbuild
+  - sharp
+  - unrs-resolver
