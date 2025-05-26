@@ -1,17 +1,16 @@
 // HERO COMPONENT
-// /Users/matthewsimon/Documents/Github/soloist_pro/website/src/components/Hero.tsx
+// /Users/matthewsimon/Documents/Github/solopro/website/components/Hero.tsx
 
 'use client'
 
 import React from "react";
 import { Download, ChevronRight } from "lucide-react";
+import { HeroFeature } from "./HeroFeature";
 
 type ButtonProps = {
   children: React.ReactNode;
   className?: string;
   variant?: 'default' | 'outline' | 'emerald' | 'light-emerald';
-  // Temporarily commenting out this prop while the feature is disabled
-  // withBottomLine?: boolean;
 }
 
 // Button component with styling
@@ -24,12 +23,8 @@ const Button = ({ children, className, variant = "default" }: ButtonProps) => {
     "light-emerald": "bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100"
   };
   
-  // Commented out button outline effect - can be re-enabled later
-  // const bottomLineStyle = withBottomLine ? "relative after:content-[''] after:absolute after:w-[calc(100%-8px)] after:h-[calc(50%)] after:border-b-[1.5px] after:border-l-[1.5px] after:border-r-[1.5px] after:border-gray-300 after:rounded-b-full after:top-[78%] after:left-[4px] after:-z-10" : "";
-  const bottomLineStyle = ""; // Temporarily disabled
-  
   return (
-    <button className={`${baseStyles} ${variantStyles[variant]} ${bottomLineStyle} ${className || ""}`}>
+    <button className={`${baseStyles} ${variantStyles[variant]} ${className || ""}`}>
       {children}
     </button>
   );
@@ -37,48 +32,40 @@ const Button = ({ children, className, variant = "default" }: ButtonProps) => {
 
 export const Hero = () => {
   return (
-    <section className="py-12 md:py-24 container mx-auto px-4">
-      <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-        <div className="space-y-4 md:w-full">
+    <section className="py-12 md:py-8 container mx-auto px-4">
+      <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
+        {/* Left Side - Text Content */}
+        <div className="space-y-6 lg:w-1/2">
           <div>
             <p className="text-sm font-medium text-gray-500 mb-2">
-              #MoodForecasting.
+              #MoodForecasting
             </p>
-            <h1 className="text-4xl md:text-7xl font-bold tracking-tight mb-4">
-              Track. Reflect. Forecast.
+            <h1 className="text-4xl md:text-6xl lg:text-[78px] font-bold tracking-tight mb-4">
+              Track. Predict. Forecast.
             </h1>
             <p className="text-lg text-gray-600 mb-8">
-              Soloist turns your everyday thoughts into color-coded insights and automated Forecasts, so you always know where you stand and be prepared for what&apos;s coming next.
+            Turn everyday moments into powerful predictions. See patterns in your life before they happen and take control of your future.
+            </p>
+            
+            <div className="flex flex-wrap gap-4">
+              <Button variant="emerald" className="h-12 flex items-center gap-2">
+                <Download size={18} aria-hidden="true" />
+                Download App
+              </Button>
+              <Button variant="light-emerald" className="h-12 flex items-center gap-2">
+                Try Online Free <ChevronRight size={16} aria-hidden="true" />
+              </Button>
+            </div>
+            
+            <p className="text-sm text-gray-500 pt-4">
+              Emotional heatmaps visualize your mood and predict tomorrow&apos;s.
             </p>
           </div>
-
-          <div className="flex flex-wrap gap-4">
-            <Button variant="emerald" className="h-12 flex items-center gap-2">
-              <Download size={18} aria-hidden="true" />
-              Download App
-            </Button>
-            <Button variant="light-emerald" className="h-12 flex items-center gap-2">
-              Try Online Free <ChevronRight size={16} aria-hidden="true" />
-            </Button>
-          </div>
-          
-          <p className="text-sm text-gray-500 pt-4">
-            Emotional heatmaps visualize your mood and predict tomorrow&apos;s.
-          </p>
         </div>
         
-        <div className="md:w-full relative">
-          <div className="w-full max-w-xl mx-auto relative p-0 rounded-xl">
-            <img 
-              src="/Hero-Img.png" 
-              alt="Soloist Application" 
-              className="w-full h-auto object-contain"
-              loading="eager"
-              width={1024}
-              height={768}
-              fetchPriority="high"
-            />
-          </div>
+        {/* Right Side - Interactive Feature */}
+        <div className="lg:w-1/2 w-full">
+          <HeroFeature />
         </div>
       </div>
     </section>

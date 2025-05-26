@@ -1,3 +1,6 @@
+// APP PAGE
+// /Users/matthewsimon/Documents/Github/solopro/website/app/page.tsx
+
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -14,9 +17,12 @@ import { Navbar } from "@/components/Navbar";
 import { Hero } from "@/components/Hero";
 import { OpenSource } from "@/components/OpenSource";
 import { Features } from "@/components/Features";
+import { FAQ } from "@/components/FAQ";
 import Pricing from "@/components/Pricing";
+import { CTABanner } from "@/components/CTABanner";
+import { Footer } from "@/components/Footer";
+import { StoreBadges } from "@/components/storeBadges";
 import { getCheckoutSession } from "@/lib/services/PaymentService";
-import { EnvDebug } from "@/components/EnvDebug";
 
 type ButtonProps = {
   children: React.ReactNode;
@@ -39,34 +45,6 @@ const Button = ({ children, className, variant = "default" }: ButtonProps) => {
     >
       {children}
     </button>
-  );
-};
-
-type AccordionItemProps = {
-  question: string;
-  children: React.ReactNode;
-};
-
-// Accordion component
-const AccordionItem = ({ question, children }: AccordionItemProps) => {
-  const [isOpen, setIsOpen] = React.useState(false);
-
-  return (
-    <div className="border rounded-lg p-2 bg-background dark:border-border mb-4">
-      <button
-        className="flex justify-between items-center w-full text-left font-medium px-4 py-3"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        {question}
-        <ChevronRight
-          className={`w-4 h-4 transition-transform ${isOpen ? "rotate-90" : ""}`}
-          aria-hidden="true"
-        />
-      </button>
-      {isOpen && (
-        <div className="px-4 pt-2 pb-4 text-muted-foreground">{children}</div>
-      )}
-    </div>
   );
 };
 
@@ -152,7 +130,7 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-stone-50">
       {/* Add EnvDebug component
       <EnvDebug /> */}
 
@@ -220,6 +198,14 @@ export default function LandingPage() {
       )}
 
       <main className="flex-1">
+        {/* Store Badges Banner */}
+      <div className="bg-stone-50">
+        <div className="container mx-auto px-4 py-3 mt-4">
+          <div className="flex justify-left">
+            <StoreBadges showText={false} />
+          </div>
+        </div>
+      </div>
         {/* Hero Section */}
         <Hero />
 
@@ -233,96 +219,14 @@ export default function LandingPage() {
         <Pricing />
 
         {/* FAQ Section */}
-        <section id="faq" className="py-16 bg-muted">
-          <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold text-center mb-16">
-              FAQ Section
-            </h2>
-
-            <div className="max-w-3xl mx-auto">
-              <AccordionItem question="Is it free to start?">
-                Yes! You can start with our free plan which includes all the
-                essential features you need to get started.
-              </AccordionItem>
-              <AccordionItem question="How long does setup take?">
-                Setup takes less than 5 minutes. Just sign up, and you&apos;ll be
-                ready to start using the platform right away.
-              </AccordionItem>
-              <AccordionItem question="What devices are supported?">
-                SoloPro works on all modern browsers and devices, including
-                desktops, laptops, tablets, and mobile phones.
-              </AccordionItem>
-              <AccordionItem question="How do I get help if needed?">
-                We offer support through our community forums, documentation,
-                and email support for paid plans.
-              </AccordionItem>
-            </div>
-          </div>
-        </section>
+        <FAQ />
 
         {/* Final CTA */}
-        <section className="py-16 container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center space-y-8">
-            <h2 className="text-3xl md:text-4xl font-bold">
-              Start Your Journey Today
-            </h2>
-            <p className="text-xl text-muted-foreground">
-              Join thousands of users who have already transformed their
-              productivity with SoloPro.
-            </p>
-            <div className="flex flex-wrap justify-center gap-4">
-              <Button className="h-12 flex items-center gap-2">
-                <Download size={18} aria-hidden="true" />
-                Get Started
-              </Button>
-              <Button
-                variant="outline"
-                className="h-12 flex items-center gap-2"
-              >
-                Learn More <ChevronRight size={16} aria-hidden="true" />
-              </Button>
-            </div>
-          </div>
-        </section>
+        <CTABanner />
       </main>
 
       {/* Footer */}
-      <footer className="bg-background border-t py-8">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-sm text-muted-foreground">
-              © {new Date().getFullYear()} SoloPro. All Rights Reserved.
-            </p>
-
-            <div className="flex space-x-6 mt-4 md:mt-0">
-              <a
-                href="#"
-                className="text-muted-foreground hover:text-foreground"
-              >
-                LinkedIn
-              </a>
-              <a
-                href="#"
-                className="text-muted-foreground hover:text-foreground"
-              >
-                GitHub
-              </a>
-              <a
-                href="#"
-                className="text-muted-foreground hover:text-foreground"
-              >
-                Discord
-              </a>
-              <a
-                href="#"
-                className="text-muted-foreground hover:text-foreground"
-              >
-                Twitter
-              </a>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

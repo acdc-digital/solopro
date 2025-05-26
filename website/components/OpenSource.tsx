@@ -1,75 +1,97 @@
+// OPEN SOURCE
+// /Users/matthewsimon/Documents/Github/solopro/website/components/OpenSource.tsx
+
 'use client'
 
-import { Github, FileText, Users, Lock, FileSpreadsheet } from "lucide-react";
+import { Github, FileText, Users, Lock, FileSpreadsheet, ExternalLink } from "lucide-react";
 import Link from "next/link";
 
 export function OpenSource() {
   return (
-    <section className="bg-muted py-6 md:py-8">
+    <section className="py-8 md:py-8 mt-4">
       <div className="container mx-auto px-4">
         <div className="flex flex-col items-center text-center">
           {/* Badge and Heading */}
-          <div className="space-y-3 mb-6">
-            {/* <div className="inline-block rounded-xl bg-primary px-2 py-0.5 text-sm text-primary-foreground">
+          <div className="space-y-4 mb-8">
+            <div className="inline-flex items-center gap-2 rounded-full bg-black px-3 py-1 text-sm font-medium text-white">
+              <Github className="h-3 w-3" />
               Open Source
-            </div> */}
-            <h2 className="text-2xl font-bold tracking-tighter md:text-3xl/tight">
+            </div>
+            <h2 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">
               Built Open Source
             </h2>
-          </div>
-          {/* Feature boxes in a row */}
-          <div className="flex flex-wrap gap-3 justify-center mb-6">
-            <div className="flex items-center gap-2 rounded-lg border bg-background px-3 py-2 shadow-sm">
-              <div className="rounded-full bg-primary p-1.5 text-primary-foreground">
-                <FileText className="h-4 w-4" />
-              </div>
-              <div>
-                <h3 className="text-base font-bold">Open Code</h3>
-                <p className="text-xs text-muted-foreground">Fully transparent</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 rounded-lg border bg-background px-3 py-2 shadow-sm">
-              <div className="rounded-full bg-primary p-1.5 text-primary-foreground">
-                <Users className="h-4 w-4" />
-              </div>
-              <div>
-                <h3 className="text-base font-bold">Community-Driven</h3>
-                <p className="text-xs text-muted-foreground">Shaped by users</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 rounded-lg border bg-background px-3 py-2 shadow-sm">
-              <div className="rounded-full bg-primary p-1.5 text-primary-foreground">
-                <Lock className="h-4 w-4" />
-              </div>
-              <div>
-                <h3 className="text-base font-bold">Privacy-Focused</h3>
-                <p className="text-xs text-muted-foreground">Your data stays yours</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 rounded-lg border bg-background px-3 py-2 shadow-sm">
-              <div className="rounded-full bg-primary p-1.5 text-primary-foreground">
-                <FileSpreadsheet className="h-4 w-4" />
-              </div>
-              <div>
-                <h3 className="text-base font-bold">Transparent Roadmap</h3>
-                <p className="text-xs text-muted-foreground">Openly planned</p>
-              </div>
-            </div>
-          </div>
-          {/* Description and GitHub button */}
-          <div className="space-y-5">
-            <p className="text-muted-foreground text-sm md:text-base">
-              SoloPro is proudly open source, embracing transparency and collaboration.
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+                            SoloPro is proudly open source, embracing transparency and collaboration.
+              Your wellness journey, built with nothing to hide.
             </p>
+          </div>
+
+          {/* Feature Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8 w-full max-w-4xl">
+            <div className="bg-card rounded-lg border border-border p-4 shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex flex-col items-center text-center space-y-3">
+                <div className="rounded-full bg-primary p-3 text-primary-foreground">
+                  <FileText className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-semibold text-card-foreground">Open Code</h3>
+                  <p className="text-sm text-muted-foreground">Fully transparent codebase</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-card rounded-lg border border-border p-4 shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex flex-col items-center text-center space-y-3">
+                <div className="rounded-full bg-primary p-3 text-primary-foreground">
+                  <Users className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-semibold text-card-foreground">Community-Driven</h3>
+                  <p className="text-sm text-muted-foreground">Shaped by user feedback</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-card rounded-lg border border-border p-4 shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex flex-col items-center text-center space-y-3">
+                <div className="rounded-full bg-primary p-3 text-primary-foreground">
+                  <Lock className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-semibold text-card-foreground">Privacy-Focused</h3>
+                  <p className="text-sm text-muted-foreground">Your data stays yours</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-card rounded-lg border border-border p-4 shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex flex-col items-center text-center space-y-3">
+                <div className="rounded-full bg-primary p-3 text-primary-foreground">
+                  <FileSpreadsheet className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-semibold text-card-foreground">Transparent Roadmap</h3>
+                  <p className="text-sm text-muted-foreground">Openly planned features</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Call to Action */}
+          <div className="space-y-4">
             <Link
-              href="https://github.com/get-convex/convex"
+              href="https://github.com/acdc-digital/solopro"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex h-9 items-center justify-center rounded-md bg-indigo-700 px-4 text-sm font-medium text-white shadow transition-colors hover:bg-indigo-800 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-purple-500 disabled:pointer-events-none disabled:opacity-50"
+              className="inline-flex items-center justify-center gap-2 rounded-3xl bg-[#24292f] px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-[#1c2128] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
-              <Github className="mr-2 h-4 w-4" />
+              <Github className="h-4 w-4" />
               View on GitHub
+              <ExternalLink className="h-3 w-3" />
             </Link>
+            <p className="text-xs text-muted-foreground">
+              Star us on GitHub • Contribute • Join the community
+            </p>
           </div>
         </div>
       </div>
