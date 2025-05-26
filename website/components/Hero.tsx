@@ -53,7 +53,7 @@ export const Hero = () => {
                 Download App
               </Button>
               <Button variant="light-emerald" className="h-12 flex items-center gap-2">
-                Try Online Free <ChevronRight size={16} aria-hidden="true" />
+                Try Demo Free <ChevronRight size={16} aria-hidden="true" />
               </Button>
             </div>
             
