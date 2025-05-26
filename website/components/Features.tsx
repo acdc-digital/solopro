@@ -1,87 +1,109 @@
 "use client";
 
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Sparkles, TrendingUp, BarChart3 } from "lucide-react";
 import React from "react";
 import Image from "next/image";
+import { LandingHeatmap } from "./LandingHeatmap";
+import { PlaygroundDemo } from "./Playground";
+import { SplitScreen } from "./SplitScreen";
 
 export function Features() {
   return (
-    <section id="features" className="py-16 container mx-auto px-4 mt-8">
-      {/* Feature 1 */}
-      <div className="flex flex-col md:flex-row gap-8 mb-24">
-        <div className="md:w-1/2 space-y-4">
-          <h3 className="text-2xl font-bold">
-            Your Daily Well-Being at a Glance.
-          </h3>
-          <p className="text-muted-foreground">
-            The color-coded heatmap turns 365 scattered journal entries into one
-            elegant, scrollable canvas. Instantly spot winning streaks, analyze
-            looming slumps, and forecast your mood for tomorrow.
+    <section id="features" className="py-14 md:py-18 bg-stone-50">
+      <div className="container mx-auto px-4">
+        {/* Section Header */}
+        <div className="text-center mb-14 md:mb-14">
+          <div className="inline-flex items-center gap-2 rounded-full bg-black px-4 py-1.5 text-sm font-medium text-white mb-4">
+            <Sparkles className="h-4 w-4" />
+            Core Features
+          </div>
+          <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">
+            Everything you need to understand yourself
+          </h2>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            Transform scattered thoughts into actionable insights with our intelligent mood tracking and forecasting system.
           </p>
-          <div className="pt-4">
-            <button className="flex items-center gap-2 p-0 font-medium text-primary hover:underline">
-              Learn more <ArrowRight size={16} aria-hidden="true" />
-            </button>
-          </div>
         </div>
-        <div className="md:w-1/2 flex items-center justify-center">
-          <div className="relative w-full aspect-video max-w-xl overflow-hidden">
-            <Image
-              src="/Feature1.png"
-              alt="Daily well-being dashboard visualization"
-              fill
-              sizes="(max-width: 768px) 100vw, 50vw"
-              priority
-              className="object-cover object-center"
-              style={{ objectFit: 'contain' }}
-            />
-          </div>
-        </div>
-      </div>
 
-      {/* Feature 2 & 3 (Side by side) */}
-      <div className="grid md:grid-cols-2 gap-8 md:gap-12">
-        {/* Feature 2 */}
-        <div className="space-y-4">
-          <h3 className="text-2xl font-bold">
-            Review the Past, Ready the Future.
-          </h3>
-          <p className="text-muted-foreground">
-            SoloPro&apos;s Playground lets you look back to learn—and gear up
-            for what&apos;s coming next.
-          </p>
-          <div className="pt-4 mb-6"></div>
-          <div className="relative w-full aspect-video max-w-2xl mx-auto overflow-hidden">
-            <Image
-              src="/Feature2.png"
-              alt="Analysis dashboard showing past trends"
-              fill
-              sizes="(max-width: 768px) 100vw, 40vw"
-              className="object-cover object-center"
-              style={{ objectFit: 'contain' }}
-            />
+        {/* Feature 1 - Interactive Heatmap Demo */}
+        <div className="mb-12 md:mb-12">
+          <div className="bg-zinc-50 rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="grid md:grid-cols-2 gap-0">
+              <div className="p-8 md:p-12 flex flex-col justify-center">
+                <div className="inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700 mb-4 w-fit">
+                  <BarChart3 className="h-3 w-3" />
+                  Interactive Heatmap
+                </div>
+                <h3 className="text-2xl md:text-3xl font-bold mb-4">
+                  Your Daily Well-Being at a Glance
+                </h3>
+                <p className="text-gray-600 text-lg mb-6 leading-relaxed">
+                  The color-coded heatmap turns 365 scattered journal entries into one
+                  elegant, scrollable canvas. Instantly spot winning streaks, analyze
+                  emerging patterns, and understand your emotional rhythms.
+                </p>
+                <div className="space-y-3 text-sm text-gray-600">
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
+                    <span>Interactive hover details</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                    <span>Real-time pattern recognition</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                    <span>Progress tracking & trends</span>
+                  </div>
+                </div>
+              </div>
+              <div className="p-8 md:p-12 flex items-center justify-center">
+                <LandingHeatmap />
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Feature 3 */}
-        <div className="space-y-4">
-          <h3 className="text-2xl font-bold">
-            See the Patterns. Shape the Progress.
-          </h3>
-          <p className="text-muted-foreground">
-            Pinpoint why today felt different, watch real-time charts reveal
-            emerging trends, and tag moments before they fade.
-          </p>
-          <div className="pt-4 mb-6"></div>
-          <div className="relative w-full aspect-video max-w-2xl mx-auto overflow-hidden">
-            <Image
-              src="/Feature6.png"
-              alt="Pattern visualization and analytics dashboard"
-              fill
-              sizes="(max-width: 768px) 100vw, 40vw"
-              className="object-cover object-center"
-              style={{ objectFit: 'contain' }}
-            />
+        {/* Features 2 & 3 - Side by Side */}
+        <div className="grid md:grid-cols-2 gap-8 md:gap-12">
+          {/* Feature 2 */}
+          <div className="group">
+            <div className="bg-zinc-50 rounded-xl border border-gray-100 p-6 md:p-8 hover:shadow-md transition-all duration-300 hover:-translate-y-1 h-full flex flex-col">
+              <div className="inline-flex items-center gap-2 rounded-full bg-purple-50 px-3 py-1 text-xs font-medium text-purple-700 mb-4 w-fit">
+                <TrendingUp className="h-3 w-3" />
+                Weekly Playground
+              </div>
+              <h3 className="text-xl md:text-2xl font-bold mb-3">
+                Review the Past, Ready the Future
+              </h3>
+              <p className="text-gray-600 mb-6 flex-grow leading-relaxed">
+                SoloPro's intelligent analysis helps you look back to learn and
+                gear up for what's coming next with predictive insights.
+              </p>
+              <div className="mb-4 flex items-center justify-center">
+                <PlaygroundDemo />
+              </div>
+            </div>
+          </div>
+
+          {/* Feature 3 */}
+          <div className="group">
+            <div className="bg-zinc-50 rounded-xl border border-gray-100 p-6 md:p-8 hover:shadow-md transition-all duration-300 hover:-translate-y-1 h-full flex flex-col">
+              <div className="inline-flex items-center gap-2 rounded-full bg-orange-50 px-3 py-1 text-xs font-medium text-orange-700 mb-4 w-fit">
+                <Sparkles className="h-3 w-3" />
+                Live Dashboards
+              </div>
+              <h3 className="text-xl md:text-2xl font-bold mb-3">
+                See the Patterns, Shape the Progress
+              </h3>
+              <p className="text-gray-600 mb-6 flex-grow leading-relaxed">
+                Pinpoint why today felt different, watch real-time charts reveal
+                emerging trends, and tag meaningful moments before they fade.
+              </p>
+              <div className="mb-4 flex items-center justify-center">
+                <SplitScreen />
+              </div>
+            </div>
           </div>
         </div>
       </div>

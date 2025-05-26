@@ -2,13 +2,15 @@
 
 import { v } from "convex/values";
 import { action, internalAction } from "./_generated/server";
-import Stripe from "stripe";
 import { internal } from "./_generated/api";
 
-// Initialize Stripe with your secret key
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
-  apiVersion: "2025-04-30.basil",
-});
+// Initialize Stripe with dynamic import to avoid module resolution issues
+async function getStripe() {
+  const Stripe = (await import("stripe")).default;
+  return new Stripe(process.env.STRIPE_SECRET_KEY || "", {
+    apiVersion: "2025-04-30.basil",
+  });
+}
 
 // Webhook secret from environment variable
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -29,6 +31,7 @@ export const handleWebhookEvent = internalAction({
 
     try {
       // Verify the event came from Stripe
+      const stripe = await getStripe();
       const event = stripe.webhooks.constructEvent(
         payload,
         signature,
@@ -99,6 +102,7 @@ async function handleCheckoutSessionCompleted(ctx: any, session: any) {
       
       if (subscriptionId) {
         // Fetch full subscription details from Stripe
+        const stripe = await getStripe();
         const subscription = await stripe.subscriptions.retrieve(subscriptionId);
         
         // Update user subscription status
@@ -123,6 +127,7 @@ async function handleInvoicePaymentSucceeded(ctx: any, invoice: any) {
   // Only process subscription invoices
   if (invoice.subscription) {
     const subscriptionId = invoice.subscription;
+    const stripe = await getStripe();
     const subscription = await stripe.subscriptions.retrieve(subscriptionId);
     
     // Find the user ID from our database

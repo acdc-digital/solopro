@@ -1,3 +1,6 @@
+// HEATMAP
+// /Users/matthewsimon/Documents/Github/solopro/renderer/src/app/dashboard/_components/Heatmap.tsx
+
 "use client";
 
 import * as React from "react";

@@ -131,4 +131,11 @@ export default defineSchema({
   numbers: defineTable({
     value: v.number(),
   }),
+
+  newsletter: defineTable({
+    email: v.string(),
+    createdAt: v.number(),
+    source: v.optional(v.string()), // Track where the signup came from (e.g., "footer", "hero", "pricing")
+  })
+  .index("email", ["email"]),
 });

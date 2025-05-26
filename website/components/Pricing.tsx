@@ -1,6 +1,9 @@
+// PRICING COMPONENT
+// /Users/matthewsimon/Documents/Github/soloist_pro/website/src/components/Pricing.tsx
+
 "use client";
 
-import { Check } from "lucide-react";
+import { Check, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { useConvexAuth, useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
@@ -45,7 +48,7 @@ export default function Pricing() {
         "1GB storage",
         "Community support",
       ],
-      cta: "Start Free",
+      cta: "Try Demo",
       productId: "prod_SM2rv1Y1tRAaKo",
     },
     {
@@ -182,10 +185,14 @@ export default function Pricing() {
   };
 
   return (
-    <section id="pricing" className="py-16 md:py-20">
+    <section id="pricing" className="py-8 md:py-8">
       <div className="container mx-auto px-4 md:px-6">
         {showInstructions && <StripeSetupInstructions />}
         <div className="mx-auto flex max-w-[58rem] flex-col items-center space-y-4 text-center">
+          <div className="inline-flex items-center gap-2 rounded-full bg-black px-4 py-1.5 text-sm font-medium text-white mb-4">
+            <Sparkles className="h-4 w-4" />
+            Pricing
+          </div>
           <h2 className="text-3xl font-bold tracking-tighter md:text-4xl">
             Simple, Transparent Pricing
           </h2>
@@ -194,13 +201,13 @@ export default function Pricing() {
             free trial.
           </p>
         </div>
-        <div className="mx-auto mt-12 grid max-w-5xl gap-6 md:grid-cols-2 lg:grid-cols-3 lg:items-center">
+        <div className="mx-auto mt-16 grid max-w-5xl gap-6 md:grid-cols-2 lg:grid-cols-3 lg:items-center">
           {tiers.map((tier) => {
             // Determine card styling based on tier type
             let cardClass =
               "relative flex flex-col rounded-lg border bg-background ";
             if (tier.highlighted) {
-              cardClass += "border-primary shadow-md p-6 md:p-8 scale-105 z-10";
+              cardClass += "border-emerald-600 shadow-md p-6 md:p-8 scale-105 z-10";
             } else if (tier.name === "Coming Soon") {
               cardClass +=
                 "border-dashed border-muted-foreground/50 p-6 shadow-sm my-auto";
@@ -210,7 +217,7 @@ export default function Pricing() {
             return (
               <div key={tier.name} className={cardClass}>
                 {tier.highlighted && (
-                  <div className="absolute -top-3 left-0 right-0 mx-auto w-fit rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground">
+                  <div className="absolute -top-3 left-0 right-0 mx-auto w-fit rounded-full bg-emerald-600 px-3 py-1 text-xs font-medium text-white">
                     Popular
                   </div>
                 )}
@@ -243,7 +250,7 @@ export default function Pricing() {
                   {tier.features.map((feature) => (
                     <li key={feature} className="flex items-center">
                       <Check
-                        className={`mr-2 ${tier.highlighted ? "h-5 w-5" : "h-4 w-4"} text-primary`}
+                        className={`mr-2 ${tier.highlighted ? "h-5 w-5" : "h-4 w-4"} ${tier.highlighted ? "text-emerald-700" : "text-primary"}`}
                       />
                       <span>{feature}</span>
                     </li>
@@ -255,9 +262,9 @@ export default function Pricing() {
                     disabled={tier.name === "Coming Soon" || (hasActiveSubscription === true && !!tier.priceId)}
                     className={`inline-flex h-10 w-full items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring ${
                       hasActiveSubscription === true && tier.priceId
-                        ? "bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-300 border border-green-300 dark:border-green-600 cursor-default"
+                        ? "bg-green-200 dark:bg-green-900/20 text-green-800 dark:text-green-300 border border-green-300 dark:border-green-600 cursor-default"
                         : tier.highlighted
-                        ? "bg-primary text-primary-foreground shadow hover:bg-primary/90 font-bold"
+                        ? "bg-emerald-600 text-white shadow hover:bg-emerald-800 font-bold"
                         : tier.name === "Coming Soon"
                           ? "bg-muted text-muted-foreground cursor-default"
                           : "border border-input bg-background hover:bg-accent hover:text-accent-foreground"
