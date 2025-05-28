@@ -30,7 +30,6 @@ import type * as templates from "../templates.js";
 import type * as testing from "../testing.js";
 import type * as userAttributes from "../userAttributes.js";
 import type * as userSubscriptions from "../userSubscriptions.js";
-import type * as users from "../users.js";
 import type * as webhooks from "../webhooks.js";
 
 /**
@@ -59,7 +58,6 @@ declare const fullApi: ApiFromModules<{
   testing: typeof testing;
   userAttributes: typeof userAttributes;
   userSubscriptions: typeof userSubscriptions;
-  users: typeof users;
   webhooks: typeof webhooks;
 }>;
 export declare const api: FilterApi<
