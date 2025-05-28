@@ -138,4 +138,21 @@ export default defineSchema({
     source: v.optional(v.string()), // Track where the signup came from (e.g., "footer", "hero", "pricing")
   })
   .index("email", ["email"]),
+
+  templates: defineTable({
+    name: v.string(),
+    userId: v.string(),
+    questions: v.array(
+      v.object({
+        id: v.string(),
+        question: v.string(),
+        type: v.union(v.literal("text"), v.literal("scale"), v.literal("yesno")),
+        answer: v.optional(v.string())
+      })
+    ),
+    createdAt: v.string(),
+    updatedAt: v.string(),
+  })
+  .index("by_name_and_user", ["name", "userId"])
+  .index("by_user", ["userId"]),
 });

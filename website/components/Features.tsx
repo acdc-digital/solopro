@@ -12,7 +12,7 @@ export function Features() {
     <section id="features" className="py-14 md:py-18 bg-stone-50">
       <div className="container mx-auto px-4">
         {/* Section Header */}
-        <div className="text-center mb-14 md:mb-14">
+        <div className="text-center mb-8 md:mb-12">
           <div className="inline-flex items-center gap-2 rounded-full bg-black px-4 py-1.5 text-sm font-medium text-white mb-4">
             <Sparkles className="h-4 w-4" />
             Core Features
@@ -67,8 +67,8 @@ export function Features() {
         {/* Features 2 & 3 - Side by Side */}
         <div className="grid md:grid-cols-2 gap-8 md:gap-12">
           {/* Feature 2 */}
-          <div className="group">
-            <div className="bg-zinc-50 rounded-xl border border-gray-100 p-6 md:p-8 hover:shadow-md transition-all duration-300 hover:-translate-y-1 h-full flex flex-col">
+          <div>
+            <div className="bg-zinc-50 rounded-xl shadow-sm border border-gray-100 p-6 md:p-8 h-full flex flex-col">
               <div className="inline-flex items-center gap-2 rounded-full bg-purple-50 px-3 py-1 text-xs font-medium text-purple-700 mb-4 w-fit">
                 <TrendingUp className="h-3 w-3" />
                 Weekly Playground
@@ -87,8 +87,8 @@ export function Features() {
           </div>
 
           {/* Feature 3 */}
-          <div className="group">
-            <div className="bg-zinc-50 rounded-xl border border-gray-100 p-6 md:p-8 hover:shadow-md transition-all duration-300 hover:-translate-y-1 h-full flex flex-col">
+          <div>
+            <div className="bg-zinc-50 rounded-xl shadow-sm border border-gray-100 p-6 md:p-8 h-full flex flex-col">
               <div className="inline-flex items-center gap-2 rounded-full bg-orange-50 px-3 py-1 text-xs font-medium text-orange-700 mb-4 w-fit">
                 <Sparkles className="h-3 w-3" />
                 Live Dashboards

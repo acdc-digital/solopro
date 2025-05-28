@@ -4,13 +4,14 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { X, Loader2, CreditCard, CheckCircle } from "lucide-react";
 import { createCheckoutSession } from "@/lib/services/PaymentService";
 import { useConvexUser } from "@/lib/hooks/useConvexUser";
-import { useQuery } from "convex/react";
-import { api } from "../../convex/_generated/api";
+import { useQuery, useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
 import {
   EmbeddedCheckoutProvider,
   EmbeddedCheckout
 } from "@stripe/react-stripe-js";
 import { getStripePromise, isStripeConfigured } from "@/lib/stripe/stripeLoader";
+import { useRouter } from "next/navigation";
 
 interface StripeCheckoutModalProps {
   isOpen: boolean;

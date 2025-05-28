@@ -27,7 +27,7 @@ export function Footer() {
           {/* Company Info */}
           <div>
             <div className="mb-6">
-              <h3 className="text-lg font-bold text-foreground mb-2">SoloPro</h3>
+              <h3 className="text-lg font-bold text-foreground mb-2">Soloist.</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
                 Simple mood tracking and insights for better emotional well-being.
               </p>

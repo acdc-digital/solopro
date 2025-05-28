@@ -1,5 +1,5 @@
 import { useConvexAuth, useQuery } from "convex/react";
-import { api } from "../../../convex/_generated/api";
+import { api } from "@/convex/_generated/api";
 
 /**
  * A hook that extends useConvexAuth to also get the actual user ID from Convex

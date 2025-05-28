@@ -12,13 +12,17 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@convex-dev/auth": "^0.0.81",
+    "@convex-dev/auth": "^0.0.86",
+    "@nodelib/fs.walk": "^3.0.1",
     "@radix-ui/react-dialog": "^1.1.14",
     "@radix-ui/react-scroll-area": "^1.2.9",
     "@radix-ui/react-slot": "^1.2.3",
+    "@stripe/react-stripe-js": "^3.7.0",
+    "@stripe/stripe-js": "7.3.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "convex": "^1.23.0",
+    "fastq": "^1.19.1",
     "lucide-react": "^0.511.0",
     "next": "15.2.3",
     "react": "^19.0.0",
@@ -31,13 +35,15 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "autoprefixer": "^10.4.20",
     "dotenv": "^16.4.7",
     "eslint": "^9",
     "eslint-config-next": "15.2.3",
     "npm-run-all": "^4.1.5",
+    "postcss": "^8.5.1",
     "prettier": "^3.5.3",
+    "tailwindcss": "^3.4.15",
     "tailwindcss-animate": "^1.0.7",
-    "tw-animate-css": "^1.3.0",
     "typescript": "^5"
   }
 }

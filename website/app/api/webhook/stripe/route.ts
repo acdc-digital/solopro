@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { ConvexHttpClient } from "convex/browser";
-import { api } from "../../../../../convex/_generated/api";
+import { api } from "@/convex/_generated/api";
 
 // Initialize Stripe with your secret key
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
@@ -26,8 +26,8 @@ if (!convexUrl) {
   console.error("Missing NEXT_PUBLIC_CONVEX_URL environment variable");
 }
 
-const stripe = new Stripe(stripeSecretKey || "", {
-  apiVersion: "2025-04-30.basil",
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: "2025-05-28.basil",
 });
 
 // Initialize Convex client

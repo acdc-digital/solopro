@@ -9,8 +9,8 @@ if (!stripeSecretKey) {
   console.error("Missing STRIPE_SECRET_KEY environment variable");
 }
 
-const stripe = new Stripe(stripeSecretKey || "", {
-  apiVersion: "2025-04-30.basil",
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: "2025-05-28.basil",
 });
 
 export async function POST(request: Request) {

@@ -26,6 +26,7 @@ function createWindow() {
   const win = new BrowserWindow({
     width: 1024,
     height: 768,
+    frame: false, // Remove the title bar
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       nodeIntegration: false,

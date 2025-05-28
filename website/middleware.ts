@@ -1,3 +1,7 @@
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+
+// Re-enabling Convex Auth middleware to test compatibility
 import {
   convexAuthNextjsMiddleware,
   createRouteMatcher,
