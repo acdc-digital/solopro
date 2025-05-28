@@ -128,19 +128,15 @@ export const getSevenDayForecast = query({
       forecastEnd: getISODateString(forecastEnd)
     });
 
-    // Fetch logs for the selected range (3 days before today + today)
-    const allPastLogs = await ctx.db
-      .query("logs")
-      .withIndex("byUserDate", (q) =>
-        q.eq("userId", userId)
-         .gte("date", getISODateString(rangeStart))
-         .lte("date", getISODateString(rangeEnd))
-      )
-      .order("asc")
-      .collect();
+    // Fetch all logs for the user in the range using runQuery
+    const logs = await ctx.runQuery(internal.forecast.getLogsForUserInRange, {
+      userId,
+      startDate: getISODateString(rangeStart),
+      endDate: getISODateString(rangeEnd),
+    });
     
-    console.log("[getSevenDayForecast] Past logs count:", allPastLogs.length);
-    console.log("[getSevenDayForecast] Past logs dates:", allPastLogs.map((log: any) => log.date));
+    console.log("[getSevenDayForecast] Past logs count:", logs.length);
+    console.log("[getSevenDayForecast] Past logs dates:", logs.map((log: any) => log.date));
 
     // Fetch existing forecasts for the forecast range (3 days after today)
     const existingForecasts = await ctx.db
@@ -156,7 +152,7 @@ export const getSevenDayForecast = query({
     console.log("[getSevenDayForecast] Existing forecast dates:", existingForecasts.map((f: any) => f.date));
 
     // Format logs
-    const formattedPastLogs = allPastLogs.map((log: any) => {
+    const formattedPastLogs = logs.map((log: any) => {
       const logDate = new Date(log.date);
       const isToday = isSameDay(logDate, todayLocal);
       return {
@@ -166,13 +162,13 @@ export const getSevenDayForecast = query({
         formattedDate: formatMonthDay(logDate),
         emotionScore: log.score ?? null,
         description: getDescriptionFromScore(log.score),
-        trend: calculateTrend(log, allPastLogs),
+        trend: calculateTrend(log, logs),
         details: `Entry from ${log.date}`,
         recommendation: generateRecommendation(log),
         isPast: !isToday,
         isToday: isToday,
         isFuture: false,
-        canGenerateForecast: allPastLogs.length >= 4,
+        canGenerateForecast: logs.length >= 4,
         _id: log._id,
         answers: log.answers,
       };
@@ -224,7 +220,7 @@ export const generateForecast = action({
     startDate: v.optional(v.string()),
     endDate: v.optional(v.string()),
   },
-  handler: async (ctx, args) => {
+  handler: async (ctx, args): Promise<{ success: boolean; error?: string; forecastDates?: string[] }> => {
     const { userId, startDate: providedStartDate, endDate: providedEndDate } = args;
     
     // Get today's date if not provided

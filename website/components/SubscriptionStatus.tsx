@@ -1,7 +1,8 @@
 "use client";
 
 import { useQuery } from "convex/react";
-import { api } from "../../convex/_generated/api";
+import { useConvexUser } from "@/lib/hooks/useConvexUser";
+import { api } from "@/convex/_generated/api";
 import { Loader2, CheckCircle, AlertCircle, XCircle } from "lucide-react";
 
 export function SubscriptionStatus() {

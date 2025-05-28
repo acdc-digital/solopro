@@ -6,7 +6,7 @@
 import { Check, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { useConvexAuth, useQuery } from "convex/react";
-import { api } from "../../convex/_generated/api";
+import { api } from "@/convex/_generated/api";
 import { StripeCheckoutModal } from "@/modals/StripeCheckoutModal";
 import { StripeSetupInstructions } from "./StripeSetupInstructions";
 import { SignInModal } from "@/modals/SignInModal";

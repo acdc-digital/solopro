@@ -45,7 +45,7 @@ export default function FeedFooter({
     return (
         <div
           className={cn(
-            "sticky bottom-0 w-full z-10 px-4 py-3 mb-4 bg-zinc-900 border-t",
+            "sticky bottom-0 w-full z-10 px-4 py-3 mb-4 bg-white border-t border-gray-200",
             className
           )}
         >

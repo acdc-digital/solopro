@@ -466,11 +466,11 @@ export default function Feed({ onTagsUpdate }: FeedProps) {
     console.log("Feed rendering no-date-selected state");
     return (
       <div className="flex flex-col items-center justify-center h-full p-6 text-center">
-        <div className="mb-4 p-3 rounded-full bg-zinc-100 dark:bg-zinc-800">
-          <Calendar className="h-8 w-8 text-primary" />
+        <div className="mb-4 p-3 rounded-full bg-gray-100">
+          <Calendar className="h-8 w-8 text-blue-600" />
         </div>
-        <h3 className="text-xl font-medium mb-2">Select a date</h3>
-        <p className="text-sm text-zinc-500 dark:text-zinc-400 max-w-xs">
+        <h3 className="text-xl font-medium mb-2 text-gray-900">Select a date</h3>
+        <p className="text-sm text-gray-600 max-w-xs">
           Choose a date from the calendar to view insights generated for that day&apos;s log.
         </p>
       </div>
@@ -495,14 +495,14 @@ export default function Feed({ onTagsUpdate }: FeedProps) {
             filteredMessages.map((msg) => (
               <Card
                 key={msg._id}
-                className="transition-all duration-200 hover:shadow-md bg-card/50"
+                className="transition-all duration-200 hover:shadow-md bg-white border-gray-200 shadow-sm"
               >
-                <CardContent className="pt-0">
-                  <div className="prose prose-zinc dark:prose-invert max-w-none">
+                <CardContent className="pt-4">
+                  <div className="prose prose-zinc max-w-none text-gray-900">
                     <p>{msg.message}</p>
                   </div>
                 </CardContent>
-                <CardFooter className="flex flex-col text-xs text-muted-foreground pt-0">
+                <CardFooter className="flex flex-col text-xs text-gray-600 pt-0">
                   <div className="flex justify-between w-full items-center">
                     <div className="flex items-center gap-2">
                       <span className="text-xs mr-2">Was this helpful?</span>
@@ -512,7 +512,7 @@ export default function Feed({ onTagsUpdate }: FeedProps) {
                         onClick={() => handleFeedback(msg._id, true)}
                         className={cn(
                           "h-7 w-7 rounded-full",
-                          feedbackStatus[msg._id] === "liked" && "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                          feedbackStatus[msg._id] === "liked" && "bg-green-100 text-green-700"
                         )}
                       >
                         <ThumbsUp className="h-3 w-3" />
@@ -523,7 +523,7 @@ export default function Feed({ onTagsUpdate }: FeedProps) {
                         onClick={() => handleFeedback(msg._id, false)}
                         className={cn(
                           "h-7 w-7 rounded-full",
-                          feedbackStatus[msg._id] === "disliked" && "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
+                          feedbackStatus[msg._id] === "disliked" && "bg-red-100 text-red-700"
                         )}
                       >
                         <ThumbsDown className="h-3 w-3" />
@@ -538,7 +538,7 @@ export default function Feed({ onTagsUpdate }: FeedProps) {
                   </div>
                   
                   {/* Tags row */}
-                  <div className="flex flex-wrap gap-2 mt-3 items-center">
+                  <div className="w-full flex flex-wrap gap-2 mt-3 items-start">
                     {feedTags[msg._id]?.map((tag) => (
                       <TagBadge 
                         key={tag.id} 
@@ -558,16 +558,16 @@ export default function Feed({ onTagsUpdate }: FeedProps) {
           ) : !hasLogForDate ? (
             // No daily log exists for this date
             <div className="flex flex-col items-center justify-center h-full text-center">
-              <div className="mb-4 p-3 rounded-full bg-amber-100 dark:bg-amber-900/20">
-                <AlertCircle className="h-8 w-8 text-amber-500" />
+              <div className="mb-4 p-3 rounded-full bg-amber-100">
+                <AlertCircle className="h-8 w-8 text-amber-600" />
               </div>
-              <h3 className="text-xl font-medium mb-2">No Daily Log Found</h3>
-              <p className="text-sm text-zinc-500 dark:text-zinc-400 max-w-xs mb-2">
+              <h3 className="text-xl font-medium mb-2 text-gray-900">No Daily Log Found</h3>
+              <p className="text-sm text-gray-600 max-w-xs mb-2">
                 You need to create a daily log for {new Date(selectedDate).toLocaleDateString()} before generating insights.
               </p>
               
               {/* Debug information */}
-              <div className="mt-2 text-xs text-muted-foreground p-2 border rounded max-w-xs overflow-hidden mb-4">
+              <div className="mt-2 text-xs text-gray-500 p-2 border border-gray-200 rounded max-w-xs overflow-hidden mb-4">
                 <div className="text-left mb-1">Debug info:</div>
                 <div className="text-left">User ID: {userId || "none"}</div>
                 <div className="text-left">Date: {selectedDate}</div>
@@ -595,16 +595,16 @@ export default function Feed({ onTagsUpdate }: FeedProps) {
           ) : (
             // Daily log exists but no feed yet
             <div className="flex flex-col items-center justify-center h-full text-center">
-              <div className="mb-4 p-3 rounded-full bg-zinc-100 dark:bg-zinc-800">
-                <RefreshCw className="h-8 w-8 text-primary" />
+              <div className="mb-4 p-3 rounded-full bg-gray-100">
+                <RefreshCw className="h-8 w-8 text-blue-600" />
               </div>
-              <h3 className="text-xl font-medium mb-2">No insights yet</h3>
-              <p className="text-sm text-zinc-500 dark:text-zinc-400 max-w-xs mb-4">
+              <h3 className="text-xl font-medium mb-2 text-gray-900">No insights yet</h3>
+              <p className="text-sm text-gray-600 max-w-xs mb-4">
                 Generate AI insights based on your log for {new Date(selectedDate).toLocaleDateString()}.
               </p>
               
               {/* Debug information */}
-              <div className="mt-2 text-xs text-muted-foreground p-2 border rounded max-w-xs overflow-hidden mb-4">
+              <div className="mt-2 text-xs text-gray-500 p-2 border border-gray-200 rounded max-w-xs overflow-hidden mb-4">
                 <div className="text-left mb-1">Debug info:</div>
                 <div className="text-left">User ID: {userId || "none"}</div>
                 <div className="text-left">Date: {selectedDate}</div>
@@ -636,7 +636,7 @@ export default function Feed({ onTagsUpdate }: FeedProps) {
           {comments.length > 0 && (
             <div className="space-y-2 pb-10">
               {comments.map((comment) => (
-                <Card key={comment.id}>
+                <Card key={comment.id} className="bg-white border-gray-200">
                   <CardContent className="p-4">
                     <div className="flex items-center gap-2">
                       {comment.userImage && (
@@ -647,15 +647,15 @@ export default function Feed({ onTagsUpdate }: FeedProps) {
                         />
                       )}
                       <div>
-                        <p className="font-medium">{comment.userName}</p>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="font-medium text-gray-900">{comment.userName}</p>
+                        <p className="text-sm text-gray-600">
                           {formatDistanceToNow(new Date(comment.createdAt), {
                             addSuffix: true,
                           })}
                         </p>
                       </div>
                     </div>
-                    <p className="mt-2">{comment.content}</p>
+                    <p className="mt-2 text-gray-800">{comment.content}</p>
                   </CardContent>
                 </Card>
               ))}

@@ -6,15 +6,18 @@
 import React from "react";
 import { Download, ChevronRight } from "lucide-react";
 import { HeroFeature } from "./HeroFeature";
+import { DemoModal } from "./(demo)/DemoModal";
+import { DocsModal } from "./Docs";
 
 type ButtonProps = {
   children: React.ReactNode;
   className?: string;
   variant?: 'default' | 'outline' | 'emerald' | 'light-emerald';
+  onClick?: () => void;
 }
 
 // Button component with styling
-const Button = ({ children, className, variant = "default" }: ButtonProps) => {
+const Button = ({ children, className, variant = "default", onClick }: ButtonProps) => {
   const baseStyles = "font-medium rounded-full transition-colors px-4 py-2";
   const variantStyles = {
     default: "bg-primary text-primary-foreground hover:bg-primary/90",
@@ -24,7 +27,10 @@ const Button = ({ children, className, variant = "default" }: ButtonProps) => {
   };
   
   return (
-    <button className={`${baseStyles} ${variantStyles[variant]} ${className || ""}`}>
+    <button 
+      className={`${baseStyles} ${variantStyles[variant]} ${className || ""}`}
+      onClick={onClick}
+    >
       {children}
     </button>
   );
@@ -52,9 +58,23 @@ export const Hero = () => {
                 <Download size={18} aria-hidden="true" />
                 Download App
               </Button>
-              <Button variant="light-emerald" className="h-12 flex items-center gap-2">
-                Try Demo Free <ChevronRight size={16} aria-hidden="true" />
-              </Button>
+              <DocsModal>
+                <Button 
+                  variant="light-emerald" 
+                  className="h-12 flex items-center gap-2"
+                >
+                  Learn More <ChevronRight size={16} aria-hidden="true" />
+                </Button>
+              </DocsModal>
+              {/* <DemoModal>
+                <Button 
+                  variant="light-emerald" 
+                  className="h-12 flex items-center gap-2"
+                  // onClick={() => console.log("Demo button clicked!")}
+                >
+                  Get Started <ChevronRight size={16} aria-hidden="true" />
+                </Button>
+              </DemoModal> */}
             </div>
             
             <p className="text-sm text-gray-500 pt-4">

@@ -74,7 +74,7 @@ export const getUserTemplates = query({
 // Get a specific template by ID
 export const getTemplateById = query({
   args: {
-    templateId: v.string()
+    templateId: v.id("templates")
   },
   handler: async (ctx, args) => {
     return await ctx.db.get(args.templateId);
@@ -84,7 +84,7 @@ export const getTemplateById = query({
 // Delete a template
 export const deleteTemplate = mutation({
   args: {
-    templateId: v.string(),
+    templateId: v.id("templates"),
     userId: v.string()
   },
   handler: async (ctx, args) => {
