@@ -23,6 +23,10 @@ export function SignInModal({
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
+  // Debug: Check if auth context is working
+  console.log("🔴 SignInModal: useAuthActions result:", { signIn });
+  console.log("🔴 SignInModal: signIn type:", typeof signIn);
+
   // Reset flow when modal opens and check localStorage for flow preference
   useEffect(() => {
     if (isOpen) {
@@ -95,14 +99,19 @@ export function SignInModal({
         
         <div className="mt-6">
           <button
-            onClick={async () => {
+            onClick={async (e) => {
+              e.preventDefault(); // Prevent any default behavior
+              console.log("🔴 Button clicked!"); // Basic click detection
+              console.log("🔴 signIn function:", typeof signIn, signIn); // Check if signIn exists
+              
               try {
-                console.log("Attempting GitHub sign-in...");
-                await signIn("github", {});
-                console.log("GitHub sign-in successful");
+                console.log("🔴 Attempting GitHub sign-in...");
+                const result = await signIn("github", {});
+                console.log("🔴 GitHub sign-in result:", result);
+                console.log("🔴 GitHub sign-in successful");
                 handleAuthSuccess();
               } catch (error) {
-                console.error("GitHub sign-in error:", error);
+                console.error("🔴 GitHub sign-in error:", error);
                 setError(error instanceof Error ? error.message : "Sign-in failed");
               }
             }}
