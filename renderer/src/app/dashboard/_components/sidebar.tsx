@@ -29,7 +29,7 @@ import { SettingsDialog } from "@/app/settings/SettingsDialog";
 import { useFeedStore } from "@/store/feedStore";
 import { useConvexUser } from "@/hooks/useConvexUser";
 import { useQuery } from "convex/react";
-import { api } from "../../../../../convex/_generated/api";
+import { api } from "@/convex/_generated/api";
 // Import SignOut component
 import { SignOutWithGitHub } from "@/auth/oauth/SignOutWithGitHub";
 

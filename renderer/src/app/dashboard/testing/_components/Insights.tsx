@@ -5,7 +5,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { useAction } from "convex/react";
-import { api } from "../../../../../../convex/_generated/api";
+import { api } from "@/convex/_generated/api";
 import { ArrowRight, Sparkles, AlertCircle, Loader2 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useTestingStore } from "../../../../store/Testingstore"; // Import store

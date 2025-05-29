@@ -10,7 +10,7 @@ import { useTheme } from "next-themes";
 import Attributes from "./_components/Attributes";
 import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "convex/react";
-import { api } from "../../../../convex/_generated/api";
+import { api } from "@/convex/_generated/api";
 import { useConvexUser } from "@/hooks/useConvexUser";
 import { Loader2, CheckCircle2 } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";

@@ -16,8 +16,7 @@ import {
   TooltipTrigger
 } from "@/components/ui/tooltip";
 import { useQuery, useAction, useMutation } from "convex/react";
-import { api } from "../../../../../convex/_generated/api";
-import { api as dailyApi } from "../../../../../convex/_generated/api"; // alias for dailyLogs
+import { api } from "@/convex/_generated/api";
 import { useConvexUser } from "@/hooks/useConvexUser";
 import WeeklyPatterns from "./_components/WeeklyPatterns";
 import Navigation from "./_components/Navigation";
@@ -26,8 +25,6 @@ import Insights from "./_components/Insights";
 import { getColorClass } from "@/lib/scoreColors";
 import { useTestingStore } from "../../../store/Testingstore";
 import { format, addDays } from 'date-fns';
-import { api as testingApi } from "../../../../../convex/_generated/api";
-import { api as forecastApi } from "../../../../../convex/_generated/api"; // Added alias for forecast API
 
 // Types for forecast data
 interface ForecastDay {
@@ -215,7 +212,7 @@ export default function TestingPage() {
 
   // Fetch the main 7-day data (includes historical logs + future forecasts)
   const sevenDayResult = useQuery(
-    testingApi.testing.getTestSevenDayForecast,
+    api.testing.getTestSevenDayForecast,
     userId && selectedDateRange.start && selectedDateRange.end
       ? {
           userId: userId as string,
@@ -251,7 +248,7 @@ export default function TestingPage() {
 
   // Fetch raw historical logs (might be redundant if already in sevenDayResult, but kept for now)
   const historicalLogs = useQuery(
-    dailyApi.dailyLogs.getLogsByDateRange,
+    api.dailyLogs.getLogsByDateRange,
     userId && selectedDateRange.start && selectedDateRange.end
       ? {
           userId,
