@@ -76,7 +76,7 @@ export function SignInModal({
         </button>
         
         <h2 className="text-2xl font-bold mb-6 text-center">
-          🚀 DEBUG: GitHub Sign-In Only
+          ⚡ DEPLOYMENT TEST v2.0 ⚡
         </h2>
         
         {/* Temporarily hide password form for testing
