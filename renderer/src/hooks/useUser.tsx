@@ -4,7 +4,7 @@
 import { useAuthToken } from "@convex-dev/auth/react";
 import { useQuery, useMutation } from "convex/react";
 import { jwtDecode } from "jwt-decode";
-import { api } from "../../../convex/_generated/api";
+import { api } from "@/convex/_generated/api";
 import { useEffect, useCallback } from "react";
 import { getStableAuthId } from "@/utils/authId";
 

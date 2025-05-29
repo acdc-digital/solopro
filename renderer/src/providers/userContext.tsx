@@ -13,7 +13,7 @@ import { useUserId } from "@/hooks/useUserId";
 import { useUpsertUser } from "@/hooks/useUser";
 import { useUserStore } from "@/store/userStore";
 import { useQuery } from "convex/react";
-import { api } from "../../../convex/_generated/api";
+import { api } from "@/convex/_generated/api";
 
 // A strongly‑typed user object we pass around the app
 interface AppUser {

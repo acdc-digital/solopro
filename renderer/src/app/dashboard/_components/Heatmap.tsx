@@ -5,7 +5,7 @@
 
 import * as React from "react";
 import { useQuery } from "convex/react";
-import { api } from "../../../../../convex/_generated/api";
+import { api } from "@/convex/_generated/api";
 
 import { useConvexUser } from "@/hooks/useConvexUser";
 import { useFeedStore } from "@/store/feedStore";

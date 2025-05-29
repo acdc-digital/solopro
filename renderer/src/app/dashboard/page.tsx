@@ -5,7 +5,7 @@
 
 import React, { useEffect } from "react";
 import { useQuery } from "convex/react";
-import { api } from "../../../../convex/_generated/api";
+import { api } from "@/convex/_generated/api";
 import { parseISO, format } from "date-fns";
 import { useRouter } from "next/navigation";
 
@@ -127,11 +127,11 @@ export default function Dashboard() {
       profilePicture: user.image,
     };
 
-    // Type-safe comparison
-    setStoreUser((prev) => {
-      if (shallowEqual(prev, next)) return prev;
-      return next;
-    });
+    // Type-safe comparison - only update if different
+    const prev = useUserStore.getState().user;
+    if (!shallowEqual(prev, next)) {
+      setStoreUser(next);
+    }
   }, [user, setStoreUser]);
 
   /* ───────────────────────────────────────────── */
@@ -224,7 +224,7 @@ export default function Dashboard() {
       const processedTags: Tag[] = [];
       const tagMap = new Map<string, Tag>();
       
-      userTags.forEach(item => {
+      userTags.forEach((item: any) => {
         // Only add each unique tag once
         if (!tagMap.has(item.tagId)) {
           const tag: Tag = {
@@ -351,7 +351,6 @@ export default function Dashboard() {
               <Heatmap
                 year={parseInt(selectedYear)}
                 onSelectDate={handleSelectDate}
-                selectedTags={selectedTags}
               />
             </div>
           </main>
@@ -386,10 +385,10 @@ export default function Dashboard() {
                 </div>
               )
             ) : activeTab === "feed" ? (
-              <div>
-                {console.log("Rendering Feed component", { activeTab, selectedDate })}
-                <Feed onTagsUpdate={(newTags) => setAvailableTags(newTags)} />
-              </div>
+              (() => {
+                console.log("Rendering Feed component", { activeTab, selectedDate });
+                return <Feed onTagsUpdate={(newTags) => setAvailableTags(newTags)} />;
+              })()
             ) : (
               <div className="p-4 text-sm text-zinc-500">No content.</div>
             )}

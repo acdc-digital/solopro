@@ -47,7 +47,7 @@ export function initResize(
   function onMouseUp() {
     // remove event listeners
     document.removeEventListener("mousemove", onMouseMove as any);
-    document.removeEventListener("touchmove", onMouseMove as any, { passive: false });
+    document.removeEventListener("touchmove", onMouseMove as any);
     document.removeEventListener("mouseup", onMouseUp);
     document.removeEventListener("touchend", onMouseUp);
 

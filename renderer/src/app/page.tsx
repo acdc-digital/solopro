@@ -10,7 +10,7 @@ import { useConvexUser } from "@/hooks/useConvexUser";
 import { useAuthActions } from "@convex-dev/auth/react";
 import { useRouter } from "next/navigation";
 import { useQuery } from "convex/react";
-import { api } from "../../../convex/_generated/api";
+import { api } from "@/convex/_generated/api";
 import { Button } from "@/components/ui/button";
 import { SignInModal } from "@/components/SignInModal";
 

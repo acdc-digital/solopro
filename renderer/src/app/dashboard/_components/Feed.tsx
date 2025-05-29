@@ -5,8 +5,8 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation, useAction } from "convex/react";
-import { api } from "../../../../../convex/_generated/api";
-import { Id } from "../../../../../convex/_generated/dataModel";
+import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
 import { useFeedStore } from "@/store/feedStore";
 import { useConvexUser } from "@/hooks/useConvexUser";
 import { formatDistanceToNow } from "date-fns";
@@ -268,7 +268,7 @@ export default function Feed({ onTagsUpdate }: FeedProps) {
     if (fetchFeedComments) {
       console.log("Got comments from backend:", fetchFeedComments);
       // Transform the data to match our Comment type
-      const formattedComments = fetchFeedComments.map((comment, index: number) => ({
+      const formattedComments = fetchFeedComments.map((comment: any, index: number) => ({
         id: `${feedId}_${index}`,
         userId: comment.userId,
         userName: comment.userName,
@@ -423,7 +423,7 @@ export default function Feed({ onTagsUpdate }: FeedProps) {
     if (feedTagsQuery) {
       const tagsByFeedId: Record<string, Tag[]> = {};
       const allTagsList: Tag[] = [];
-      feedTagsQuery.forEach(item => {
+      feedTagsQuery.forEach((item: any) => {
         const feedId = item.feedId;
         if (!tagsByFeedId[feedId]) {
           tagsByFeedId[feedId] = [];
