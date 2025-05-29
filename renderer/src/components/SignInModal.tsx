@@ -95,7 +95,17 @@ export function SignInModal({
         
         <div className="mt-6">
           <button
-            onClick={() => signIn("github", {}).then(handleAuthSuccess)}
+            onClick={async () => {
+              try {
+                console.log("Attempting GitHub sign-in...");
+                await signIn("github", {});
+                console.log("GitHub sign-in successful");
+                handleAuthSuccess();
+              } catch (error) {
+                console.error("GitHub sign-in error:", error);
+                setError(error instanceof Error ? error.message : "Sign-in failed");
+              }
+            }}
             className="w-full flex items-center justify-center py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-full shadow-sm bg-white dark:bg-gray-700 text-gray-700 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-primary transition-colors"
           >
             <svg className="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
@@ -104,6 +114,12 @@ export function SignInModal({
             GitHub
           </button>
         </div>
+        
+        {error && (
+          <div className="mt-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md text-red-800 dark:text-red-300">
+            <p className="text-sm">{error}</p>
+          </div>
+        )}
       </div>
     </div>
   );
