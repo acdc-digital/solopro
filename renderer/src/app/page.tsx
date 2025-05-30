@@ -169,7 +169,7 @@ export default function LandingPage() {
       <>
         <Card className="w-full max-w-md shadow-lg">
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl font-bold">🔥 DEPLOYMENT TEST v2.0 🔥</CardTitle>
+            <CardTitle className="text-2xl font-bold">Welcome</CardTitle>
             <CardDescription>Sign in to access your dashboard</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
