@@ -4,8 +4,8 @@ import React, { useEffect, useState } from 'react';
 import { Download, Monitor, Apple, Package } from 'lucide-react';
 
 // Configuration
-const LATEST_VERSION = "1.4.1";
-const FILE_VERSION = "1.4.0"; // Actual version in the uploaded files
+const LATEST_VERSION = "1.4.2";
+const FILE_VERSION = "1.4.2"; // Now building with correct version
 const GITHUB_REPO = "acdc-digital/solopro"; // Update this with your actual GitHub repo
 
 interface DownloadOption {
