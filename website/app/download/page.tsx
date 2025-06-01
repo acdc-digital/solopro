@@ -27,8 +27,8 @@ const downloads: DownloadOption[] = [
   {
     os: 'macOS',
     icon: <Apple className="w-8 h-8" />,
-    fileName: `Soloist Pro-${LATEST_VERSION}.dmg`,
-    url: `https://github.com/${GITHUB_REPO}/releases/download/v${LATEST_VERSION}/Soloist%20Pro-${LATEST_VERSION}.dmg`,
+    fileName: `Soloist-Pro-${LATEST_VERSION}.dmg`,
+    url: `https://github.com/${GITHUB_REPO}/releases/download/v${LATEST_VERSION}/Soloist-Pro-${LATEST_VERSION}.dmg`,
     description: 'macOS 10.15 or later (Intel & Apple Silicon)',
   },
   {
@@ -53,8 +53,8 @@ const additionalDownloads = [
   },
   {
     os: 'macOS (Apple Silicon)',
-    fileName: `Soloist Pro-${LATEST_VERSION}-arm64.dmg`,
-    url: `https://github.com/${GITHUB_REPO}/releases/download/v${LATEST_VERSION}/Soloist%20Pro-${LATEST_VERSION}-arm64.dmg`,
+    fileName: `Soloist-Pro-${LATEST_VERSION}-arm64.dmg`,
+    url: `https://github.com/${GITHUB_REPO}/releases/download/v${LATEST_VERSION}/Soloist-Pro-${LATEST_VERSION}-arm64.dmg`,
   },
 ];
 
