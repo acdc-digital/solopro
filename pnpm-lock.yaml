@@ -44,11 +44,10 @@ importers:
         version: 1.0.7(tailwindcss@3.4.17)
 
   electron:
-    dependencies:
+    devDependencies:
       electron:
         specifier: ^30.0.0
         version: 30.5.1
-    devDependencies:
       electron-builder:
         specifier: ^24.13.1
         version: 24.13.3(electron-builder-squirrel-windows@24.13.3)
@@ -103,6 +102,9 @@ importers:
       date-fns:
         specifier: ^3.6.0
         version: 3.6.0
+      jwt-decode:
+        specifier: ^4.0.0
+        version: 4.0.0
       lucide-react:
         specifier: ^0.511.0
         version: 0.511.0(react@19.1.0)
