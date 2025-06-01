@@ -15,7 +15,7 @@ export function useAuth() {
   
   // Get the current user from your Convex database
   // Replace with your actual user query if different
-  const user = useQuery(api.users.getMe)
+  const user = useQuery(api.users.viewer)
   
   return {
     isAuthenticated,
