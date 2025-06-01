@@ -86,7 +86,8 @@
           "type": "link",
           "path": "/Applications"
         }
-      ]
+      ],
+      "artifactName": "Soloist.Pro-${version}-${arch}.${ext}"
     },
     "linux": {
       "target": [
