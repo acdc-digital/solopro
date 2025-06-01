@@ -102,6 +102,12 @@ export function Navbar() {
                 Docs
               </button>
             </DocsModal>
+            <Link
+              href="/download"
+              className="text-base font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Download
+            </Link>
           </nav>
 
           {/* Auth buttons */}

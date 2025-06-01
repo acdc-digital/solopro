@@ -1,19 +1,102 @@
 {
-  "name": "soloist_pro-electron",
-  "version": "0.1.0",
-  "description": "Soloist Pro Electron",
+  "name": "soloist-pro",
+  "version": "1.2.0",
+  "description": "Soloist Pro - Professional Music Practice App",
   "main": "index.js",
   "scripts": {
-    "dev": "npx electron@latest .",
-    "build": "electron-builder"
+    "dev": "NODE_ENV=development npx electron@latest .",
+    "build": "electron-builder",
+    "dist": "electron-builder",
+    "pack": "electron-builder --dir",
+    "postinstall": "electron-builder install-app-deps"
   },
-  "keywords": [],
-  "author": "matthew simon",
+  "keywords": ["music", "practice", "soloist"],
+  "author": "Matthew Simon",
   "license": "GPL-3.0-or-later",
-  "dependencies": {
-    "electron": "^30.0.0"
-  },
+  "dependencies": {},
   "devDependencies": {
+    "electron": "^30.0.0",
     "electron-builder": "^24.13.1"
+  },
+  "build": {
+    "appId": "com.soloistpro.app",
+    "productName": "Soloist Pro",
+    "files": [
+      "index.js",
+      "preload.js",
+      "index.html",
+      "node_modules/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "../renderer",
+        "to": "app/renderer",
+        "filter": [
+          "**/*",
+          "!src/**/*",
+          "!.next/cache/**/*",
+          "!node_modules/.cache/**/*",
+          "!**/*.map"
+        ]
+      }
+    ],
+    "directories": {
+      "buildResources": "build",
+      "output": "dist"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64", "ia32"]
+        }
+      ],
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "installerHeaderIcon": "build/icon.ico",
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Soloist Pro"
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": ["x64", "arm64"]
+        }
+      ],
+      "icon": "build/icon.icns",
+      "category": "public.app-category.music"
+    },
+    "dmg": {
+      "contents": [
+        {
+          "x": 130,
+          "y": 220
+        },
+        {
+          "x": 410,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb",
+        "rpm"
+      ],
+      "icon": "build/icon.png",
+      "category": "Audio",
+      "maintainer": "matthew@soloistpro.com"
+    }
   }
 }

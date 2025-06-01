@@ -3,6 +3,63 @@
 const { app, BrowserWindow, net } = require("electron");
 const path = require("path");
 const fs = require("fs");
+const { spawn } = require("child_process");
+
+// Determine if we're in development mode
+const isDev = process.env.NODE_ENV === 'development' || !app.isPackaged;
+
+let nextServer = null;
+let serverPort = 3002; // Default port for the renderer
+
+// Start Next.js server in production
+async function startNextServer() {
+  if (isDev) {
+    // In development, assume the server is already running
+    return;
+  }
+
+  return new Promise((resolve, reject) => {
+    // Path to the renderer directory in the packaged app
+    const rendererPath = path.join(process.resourcesPath, 'app', 'renderer');
+    
+    // Start the Next.js server
+    console.log('Starting Next.js server...');
+    
+    // Use npx to run next start
+    nextServer = spawn('node', [
+      path.join(rendererPath, 'node_modules', '.bin', 'next'),
+      'start',
+      '-p',
+      serverPort.toString()
+    ], {
+      cwd: rendererPath,
+      env: { ...process.env, NODE_ENV: 'production' },
+      stdio: 'pipe'
+    });
+
+    nextServer.stdout.on('data', (data) => {
+      console.log(`Next.js: ${data}`);
+      if (data.toString().includes('started server on')) {
+        console.log('✅ Next.js server started successfully');
+        resolve();
+      }
+    });
+
+    nextServer.stderr.on('data', (data) => {
+      console.error(`Next.js Error: ${data}`);
+    });
+
+    nextServer.on('error', (error) => {
+      console.error('Failed to start Next.js server:', error);
+      reject(error);
+    });
+
+    // Give the server some time to start
+    setTimeout(() => {
+      resolve();
+    }, 5000);
+  });
+}
 
 // Check if the renderer server is running on a specific port
 function isRendererServerRunning(port, callback) {
@@ -22,7 +79,7 @@ function isRendererServerRunning(port, callback) {
   request.end();
 }
 
-function createWindow() {
+async function createWindow() {
   const win = new BrowserWindow({
     width: 1024,
     height: 768,
@@ -34,32 +91,50 @@ function createWindow() {
     },
   });
 
-  // Define ports to try (ordered by priority) - renderer should be on 3002
-  const ports = [3002, 3000, 3001, 3003];
-  
-  // Try each port sequentially
-  function tryNextPort(index) {
-    if (index >= ports.length) {
-      // If all ports failed, load the fallback HTML
-      loadFallbackHTML(win);
-      return;
+  if (isDev) {
+    // Development mode: try to connect to dev server
+    // Define ports to try (ordered by priority) - renderer should be on 3002
+    const ports = [3002, 3000, 3001, 3003];
+    
+    // Try each port sequentially
+    function tryNextPort(index) {
+      if (index >= ports.length) {
+        // If all ports failed, load the fallback HTML
+        loadFallbackHTML(win);
+        return;
+      }
+      
+      const port = ports[index];
+      isRendererServerRunning(port, (isRunning) => {
+        if (isRunning) {
+          // Renderer found at this port
+          win.loadURL(`http://localhost:${port}`);
+          console.log(`✅ Loaded renderer from development server at http://localhost:${port}`);
+        } else {
+          // Try the next port
+          tryNextPort(index + 1);
+        }
+      });
     }
     
-    const port = ports[index];
-    isRendererServerRunning(port, (isRunning) => {
-      if (isRunning) {
-        // Renderer found at this port
-        win.loadURL(`http://localhost:${port}`);
-        console.log(`✅ Loaded renderer from development server at http://localhost:${port}`);
-      } else {
-        // Try the next port
-        tryNextPort(index + 1);
-      }
-    });
+    // Start trying ports
+    tryNextPort(0);
+  } else {
+    // Production mode: start Next.js server and connect to it
+    try {
+      await startNextServer();
+      
+      // Wait a bit for the server to be fully ready
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Load the app from the local server
+      win.loadURL(`http://localhost:${serverPort}`);
+      console.log(`✅ Loaded renderer from Next.js server at http://localhost:${serverPort}`);
+    } catch (error) {
+      console.error('Failed to start Next.js server:', error);
+      loadFallbackHTML(win);
+    }
   }
-  
-  // Start trying ports
-  tryNextPort(0);
 }
 
 function loadFallbackHTML(win) {
@@ -110,6 +185,11 @@ function loadFallbackHTML(win) {
 app.whenReady().then(createWindow);
 
 app.on("window-all-closed", () => {
+  // Stop the Next.js server when closing
+  if (nextServer) {
+    nextServer.kill();
+  }
+  
   if (process.platform !== "darwin") {
     app.quit();
   }

@@ -4,6 +4,7 @@
 'use client'
 
 import React from "react";
+import Link from "next/link";
 import { Download, ChevronRight } from "lucide-react";
 import { HeroFeature } from "./HeroFeature";
 import { DemoModal } from "./(demo)/DemoModal";
@@ -54,10 +55,12 @@ export const Hero = () => {
             </p>
             
             <div className="flex flex-wrap gap-4">
-              <Button variant="emerald" className="h-12 flex items-center gap-2">
-                <Download size={18} aria-hidden="true" />
-                Download App
-              </Button>
+              <Link href="/download">
+                <Button variant="emerald" className="h-12 flex items-center gap-2">
+                  <Download size={18} aria-hidden="true" />
+                  Download App
+                </Button>
+              </Link>
               <DocsModal>
                 <Button 
                   variant="light-emerald" 

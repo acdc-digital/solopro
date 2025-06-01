@@ -11,7 +11,11 @@
     "dev:electron": "pnpm --filter electron dev",
     "convex:dev": "npx convex dev",
     "clean": "pnpm -r clean && rm -rf node_modules",
-    "install:all": "pnpm install"
+    "install:all": "pnpm install",
+    "build:renderer": "pnpm --filter renderer build",
+    "build:electron": "pnpm run build:renderer && pnpm --filter electron dist",
+    "build:app": "pnpm run build:electron",
+    "pack:electron": "pnpm run build:renderer && pnpm --filter electron pack"
   },
   "devDependencies": {
     "tailwindcss-animate": "^1.0.7"
