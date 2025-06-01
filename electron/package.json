@@ -111,7 +111,7 @@
           "arch": ["x64"]
         }
       ],
-      "icon": "build/icon.png",
+      "icon": "build/icons",
       "category": "Audio",
       "maintainer": "matthew@soloistpro.com",
       "artifactName": "${name}-${version}.${ext}"
