@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Download, Monitor, Apple, Package } from 'lucide-react';
 
 // Configuration
-const LATEST_VERSION = "1.3.0";
+const LATEST_VERSION = "1.4.0";
 const GITHUB_REPO = "acdc-digital/solopro"; // Update this with your actual GitHub repo
 
 interface DownloadOption {
@@ -20,27 +20,32 @@ const downloads: DownloadOption[] = [
   {
     os: 'Windows',
     icon: <Monitor className="w-8 h-8" />,
-    fileName: `Soloist-Pro-Setup-${LATEST_VERSION}.exe`,
-    url: `https://github.com/${GITHUB_REPO}/releases/download/v${LATEST_VERSION}/Soloist-Pro-Setup-${LATEST_VERSION}.exe`,
-    description: 'Windows 10 or later (64-bit & 32-bit)',
+    fileName: `Soloist.Pro-Setup-${LATEST_VERSION}.exe`,
+    url: `https://github.com/${GITHUB_REPO}/releases/download/v${LATEST_VERSION}/Soloist.Pro-Setup-${LATEST_VERSION}.exe`,
+    description: 'Windows 10 or later (64-bit)',
   },
   {
     os: 'macOS',
     icon: <Apple className="w-8 h-8" />,
-    fileName: `Soloist.Pro-${LATEST_VERSION}.dmg`,
-    url: `https://github.com/${GITHUB_REPO}/releases/download/v${LATEST_VERSION}/Soloist.Pro-${LATEST_VERSION}.dmg`,
-    description: 'macOS 10.15 or later (Intel & Apple Silicon)',
+    fileName: `Soloist.Pro-${LATEST_VERSION}-x64.dmg`,
+    url: `https://github.com/${GITHUB_REPO}/releases/download/v${LATEST_VERSION}/Soloist.Pro-${LATEST_VERSION}-x64.dmg`,
+    description: 'macOS 10.15 or later (Intel)',
   },
   {
     os: 'Linux',
     icon: <Package className="w-8 h-8" />,
-    fileName: `Soloist-Pro-${LATEST_VERSION}.AppImage`,
-    url: `https://github.com/${GITHUB_REPO}/releases/download/v${LATEST_VERSION}/Soloist-Pro-${LATEST_VERSION}.AppImage`,
+    fileName: `Soloist.Pro-${LATEST_VERSION}.AppImage`,
+    url: `https://github.com/${GITHUB_REPO}/releases/download/v${LATEST_VERSION}/Soloist.Pro-${LATEST_VERSION}.AppImage`,
     description: 'Most Linux distributions (AppImage)',
   },
 ];
 
 const additionalDownloads = [
+  {
+    os: 'macOS (Apple Silicon)',
+    fileName: `Soloist.Pro-${LATEST_VERSION}-arm64.dmg`,
+    url: `https://github.com/${GITHUB_REPO}/releases/download/v${LATEST_VERSION}/Soloist.Pro-${LATEST_VERSION}-arm64.dmg`,
+  },
   {
     os: 'Linux (Debian/Ubuntu)',
     fileName: `soloist-pro_${LATEST_VERSION}_amd64.deb`,
@@ -50,11 +55,6 @@ const additionalDownloads = [
     os: 'Linux (Fedora/RHEL)',
     fileName: `soloist-pro-${LATEST_VERSION}.x86_64.rpm`,
     url: `https://github.com/${GITHUB_REPO}/releases/download/v${LATEST_VERSION}/soloist-pro-${LATEST_VERSION}.x86_64.rpm`,
-  },
-  {
-    os: 'macOS (Apple Silicon)',
-    fileName: `Soloist.Pro-${LATEST_VERSION}-arm64.dmg`,
-    url: `https://github.com/${GITHUB_REPO}/releases/download/v${LATEST_VERSION}/Soloist.Pro-${LATEST_VERSION}-arm64.dmg`,
   },
 ];
 
