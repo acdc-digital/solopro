@@ -57,9 +57,10 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
       - name: List built files
+        shell: bash
         run: |
           echo "Built files for ${{ matrix.platform }}:"
-          ls -la electron/dist/
+          ls -la electron/dist/ || dir electron\dist
           
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
