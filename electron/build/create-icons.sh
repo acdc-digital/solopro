@@ -11,15 +11,16 @@ else
     exit 1
 fi
 
-# For Windows - use the dedicated ICO file
-if [ -f "../../public/solologo_WIN.ico" ]; then
-    echo "Creating icon.ico for Windows..."
-    cp "../../public/solologo_WIN.ico" icon.ico
+# For Windows - use the 256x256 ICO file
+if [ -f "../../public/solologo_256.ico" ]; then
+    echo "Creating icon.ico for Windows (256x256)..."
+    cp "../../public/solologo_256.ico" icon.ico
 else
-    echo "⚠️  No Windows ICO found! Windows build may fail."
+    echo "❌ No Windows 256x256 ICO found! Please add solologo_256.ico to public/"
+    exit 1
 fi
 
-# For general use - create icon.png
+# For Linux - create icon.png
 echo "Creating icon.png for Linux..."
 cp "$PNG_SOURCE" icon.png
 
@@ -36,8 +37,8 @@ echo "      See BUILD.md for instructions using iconutil"
 echo "✅ Icons created successfully!"
 echo ""
 echo "Files created:"
-echo "  - icon.ico (Windows) - proper ICO file"
+echo "  - icon.ico (Windows) - proper 256x256 ICO file"
 echo "  - icon.png (Linux) - 256x256"
-echo "  - icons/256x256.png (Linux) - explicit size for RPM builds"
+echo "  - icons/256x256.png (Linux) - explicit size for builds"
 echo ""
 echo "Note: icon.icns for macOS needs to be created with iconutil" 
