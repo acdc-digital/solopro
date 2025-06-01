@@ -39,3 +39,12 @@ node_modules
 # Next.js build output
 .next/
 .vercel
+
+# Electron build output
+electron/dist/
+electron/out/
+dist/
+
+# OS files
+.DS_Store
+Thumbs.db

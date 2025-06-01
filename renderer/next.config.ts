@@ -9,7 +9,7 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   
-  // Image optimization
+  // Image optimization - keep it enabled for server mode
   images: {
     unoptimized: false, // Enable optimization for web deployment
   },
