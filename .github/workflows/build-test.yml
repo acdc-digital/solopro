@@ -17,13 +17,13 @@ jobs:
         include:
           - os: windows-latest
             platform: Windows
-            build-cmd: pnpm run build -- --win
+            build-cmd: pnpm run build -- --win --publish=never
           - os: macos-latest
             platform: macOS
-            build-cmd: pnpm run build -- --mac
+            build-cmd: pnpm run build -- --mac --publish=never
           - os: ubuntu-latest
             platform: Linux
-            build-cmd: pnpm run build -- --linux
+            build-cmd: pnpm run build -- --linux --publish=never
 
     runs-on: ${{ matrix.os }}
     

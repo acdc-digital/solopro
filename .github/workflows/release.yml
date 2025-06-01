@@ -54,7 +54,7 @@ jobs:
       - name: Build Electron app
         run: |
           cd electron
-          pnpm run build -- --${{ matrix.platform }} --${{ matrix.arch }}
+          pnpm run build -- --${{ matrix.platform }} --${{ matrix.arch }} --publish=never
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
@@ -100,7 +100,7 @@ jobs:
       - name: Build Linux packages
         run: |
           cd electron
-          pnpm run build -- --linux
+          pnpm run build -- --linux --publish=never
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
