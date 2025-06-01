@@ -3,6 +3,10 @@
   "version": "1.4.0",
   "description": "Soloist Pro - Professional Music Practice App",
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/acdc-digital/solopro.git"
+  },
   "scripts": {
     "dev": "NODE_ENV=development npx electron@latest .",
     "build": "electron-builder",
@@ -21,6 +25,7 @@
   "build": {
     "appId": "com.soloistpro.app",
     "productName": "Soloist Pro",
+    "publish": null,
     "files": [
       "index.js",
       "preload.js",
