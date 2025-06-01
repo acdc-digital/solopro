@@ -171,7 +171,8 @@ export function SignInModal({
                 
                 try {
                   console.log("🔴 Attempting GitHub sign-in...");
-                  const result = await signIn("github", {});
+                  // Let Convex Auth handle redirects automatically
+                  const result = await signIn("github");
                   console.log("🔴 GitHub sign-in result:", result);
                   console.log("🔴 GitHub sign-in successful");
                   handleAuthSuccess();

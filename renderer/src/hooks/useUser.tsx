@@ -36,14 +36,13 @@ export function useUser() {
     
     try {
       const result = await upsertUser({ 
-        authId: userId, 
         name, 
         email, 
         image 
       });
       return result;
-    } catch (err) {
-      console.error("Failed to upsert user:", err);
+    } catch (error) {
+      console.error("Error ensuring user document:", error);
       return null;
     }
   }, [userId, upsertUser]);
