@@ -1,8 +1,5 @@
 {
   "framework": "nextjs",
-  "functions": {
-    "app/api/**/*.ts": {
-      "includeFiles": "../convex/**"
-    }
-  }
+  "buildCommand": "npm run build",
+  "installCommand": "npm install"
 } 

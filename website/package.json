@@ -7,6 +7,7 @@
     "dev:frontend": "next dev -p 3004",
     "dev:convex": "convex dev",
     "predev": "echo \"Convex should be started from the repo root, not here.\"",
+    "prebuild": "mkdir -p convex/_generated && cp -r ../convex/_generated/* convex/_generated/ 2>/dev/null || true",
     "build": "next build",
     "start": "next start -p 3004",
     "lint": "next lint"
