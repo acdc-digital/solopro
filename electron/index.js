@@ -8,6 +8,9 @@ const { spawn } = require("child_process");
 // Determine if we're in development mode
 const isDev = process.env.NODE_ENV === 'development' || !app.isPackaged;
 
+// Production renderer URL - UPDATE THIS TO YOUR VERCEL URL
+const PRODUCTION_RENDERER_URL = 'https://app.acdc.digital'; // Your actual renderer URL
+
 let nextServer = null;
 let serverPort = 3002; // Default port for the renderer
 
@@ -120,20 +123,19 @@ async function createWindow() {
     // Start trying ports
     tryNextPort(0);
   } else {
-    // Production mode: start Next.js server and connect to it
-    try {
-      await startNextServer();
-      
-      // Wait a bit for the server to be fully ready
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Load the app from the local server
-      win.loadURL(`http://localhost:${serverPort}`);
-      console.log(`✅ Loaded renderer from Next.js server at http://localhost:${serverPort}`);
-    } catch (error) {
-      console.error('Failed to start Next.js server:', error);
+    // Production mode: load from deployed Vercel URL
+    console.log(`Loading renderer from ${PRODUCTION_RENDERER_URL}`);
+    win.loadURL(PRODUCTION_RENDERER_URL);
+    
+    // Handle loading errors
+    win.webContents.on('did-fail-load', (event, errorCode, errorDescription) => {
+      console.error('Failed to load renderer:', errorDescription);
       loadFallbackHTML(win);
-    }
+    });
+    
+    win.webContents.on('did-finish-load', () => {
+      console.log('✅ Successfully loaded renderer from Vercel');
+    });
   }
 }
 
