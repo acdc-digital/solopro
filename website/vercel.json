@@ -1,5 +1,8 @@
 {
   "framework": "nextjs",
-  "buildCommand": "npm run build",
-  "installCommand": "npm install"
+  "buildCommand": "npm run prebuild && npm run build",
+  "installCommand": "npm install",
+  "env": {
+    "CONVEX_DEPLOY_KEY": ""
+  }
 } 
