@@ -1,3 +1,5 @@
+![ACDC Logo](public/logo-ACDC.svg)
+
 # solopro
 soloist-pro_v2
 
