@@ -105,16 +105,17 @@
         {
           "target": "deb",
           "arch": ["x64"]
-        },
-        {
-          "target": "rpm",
-          "arch": ["x64"]
         }
       ],
       "icon": "build/icons",
       "category": "Audio",
       "maintainer": "matthew@soloistpro.com",
-      "artifactName": "${name}-${version}.${ext}"
+      "artifactName": "${name}-${version}.${ext}",
+      "executableName": "soloist-pro",
+      "desktop": {
+        "Name": "Soloist Pro",
+        "Comment": "Professional Music Practice App"
+      }
     },
     "appImage": {
       "artifactName": "Soloist.Pro-${version}.${ext}"

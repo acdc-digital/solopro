@@ -48,13 +48,8 @@ const additionalDownloads = [
   },
   {
     os: 'Linux (Debian/Ubuntu)',
-    fileName: `soloist-pro_${LATEST_VERSION}_amd64.deb`,
-    url: `https://github.com/${GITHUB_REPO}/releases/download/v${LATEST_VERSION}/soloist-pro_${LATEST_VERSION}_amd64.deb`,
-  },
-  {
-    os: 'Linux (Fedora/RHEL)',
-    fileName: `soloist-pro-${LATEST_VERSION}.x86_64.rpm`,
-    url: `https://github.com/${GITHUB_REPO}/releases/download/v${LATEST_VERSION}/soloist-pro-${LATEST_VERSION}.x86_64.rpm`,
+    fileName: `soloist-pro-${LATEST_VERSION}.deb`,
+    url: `https://github.com/${GITHUB_REPO}/releases/download/v${LATEST_VERSION}/soloist-pro-${LATEST_VERSION}.deb`,
   },
 ];
 
@@ -216,7 +211,7 @@ export default function DownloadPage() {
               </div>
               <div>
                 <h4 className="font-medium text-gray-700 dark:text-gray-300">Linux</h4>
-                <p>Make the AppImage executable (chmod +x) and run it, or install the .deb/.rpm package.</p>
+                <p>Make the AppImage executable (chmod +x) and run it, or install the .deb package for Debian/Ubuntu.</p>
               </div>
             </div>
           </div>
