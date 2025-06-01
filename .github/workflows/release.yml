@@ -1,0 +1,115 @@
+name: Build and Release
+
+on:
+  release:
+    types: [created]
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            platform: win
+            arch: x64
+            ext: .exe
+          - os: macos-latest
+            platform: mac
+            arch: x64
+            ext: .dmg
+          - os: macos-latest
+            platform: mac
+            arch: arm64
+            ext: .dmg
+          - os: ubuntu-latest
+            platform: linux
+            arch: x64
+            ext: .AppImage
+
+    runs-on: ${{ matrix.os }}
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+          
+      - name: Install dependencies
+        run: pnpm install
+        
+      - name: Setup environment variables
+        run: |
+          echo "NEXT_PUBLIC_CONVEX_URL=${{ secrets.NEXT_PUBLIC_CONVEX_URL }}" > renderer/.env.local
+        
+      - name: Build renderer
+        run: pnpm run build:renderer
+        
+      - name: Build Electron app
+        run: |
+          cd electron
+          pnpm run build -- --${{ matrix.platform }} --${{ matrix.arch }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Upload artifacts to release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            electron/dist/*.exe
+            electron/dist/*.dmg
+            electron/dist/*.AppImage
+            electron/dist/*.deb
+            electron/dist/*.rpm
+            electron/dist/*.blockmap
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-linux-packages:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+          
+      - name: Install dependencies
+        run: pnpm install
+        
+      - name: Setup environment variables
+        run: |
+          echo "NEXT_PUBLIC_CONVEX_URL=${{ secrets.NEXT_PUBLIC_CONVEX_URL }}" > renderer/.env.local
+        
+      - name: Build renderer
+        run: pnpm run build:renderer
+        
+      - name: Build Linux packages
+        run: |
+          cd electron
+          pnpm run build -- --linux
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Upload Linux packages to release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            electron/dist/*.deb
+            electron/dist/*.rpm
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 

@@ -1,0 +1,74 @@
+name: Test Build All Platforms
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'electron/**'
+      - 'renderer/**'
+      - '.github/workflows/build-test.yml'
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            platform: Windows
+            build-cmd: pnpm run build -- --win
+          - os: macos-latest
+            platform: macOS
+            build-cmd: pnpm run build -- --mac
+          - os: ubuntu-latest
+            platform: Linux
+            build-cmd: pnpm run build -- --linux
+
+    runs-on: ${{ matrix.os }}
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+          
+      - name: Install dependencies
+        run: pnpm install
+        
+      - name: Setup environment variables
+        run: |
+          echo "NEXT_PUBLIC_CONVEX_URL=${{ secrets.NEXT_PUBLIC_CONVEX_URL || 'https://your-convex-url.convex.cloud' }}" > renderer/.env.local
+        
+      - name: Build renderer
+        run: pnpm run build:renderer
+        
+      - name: Build ${{ matrix.platform }}
+        run: |
+          cd electron
+          ${{ matrix.build-cmd }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: List built files
+        run: |
+          echo "Built files for ${{ matrix.platform }}:"
+          ls -la electron/dist/
+          
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.platform }}-build
+          path: |
+            electron/dist/*.exe
+            electron/dist/*.dmg
+            electron/dist/*.AppImage
+            electron/dist/*.deb
+            electron/dist/*.rpm
+          retention-days: 7 
