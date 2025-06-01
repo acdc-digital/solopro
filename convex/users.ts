@@ -1,5 +1,5 @@
 import { ConvexError, v } from "convex/values";
-import { internalMutation, query, QueryCtx } from "./_generated/server";
+import { internalMutation, query, QueryCtx, mutation } from "./_generated/server";
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { Id } from "./_generated/dataModel";
 
@@ -189,5 +189,62 @@ export const getUserSubscriptionStatus = query({
       subscriptionType: subscription?.status || null,
       subscription: subscription,
     };
+  },
+});
+
+/**
+ * Get user by ID (public function)
+ */
+export const getUser = query({
+  args: {
+    id: v.string(),
+  },
+  handler: async (ctx, args) => {
+    // Get the authenticated user ID first
+    const authUserId = await getAuthUserId(ctx);
+    if (!authUserId) {
+      return null;
+    }
+    
+    // If the requested ID matches the authenticated user, return their data
+    if (args.id === authUserId) {
+      return await getUserById(ctx, authUserId);
+    }
+    
+    // Otherwise, return null (users can only access their own data)
+    return null;
+  },
+});
+
+/**
+ * Upsert user (public function)
+ */
+export const upsertUser = mutation({
+  args: {
+    name: v.optional(v.string()),
+    email: v.optional(v.string()),
+    image: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    // Get the authenticated user ID
+    const authUserId = await getAuthUserId(ctx);
+    if (!authUserId) {
+      throw new ConvexError("Not authenticated");
+    }
+    
+    // Update the authenticated user's profile information
+    const updates = Object.fromEntries(
+      Object.entries({
+        name: args.name,
+        email: args.email,
+        image: args.image,
+      }).filter(([, value]) => value !== undefined)
+    );
+    
+    if (Object.keys(updates).length > 0) {
+      await ctx.db.patch(authUserId, updates);
+    }
+    
+    return authUserId;
   },
 });

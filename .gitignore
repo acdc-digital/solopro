@@ -24,7 +24,17 @@ hs_err_pid*
 replay_pid*
 
 .env.local
+.env.vercel.production
 node_modules
+
+# Environment files that shouldn't be committed
+.env.prod.check
+.env.production.check
+.env.production.latest
+.env.vercel
+.env.production
+*.env.backup
+*.env.local
 
 # Next.js build output
 .next/
