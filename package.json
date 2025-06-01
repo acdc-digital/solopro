@@ -13,9 +13,13 @@
     "clean": "pnpm -r clean && rm -rf node_modules",
     "install:all": "pnpm install",
     "build:renderer": "pnpm --filter renderer build",
+    "build:website": "pnpm --filter website build",
     "build:electron": "pnpm run build:renderer && pnpm --filter electron dist",
     "build:app": "pnpm run build:electron",
-    "pack:electron": "pnpm run build:renderer && pnpm --filter electron pack"
+    "pack:electron": "pnpm run build:renderer && pnpm --filter electron pack",
+    "deploy:website": "cd website && vercel --prod",
+    "deploy:renderer": "cd renderer && vercel --prod",
+    "deploy:all": "pnpm run deploy:website && pnpm run deploy:renderer"
   },
   "devDependencies": {
     "tailwindcss-animate": "^1.0.7"

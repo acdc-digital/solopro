@@ -31,7 +31,7 @@ soloist-pro_v2
 **Github Project:** https://github.com/users/acdc-digital/projects/10   
 Soloist application professional development repository.
 
-### Get Started with Commands
+### Get Started with Development Commands
 #### **Start everything (recommended)**
 pnpm dev
 
@@ -55,3 +55,11 @@ v1.1.0 - Workspace Init is complete - all directories firing with new Authentica
 2. git add .
 3. git commit -m "Updated Feature version to x.x.x"
 4. push origin main
+
+### Get Started with Deployment Commands
+#### **Start everything (recommended)**
+pnpm run deploy:all
+
+#### **Individual services:**
+pnpm run deploy:renderer
+pnpm run deploy:website
