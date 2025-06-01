@@ -13,7 +13,7 @@
     "clean": "pnpm -r clean && rm -rf node_modules",
     "install:all": "pnpm install",
     "build:renderer": "pnpm --filter renderer build",
-    "build:website": "pnpm --filter website build",
+    "build:website": "cd website && pnpm run build",
     "build:electron": "pnpm run build:renderer && pnpm --filter electron dist",
     "build:app": "pnpm run build:electron",
     "pack:electron": "pnpm run build:renderer && pnpm --filter electron pack",
