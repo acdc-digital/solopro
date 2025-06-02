@@ -24,9 +24,14 @@
 [![ShadCN/ui](https://img.shields.io/badge/shadcn--ui-%2327272A.svg?style=flat-round&logoColor=white)](https://ui.shadcn.com/)
 [![Convex DB](https://img.shields.io/badge/Convex_DB-%23450AFF.svg?style=flat-round&logo=convex&logoColor=white)](https://convex.dev/)
 
-# soloist_pro
+# Soloist.
+Soloist can be a lot of things, and thats kind of why it's a dynamic app. At its core, Soloist aims to help identify self-patterns that allows users to make data-enabled decision making about their personal lives. At its heart is the User daily log- a customizable template for each day. When a day is submitted, Soloist will automatically generate a summary of your day. After 4 cumulative days (based on the latest predictive reseasrch), the User can begin to generate a forecast for the following 3 days. The Feed can be edited any time. To alter or enhance each day, the User can also submit notes, media, or tags to include in the Daily Feed - a scrollable reivew of things as they are happening or happened. 
+
+
+**Latest Version:** 1.4.2
+**Lates Release Notes:** https://github.com/acdc-digital/solopro/releases   
+**Github Wiki:** https://github.com/acdc-digital/solopro/wiki   
 **Github Project:** https://github.com/users/acdc-digital/projects/10   
-Soloist application professional development repository.
 
 ### Get Started with Development Commands
 #### **Start everything (recommended)**
