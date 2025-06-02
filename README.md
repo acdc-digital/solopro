@@ -29,7 +29,7 @@ Soloist can be a lot of things, and thats kind of why it's a dynamic app. Behind
 
 Soloist is owned and developped by ACDC.digital. This is a For-Profit Open Source repository and contributions are welcome. This is a wellness platform where we believe in allowing others to contribute, and take from the work.   
 
-Thank you for stopping by. Thsi repo is maintained by: msimon@acdc.digital
+Thank you for stopping by. This repo is maintained by: msimon@acdc.digital
 
 
 **Latest Version:** 1.4.2
