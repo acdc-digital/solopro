@@ -87,6 +87,7 @@ async function createWindow() {
     width: 1024,
     height: 768,
     frame: false, // Remove the title bar
+    icon: path.join(__dirname, "..", "renderer", "src", "app", "favicon.ico"),
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       nodeIntegration: false,
