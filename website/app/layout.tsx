@@ -16,11 +16,6 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "SoloPro - AI-Powered Mood Tracking & Forecasting",
   description: "Track your mood patterns and get AI-powered insights to improve your emotional well-being. Simple, private, and effective mood tracking for everyone.",
-  icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon.ico",
-    apple: "/favicon.ico",
-  },
 };
 
 export default function RootLayout({
