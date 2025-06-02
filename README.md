@@ -25,7 +25,11 @@
 [![Convex DB](https://img.shields.io/badge/Convex_DB-%23450AFF.svg?style=flat-round&logo=convex&logoColor=white)](https://convex.dev/)
 
 # Soloist.
-Soloist can be a lot of things, and thats kind of why it's a dynamic app. At its core, Soloist aims to help identify self-patterns that allows users to make data-enabled decision making about their personal lives. At its heart is the User daily log- a customizable template for each day. When a day is submitted, Soloist will automatically generate a summary of your day. After 4 cumulative days (based on the latest predictive reseasrch), the User can begin to generate a forecast for the following 3 days. The Feed can be edited any time. To alter or enhance each day, the User can also submit notes, media, or tags to include in the Daily Feed - a scrollable reivew of things as they are happening or happened. 
+Soloist can be a lot of things, and thats kind of why it's a dynamic app. Behind its simplicity, at its core Soloist aims to help identify self-patterns which allows users to make data-enabled decisions about their personal life. At its heart is the Daily Log- a customizable template for each day. When a day is submitted, Soloist will automatically generate a summary of your day. After 4 cumulative days (in accordance with the latest predictive reseasrch), the User can begin to generate a forecast for the following 3 days. The Feed can be edited any time. To alter or enhance each day, the user can also submit Notes, Media, or Tags to include in the daily feed - a scrollable waterfall of things as they are happening or happened. In the Playground, you can choose to forecast against any 4-consecutive days in the past and compare against the real-time data to see how accurate it actually is. Gain key insights as to how your behaviour is changing before it happens. Visualize your Daily Score in the 365 Heatmap. And add details to your Profile to allow for Automated generation - you don't even have to fill out the log each day, just enable auto-generation and Soloist will use all of your historical information to 'guess' what kind of day you had on any given day.   
+
+Soloist is owned and developped by ACDC.digital. This is a For-Profit Open Source repository and contributions are welcome. This is a wellness platform where we believe in allowing others to contribute, and take from the work.   
+
+Thank you for stopping by. Thsi repo is maintained by: msimon@acdc.digital
 
 
 **Latest Version:** 1.4.2
