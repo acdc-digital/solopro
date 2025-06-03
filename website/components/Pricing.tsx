@@ -185,7 +185,7 @@ export default function Pricing() {
   };
 
   return (
-    <section id="pricing" className="py-8 md:py-8">
+    <section id="pricing" className="py-12 md:py-18">
       <div className="container mx-auto px-4 md:px-6">
         {showInstructions && <StripeSetupInstructions />}
         <div className="mx-auto flex max-w-[58rem] flex-col items-center space-y-4 text-center">

@@ -27,7 +27,7 @@ export function Features() {
 
         {/* Feature 1 - Interactive Heatmap Demo */}
         <div className="mb-12 md:mb-12">
-          <div className="bg-zinc-50 rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
             <div className="grid md:grid-cols-2 gap-0">
               <div className="p-8 md:p-12 flex flex-col justify-center">
                 <div className="inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700 mb-4 w-fit">
@@ -68,7 +68,7 @@ export function Features() {
         <div className="grid md:grid-cols-2 gap-8 md:gap-12">
           {/* Feature 2 */}
           <div>
-            <div className="bg-zinc-50 rounded-xl shadow-sm border border-gray-100 p-6 md:p-8 h-full flex flex-col">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 md:p-8 h-full flex flex-col">
               <div className="inline-flex items-center gap-2 rounded-full bg-purple-50 px-3 py-1 text-xs font-medium text-purple-700 mb-4 w-fit">
                 <TrendingUp className="h-3 w-3" />
                 Weekly Playground
@@ -88,8 +88,8 @@ export function Features() {
 
           {/* Feature 3 */}
           <div>
-            <div className="bg-zinc-50 rounded-xl shadow-sm border border-gray-100 p-6 md:p-8 h-full flex flex-col">
-              <div className="inline-flex items-center gap-2 rounded-full bg-orange-50 px-3 py-1 text-xs font-medium text-orange-700 mb-4 w-fit">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 md:p-8 h-full flex flex-col">
+              <div className="inline-flex items-center gap-2 rounded-full bg-orange-50 px-3 py-1 text-xs font-medium text-orange-700 w-fit">
                 <Sparkles className="h-3 w-3" />
                 Live Dashboards
               </div>
