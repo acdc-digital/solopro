@@ -15,31 +15,83 @@
 </table>
 
 ## Our Architecture
-[![React](https://img.shields.io/badge/React-%2320232A.svg?style=flat-round&logo=react&logoColor=%2361DAFB)](https://reactjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-%233178C6.svg?style=flat-round&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Next.js](https://img.shields.io/badge/Next.js-%23000000.svg?style=flat-round&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-%2306B6D4.svg?style=flat-round&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
-[![OpenAI](https://img.shields.io/badge/OpenAI-%23000000.svg?style=flat-round&logo=OpenAI&logoColor=white)](https://www.openai.com/)
-[![Vercel](https://img.shields.io/badge/Vercel-%23000000.svg?style=flat-round&logo=Vercel&logoColor=white)](https://vercel.com/)
-[![ShadCN/ui](https://img.shields.io/badge/shadcn--ui-%2327272A.svg?style=flat-round&logoColor=white)](https://ui.shadcn.com/)
+
+[![React](https://img.shields.io/badge/React-%2320232A.svg?style=flat-round&logo=react&logoColor=%2361DAFB)](https://reactjs.org/)  
+[![TypeScript](https://img.shields.io/badge/TypeScript-%233178C6.svg?style=flat-round&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)  
+[![Next.js](https://img.shields.io/badge/Next.js-%23000000.svg?style=flat-round&logo=nextdotjs&logoColor=white)](https://nextjs.org/)  
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-%2306B6D4.svg?style=flat-round&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)  
+[![OpenAI](https://img.shields.io/badge/OpenAI-%23000000.svg?style=flat-round&logo=OpenAI&logoColor=white)](https://www.openai.com/)  
+[![Vercel](https://img.shields.io/badge/Vercel-%23000000.svg?style=flat-round&logo=Vercel&logoColor=white)](https://vercel.com/)  
+[![ShadCN/ui](https://img.shields.io/badge/shadcn--ui-%2327272A.svg?style=flat-round&logoColor=white)](https://ui.shadcn.com/)  
 [![Convex DB](https://img.shields.io/badge/Convex_DB-%23450AFF.svg?style=flat-round&logo=convex&logoColor=white)](https://convex.dev/)
 
-# Soloist.
-Soloist can be a lot of things, and thats kind of why it's a dynamic app. Behind its simplicity, at its core Soloist aims to help identify self-patterns which allows users to make data-enabled decisions about their personal life. At its heart is the Daily Log- a customizable template for each day. When a day is submitted, Soloist will automatically generate a summary of your day. After 4 cumulative days (in accordance with the latest predictive reseasrch), the User can begin to generate a forecast for the following 3 days. The Feed can be edited any time. To alter or enhance each day, the user can also submit Notes, Media, or Tags to include in the daily feed - a scrollable waterfall of things as they are happening or happened. In the Playground, you can choose to forecast against any 4-consecutive days in the past and compare against the real-time data to see how accurate it actually is. Gain key insights as to how your behaviour is changing before it happens. Visualize your Daily Score in the 365 Heatmap. And add details to your Profile to allow for Automated generation - you don't even have to fill out the log each day, just enable auto-generation and Soloist will use all of your historical information to 'guess' what kind of day you had on any given day.   
+---
 
-Soloist is owned and developped by ACDC.digital. This is a For-Profit Open Source repository and contributions are welcome. This is a wellness platform where we believe in allowing others to contribute, and take from the work.   
+# Soloist
 
-Thank you for stopping by.   
-This repo is maintained by: msimon@acdc.digital
+**Soloist is your data-driven wellbeing companion**—a simple interface that helps you identify personal patterns and make data-enabled decisions about your life.
 
+At its core, Soloist’s primary goal is to uncover self-patterns through daily inputs, then turn those signals into actionable insights.
 
-**Latest Version:** 1.4.2   
-**Lates Release Notes:** https://github.com/acdc-digital/solopro/releases   
-**Github Wiki:** https://github.com/acdc-digital/solopro/wiki   
-**Github Project:** https://github.com/users/acdc-digital/projects/10   
+### Core Features
 
-### Get Started with Development Commands
-#### **Start everything (recommended)**
+1. **Daily Log**  
+   - Fill out a fully customizable template for each day.  
+   - Upon submission, Soloist automatically generates a concise summary of your day.
+
+2. **3-Day Forecast (After 4 Logs)**  
+   - Once you’ve entered **four** cumulative Daily Logs, Soloist unlocks the ability to forecast your next three days.  
+   - Forecasts leverage the latest research, showing that four days of history produce the most meaningful short-term predictions.
+
+3. **Feed**  
+   - Your Feed is a chronological, scrollable “waterfall” of daily summaries.  
+   - Edit at any time—add **Notes**, **Media**, or **Tags** to enrich the narrative of each day.
+
+4. **Playground**  
+   - Run “what-if” experiments on any four consecutive past days.  
+   - Compare Soloist’s predictions against real-time data to evaluate accuracy.  
+   - Gain early insights into how your behavior may shift before it shows up in your Daily Score.
+
+5. **365 Heatmap**  
+   - Visualize your Daily Scores on a year-long Heatmap.  
+   - Color-coded cells instantly reveal trends—peaks and valleys—so you can spot patterns at a glance.
+
+6. **Auto-Generation**  
+   - Enable “Auto-Generation” in your Profile settings.  
+   - Soloist will use all your historical data to **guess** what kind of day you had on any given date, even if you miss logging manually.  
+   - You can always override or edit these auto-generated entries.
+
+---
+
+## Open Source & For-Profit
+
+Soloist is owned and developed by ACDC.digital. This is a **for-profit, open-source** repository; contributions are welcome.
+
+We believe in community-driven wellness—everyone is free to view, fork, and improve the code. 
+
+---
+
+## Repository Information
+
+- **Maintained by:** msimon@acdc.digital  
+- **Latest Version:** v1.4.2  
+- **Latest Release Notes:** [v1.4.2 Release](https://github.com/acdc-digital/solopro/releases)  
+- **GitHub Wiki:** [Soloist Wiki](https://github.com/acdc-digital/solopro/wiki)  
+- **GitHub Project Board:** [Project Board](https://github.com/users/acdc-digital/projects/10)  
+
+---
+
+## Quick Start
+
+```bash
+# Clone the repo
+git clone https://github.com/acdc-digital/solopro.git
+cd solopro
+
+# Install dependencies
+pnpm install
+
+# Start everything (recommended)
 pnpm dev
 
 #### **Individual services:**
