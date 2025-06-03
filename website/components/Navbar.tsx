@@ -10,6 +10,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { useState, useCallback } from "react";
 import { SignInModal } from "../modals/SignInModal";
 import { DocsModal } from "./Docs";
+import { DownloadModal } from "./DownloadModal";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
 
@@ -97,17 +98,22 @@ export function Navbar() {
             >
               FAQ
             </Link>
+            <Link
+              href="#roadmap"
+              className="text-base font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Roadmap
+            </Link>
             <DocsModal>
               <button className="text-base font-medium text-muted-foreground hover:text-foreground transition-colors">
                 Docs
               </button>
             </DocsModal>
-            <Link
-              href="/download"
-              className="text-base font-medium text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Download
-            </Link>
+            {/* <DownloadModal>
+              <button className="text-base font-medium text-muted-foreground hover:text-foreground transition-colors">
+                Download
+              </button>
+            </DownloadModal> */}
           </nav>
 
           {/* Auth buttons */}
@@ -122,17 +128,15 @@ export function Navbar() {
               </button>
             ) : isAuthenticated ? (
               <>
-                {/* Dashboard button temporarily disabled
-                <Link 
-                  href="/dashboard" 
-                  className="inline-flex items-center justify-center rounded-md bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground hover:bg-secondary/80 transition-colors"
+                <a 
+                  href="http://localhost:3002" 
+                  className="inline-flex items-center justify-center rounded-full bg-blue-600 border border-blue-600 px-5 py-2.5 text-base font-bold text-white hover:bg-blue-700 hover:border-blue-700 transition-all duration-200"
                 >
-                  Dashboard
-                </Link>
-                */}
+                  Soloist.
+                </a>
                 <button
                   onClick={handleSignOut}
-                  className="inline-flex items-center justify-center rounded-md border border-input bg-background px-5 py-2.5 text-base font-medium text-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
+                  className="inline-flex items-center justify-center rounded-3xl border border-input bg-background px-5 py-2.5 text-base font-medium text-foreground hover:bg-accent hover:text-accent-foreground hover:border-foreground transition-all duration-200"
                 >
                   Sign out
                 </button>
@@ -141,13 +145,13 @@ export function Navbar() {
               <>
                 <button
                   onClick={handleOpenSignIn}
-                  className="inline-flex items-center justify-center rounded-md border border-input bg-background px-5 py-2.5 text-base font-medium text-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
+                  className="inline-flex items-center justify-center rounded-3xl border border-input bg-background px-7 py-2.5 text-base font-medium text-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
                 >
                   Login
                 </button>
                 <button
                   onClick={handleOpenSignUp}
-                  className="inline-flex items-center justify-center rounded-md bg-primary px-5 py-2.5 text-base font-medium text-primary-foreground hover:opacity-80 transition-opacity shadow-sm"
+                  className="inline-flex items-center justify-center rounded-3xl bg-primary px-5 py-2.5 text-base font-medium text-primary-foreground hover:opacity-80 transition-opacity shadow-sm"
                 >
                   Sign up
                 </button>

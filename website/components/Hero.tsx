@@ -6,31 +6,39 @@
 import React from "react";
 import Link from "next/link";
 import { Download, ChevronRight } from "lucide-react";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { useConvexUser } from "@/lib/hooks/useConvexUser";
 import { HeroFeature } from "./HeroFeature";
 import { DemoModal } from "./(demo)/DemoModal";
 import { DocsModal } from "./Docs";
+import { DownloadModal } from "./DownloadModal";
 
 type ButtonProps = {
   children: React.ReactNode;
   className?: string;
   variant?: 'default' | 'outline' | 'emerald' | 'light-emerald';
   onClick?: () => void;
+  disabled?: boolean;
 }
 
 // Button component with styling
-const Button = ({ children, className, variant = "default", onClick }: ButtonProps) => {
+const Button = ({ children, className, variant = "default", onClick, disabled = false }: ButtonProps) => {
   const baseStyles = "font-medium rounded-full transition-colors px-4 py-2";
   const variantStyles = {
     default: "bg-primary text-primary-foreground hover:bg-primary/90",
     outline: "border border-gray-200 hover:bg-gray-50",
-    emerald: "bg-emerald-700 text-white hover:bg-emerald-600",
+    emerald: disabled
+      ? "bg-emerald-400 text-emerald-800"
+      : "bg-emerald-700 text-white hover:bg-emerald-600",
     "light-emerald": "bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100"
   };
-  
+
   return (
-    <button 
+    <button
       className={`${baseStyles} ${variantStyles[variant]} ${className || ""}`}
-      onClick={onClick}
+      onClick={disabled ? undefined : onClick}
+      disabled={disabled}
     >
       {children}
     </button>
@@ -38,6 +46,16 @@ const Button = ({ children, className, variant = "default", onClick }: ButtonPro
 };
 
 export const Hero = () => {
+  // Authentication and subscription state
+  const { isAuthenticated, isLoading: authLoading, userId } = useConvexUser();
+  const hasActiveSubscription = useQuery(
+    api.userSubscriptions.hasActiveSubscription,
+    isAuthenticated && userId ? {} : "skip"
+  );
+
+  // Determine if downloads should be enabled
+  const downloadsEnabled = isAuthenticated && hasActiveSubscription === true;
+
   return (
     <section className="py-12 md:py-8 container mx-auto px-4">
       <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
@@ -55,12 +73,12 @@ export const Hero = () => {
             </p>
             
             <div className="flex flex-wrap gap-4">
-              <Link href="/download">
-                <Button variant="emerald" className="h-12 flex items-center gap-2">
+              <DownloadModal>
+                <Button variant="emerald" className="h-12 flex items-center gap-2" disabled={!downloadsEnabled}>
                   <Download size={18} aria-hidden="true" />
                   Download App
                 </Button>
-              </Link>
+              </DownloadModal>
               <DocsModal>
                 <Button 
                   variant="light-emerald" 

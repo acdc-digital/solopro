@@ -52,7 +52,7 @@ const categories = [
 
 export function FAQ() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [activeCategory, setActiveCategory] = useState("all");
+  const [activeCategory, setActiveCategory] = useState("getting-started");
 
   // Enhanced FAQ data with shadcn styling
   const faqData = [
@@ -230,7 +230,7 @@ export function FAQ() {
   // Filter FAQs based on search and category
   const filteredFAQs = faqData.filter(faq => {
     const matchesSearch = faq.question.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = activeCategory === "all" || faq.category === activeCategory;
+    const matchesCategory = faq.category === activeCategory;
     return matchesSearch && matchesCategory;
   });
 
@@ -239,7 +239,7 @@ export function FAQ() {
   const regularFAQs = filteredFAQs.filter(faq => !faq.featured);
 
   return (
-    <section id="faq" className="py-12 md:py-24">
+    <section id="faq" className="py-10 md:py-18 mt-4">
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-12">
@@ -271,16 +271,6 @@ export function FAQ() {
 
         {/* Category Filter */}
         <div className="flex flex-wrap justify-center gap-3 mb-12">
-          <button
-            onClick={() => setActiveCategory("all")}
-            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-              activeCategory === "all"
-                ? "bg-primary text-primary-foreground"
-                : "bg-card text-card-foreground border border-border hover:bg-accent hover:text-accent-foreground"
-            }`}
-          >
-            All Questions
-          </button>
           {categories.map((category) => {
             const Icon = category.icon;
             return (
@@ -341,40 +331,18 @@ export function FAQ() {
             <div className="text-center py-12">
               <MessageCircle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
               <h3 className="text-lg font-medium text-card-foreground mb-2">No questions found</h3>
-              <p className="text-muted-foreground mb-6">Try adjusting your search or browse by category.</p>
+              <p className="text-muted-foreground mb-6">Try browsing a different category.</p>
               <button
                 onClick={() => {
                   setSearchTerm("");
-                  setActiveCategory("all");
+                  setActiveCategory("getting-started");
                 }}
                 className="text-primary font-medium hover:text-primary/80 transition-colors"
               >
-                Show all questions →
+                Back to Getting Started →
               </button>
             </div>
           )}
-        </div>
-
-        {/* Contact CTA */}
-        <div className="max-w-2xl mx-auto mt-16 text-center">
-          <div className="bg-card rounded-lg p-8 border border-border shadow-sm">
-            <h3 className="text-xl font-bold text-card-foreground mb-2">
-              Still have questions?
-            </h3>
-            <p className="text-muted-foreground mb-6">
-              Can't find what you're looking for? Our team is here to help you get started.
-            </p>
-            <div className="flex flex-wrap justify-center gap-3">
-              <button className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-md font-medium hover:bg-primary/90 transition-colors">
-                <MessageCircle className="h-4 w-4" />
-                Contact Support
-              </button>
-              <button className="inline-flex items-center gap-2 bg-card text-card-foreground px-6 py-3 rounded-md font-medium border border-border hover:bg-accent hover:text-accent-foreground transition-colors">
-                Join Community
-                <ChevronRight className="h-4 w-4" />
-              </button>
-            </div>
-          </div>
         </div>
       </div>
     </section>
