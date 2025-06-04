@@ -103,7 +103,7 @@ export function BrowserNavbar() {
         {/* Logo/Brand */}
         <div className="flex items-center gap-3">
           <button 
-            onClick={() => window.open("http://localhost:3004", "_blank")}
+            onClick={() => window.location.href = "http://localhost:3004"}
             className="flex items-center gap-3 hover:opacity-80 transition-opacity"
           >
             <Image
