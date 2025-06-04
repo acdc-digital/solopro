@@ -259,10 +259,14 @@ export default function LandingPage() {
             {/* Status message below buttons */}
             {!authLoading && !downloadsEnabled && (
               <div className="flex justify-left mt-4">
-                <p className="text-sm text-gray-500">
-                  {showSubscriptionMessage && "Active subscription required to download"}
-                  {authLoading && "Checking access..."}
-                </p>
+                {showSubscriptionMessage && (
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-red-50 border border-red-100 text-red-500 text-xs font-normal">
+                    Active subscription required to download
+                  </span>
+                )}
+                {authLoading && (
+                  <p className="text-sm text-gray-500">Checking access...</p>
+                )}
               </div>
             )}
           </div>
