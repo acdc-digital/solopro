@@ -83,29 +83,36 @@ export function Navbar() {
             <Link
               href="#features"
               className="text-base font-medium text-muted-foreground hover:text-foreground transition-colors"
+              style={{ fontFamily: '"Nunito", "Quicksand", "Comfortaa", system-ui, sans-serif' }}
             >
               Features
             </Link>
             <Link
               href="#pricing"
               className="text-base font-medium text-muted-foreground hover:text-foreground transition-colors"
+              style={{ fontFamily: '"Nunito", "Quicksand", "Comfortaa", system-ui, sans-serif' }}
             >
               Pricing
             </Link>
             <Link
               href="#faq"
               className="text-base font-medium text-muted-foreground hover:text-foreground transition-colors"
+              style={{ fontFamily: '"Nunito", "Quicksand", "Comfortaa", system-ui, sans-serif' }}
             >
               FAQ
             </Link>
             <Link
               href="#roadmap"
               className="text-base font-medium text-muted-foreground hover:text-foreground transition-colors"
+              style={{ fontFamily: '"Nunito", "Quicksand", "Comfortaa", system-ui, sans-serif' }}
             >
               Roadmap
             </Link>
             <DocsModal>
-              <button className="text-base font-medium text-muted-foreground hover:text-foreground transition-colors">
+              <button 
+                className="text-base font-medium text-muted-foreground hover:text-foreground transition-colors"
+                style={{ fontFamily: '"Nunito", "Quicksand", "Comfortaa", system-ui, sans-serif' }}
+              >
                 Docs
               </button>
             </DocsModal>

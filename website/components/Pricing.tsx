@@ -40,46 +40,46 @@ export default function Pricing() {
   const tiers: PricingTier[] = [
     {
       name: "Free",
-      description: "Perfect for getting started",
+      description: "Limited browser-only experience",
       price: "$0",
       features: [
-        "Basic task management",
-        "Up to 5 projects",
-        "1GB storage",
-        "Community support",
+        "Browser-only access",
+        "Basic mood tracking",
+        "7-day data history",
+        "Limited insights",
       ],
-      cta: "Try Demo",
+      cta: "Try Browser App",
       productId: "prod_SM2rv1Y1tRAaKo",
     },
     {
       name: "Pro",
-      description: "For individuals and teams",
+      description: "Full experience with 14-day free trial",
       price: "$12",
       features: [
-        "Advanced task management",
-        "Unlimited projects",
-        "10GB storage",
+        "Desktop & mobile apps",
+        "Unlimited mood tracking", 
+        "AI-powered insights",
+        "Mood forecasting",
+        "Data export & backup",
         "Priority support",
-        "Custom fields",
-        "Advanced analytics",
       ],
-      cta: "Get Started",
+      cta: "Start Free Trial",
       highlighted: true,
       productId: "prod_SM2sXHSNLlJMj5",
       priceId: "price_1RRKmcD6Nyv2PKYjyVj96QH8",
-      paymentMode: "payment",
+      paymentMode: "subscription",
     },
     {
       name: "Coming Soon",
       description: "Advanced features in development",
       price: "2026",
       features: [
-        "AI-powered insights",
         "Team collaboration",
         "Advanced data visualization",
-        "Mobile app access",
         "Custom integrations",
         "White-label options",
+        "Enterprise features",
+        "API access",
       ],
       cta: "Stay Updated",
       productId: "prod_SM2stqz0a2vhGb",
@@ -197,8 +197,7 @@ export default function Pricing() {
             Simple, Transparent Pricing
           </h2>
           <p className="max-w-[85%] text-muted-foreground md:text-xl">
-            Choose the plan that fits your needs. All plans include a 14-day
-            free trial.
+            Start with our free browser app or try Pro with a 14-day free trial. Cancel anytime.
           </p>
         </div>
         <div className="mx-auto mt-16 grid max-w-5xl gap-6 md:grid-cols-2 lg:grid-cols-3 lg:items-center">
@@ -232,25 +231,41 @@ export default function Pricing() {
                   >
                     {tier.name}
                   </h3>
-                  <p className="text-sm text-muted-foreground">
-                    {tier.description}
-                  </p>
-                </div>
-                <div className="mb-6">
-                  <span
-                    className={`font-bold ${tier.highlighted ? "text-4xl" : "text-3xl"}`}
-                  >
-                    {tier.price}
-                  </span>
-                  {tier.name !== "Coming Soon" && tier.price !== "Custom" && (
-                    <span className="ml-1 text-muted-foreground">/month</span>
+                  {tier.name === "Pro" ? (
+                    <div className="inline-flex items-center px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs border border-emerald-600 font-medium">
+                      Full experience with 14-day Free trial
+                    </div>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">
+                      {tier.description}
+                    </p>
                   )}
                 </div>
-                <ul className="mb-6 space-y-2 text-sm">
+                <div className="mb-6">
+                  {tier.name === "Pro" && (
+                    <div className="mb-2">
+                      <span className="text-3xl font-semibold text-emerald-600 decoration-2">$12</span>
+                      <div className="text-sm text-muted-foreground">Free for 14 days, then $12/month</div>
+                    </div>
+                  )}
+                  {tier.name !== "Pro" && (
+                    <>
+                      <span
+                        className={`font-bold ${tier.highlighted ? "text-4xl" : "text-3xl"}`}
+                      >
+                        {tier.price}
+                      </span>
+                      {tier.name !== "Coming Soon" && tier.price !== "Custom" && (
+                        <span className="ml-1 text-muted-foreground">/month</span>
+                      )}
+                    </>
+                  )}
+                </div>
+                <ul className="mb-6 space-y-2 text-xs">
                   {tier.features.map((feature) => (
                     <li key={feature} className="flex items-center">
                       <Check
-                        className={`mr-2 ${tier.highlighted ? "h-5 w-5" : "h-4 w-4"} ${tier.highlighted ? "text-emerald-700" : "text-primary"}`}
+                        className={`mr-2 ${tier.highlighted ? "h-4 w-4" : "h-3 w-3"} ${tier.highlighted ? "text-emerald-700" : "text-primary"}`}
                       />
                       <span>{feature}</span>
                     </li>

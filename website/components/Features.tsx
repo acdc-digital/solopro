@@ -89,18 +89,18 @@ export function Features() {
           {/* Feature 3 */}
           <div>
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 md:p-8 h-full flex flex-col">
-              <div className="inline-flex items-center gap-2 rounded-full bg-orange-50 px-3 py-1 text-xs font-medium text-orange-700 w-fit">
+              <div className="inline-flex items-center gap-2 rounded-full bg-orange-50 px-3 py-1 text-xs font-medium text-orange-700 mb-4 w-fit">
                 <Sparkles className="h-3 w-3" />
                 Live Dashboards
               </div>
               <h3 className="text-xl md:text-2xl font-bold mb-3">
                 See the Patterns, Shape the Progress
               </h3>
-              <p className="text-gray-600 mb-6 flex-grow leading-relaxed">
+              <p className="text-gray-600 mb-0 flex-grow leading-relaxed">
                 Pinpoint why today felt different, watch real-time charts reveal
                 emerging trends, and tag meaningful moments before they fade.
               </p>
-              <div className="mb-4 flex items-center justify-center">
+              <div className="mb-10 flex items-center justify-center">
                 <SplitScreen />
               </div>
             </div>

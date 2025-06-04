@@ -103,7 +103,7 @@ export function HeroFeature() {
 
               {/* Action Button */}
               <div className="mt-8">
-                <button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3 px-6 rounded-md transition-colors">
+                <button className="w-full bg-primary text-primary-foreground font-semibold py-3 px-6 rounded-md transition-colors">
                   Soloist.
                 </button>
               </div>

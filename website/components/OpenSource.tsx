@@ -30,7 +30,7 @@ export function OpenSource() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8 w-full max-w-4xl">
             <div className="bg-card rounded-lg border border-border p-4 shadow-sm hover:shadow-md transition-shadow">
               <div className="flex flex-col items-center text-center space-y-3">
-                <div className="rounded-full bg-primary p-3 text-primary-foreground">
+                <div className="rounded-full bg-white border border-black p-3 text-black">
                   <FileText className="h-5 w-5" />
                 </div>
                 <div>
@@ -42,7 +42,7 @@ export function OpenSource() {
 
             <div className="bg-card rounded-lg border border-border p-4 shadow-sm hover:shadow-md transition-shadow">
               <div className="flex flex-col items-center text-center space-y-3">
-                <div className="rounded-full bg-primary p-3 text-primary-foreground">
+                <div className="rounded-full bg-white border border-black p-3 text-black">
                   <Users className="h-5 w-5" />
                 </div>
                 <div>
@@ -54,7 +54,7 @@ export function OpenSource() {
 
             <div className="bg-card rounded-lg border border-border p-4 shadow-sm hover:shadow-md transition-shadow">
               <div className="flex flex-col items-center text-center space-y-3">
-                <div className="rounded-full bg-primary p-3 text-primary-foreground">
+                <div className="rounded-full bg-white border border-black p-3 text-black">
                   <Lock className="h-5 w-5" />
                 </div>
                 <div>
@@ -66,7 +66,7 @@ export function OpenSource() {
 
             <div className="bg-card rounded-lg border border-border p-4 shadow-sm hover:shadow-md transition-shadow">
               <div className="flex flex-col items-center text-center space-y-3">
-                <div className="rounded-full bg-primary p-3 text-primary-foreground">
+                <div className="rounded-full bg-white border border-black p-3 text-black">
                   <FileSpreadsheet className="h-5 w-5" />
                 </div>
                 <div>
