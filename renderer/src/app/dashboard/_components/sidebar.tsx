@@ -30,6 +30,7 @@ import { useFeedStore } from "@/store/feedStore";
 import { useConvexUser } from "@/hooks/useConvexUser";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { useBrowserEnvironment } from "@/utils/environment";
 // Import SignOut component
 import { SignOutWithGitHub } from "@/auth/oauth/SignOutWithGitHub";
 
@@ -38,14 +39,32 @@ interface SidebarProps {
 }
 
 export function Sidebar({ className }: SidebarProps) {
-  // Get authenticated user following authentication rules
+  const isBrowser = useBrowserEnvironment();
+  
+  // Get authenticated user following authentication rules (skip for browser mode)
   const { isAuthenticated, isLoading: authLoading, userId } = useConvexUser();
   
-  // Get user details from Convex when authenticated
+  // Get user details from Convex when authenticated (skip for browser mode)
   const user = useQuery(
     api.users.viewer,
-    isAuthenticated && userId ? {} : "skip"
+    isBrowser === false && isAuthenticated && userId ? {} : "skip"
   );
+  
+  // Check subscription status (skip for browser mode)
+  const hasActiveSubscription = useQuery(
+    api.userSubscriptions.hasActiveSubscription,
+    isBrowser === false && isAuthenticated && userId ? {} : "skip"
+  );
+  
+  // For browser mode, provide default user data
+  const effectiveUser = isBrowser === true ? {
+    name: "Web User",
+    email: "web@soloist.app",
+    image: null
+  } : user;
+  
+  // For browser mode, assume no subscription (limited access)
+  const effectiveSubscription = isBrowser === true ? false : hasActiveSubscription;
   
   // State for accordion
   const [accountMenuOpen, setAccountMenuOpen] = React.useState(false);
@@ -153,7 +172,8 @@ export function Sidebar({ className }: SidebarProps) {
   // Items that show only if expanded
   const mainActions = [
     { id: "soloist",  label: "Soloist",        icon: PersonStanding,  action: handleSoloist, active: currentView === "soloist" },
-    { id: "testing",  label: "Playground",     icon: Activity,        action: handleTesting, active: currentView === "testing" },
+    // Only show playground if user has active subscription
+    ...(effectiveSubscription ? [{ id: "testing",  label: "Playground",     icon: Activity,        action: handleTesting, active: currentView === "testing" }] : []),
     { id: "calendar", label: "Calendar",       icon: Calendar,        action: handleCalendar, active: currentView === "dashboard" },
     { id: "new-log",  label: "Create New Log", icon: Plus,            action: handleCreateNewLog, active: false },
     { id: "settings", label: "Settings",       icon: Settings,        action: handleGoToSettings },
@@ -162,11 +182,11 @@ export function Sidebar({ className }: SidebarProps) {
   
   // Get user initials for avatar fallback
   const userInitials = React.useMemo(() => {
-    if (!user?.name) return "U";
-    const names = user.name.split(' ');
+    if (!effectiveUser?.name) return "U";
+    const names = effectiveUser.name.split(' ');
     if (names.length === 1) return names[0].substring(0, 1).toUpperCase();
     return (names[0][0] + names[names.length - 1][0]).toUpperCase();
-  }, [user?.name]);
+  }, [effectiveUser?.name]);
   
   return (
     <div className={cn("relative h-screen", className)}>
@@ -214,6 +234,22 @@ export function Sidebar({ className }: SidebarProps) {
                 </div>
               </div>
               <Separator className="bg-zinc-300/40 dark:bg-zinc-700/40" />
+              
+              {/* SUBSCRIPTION STATUS (for non-subscribers) */}
+              {effectiveSubscription === false && (
+                <>
+                  <div className="px-3 py-2 mx-2 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-md">
+                    <p className="text-xs font-medium text-amber-800 dark:text-amber-200 mb-1">
+                      Limited Access
+                    </p>
+                    <p className="text-xs text-amber-700 dark:text-amber-300">
+                      Subscribe for full features
+                    </p>
+                  </div>
+                  <Separator className="bg-zinc-300/40 dark:bg-zinc-700/40" />
+                </>
+              )}
+              
               {/* ACTIONS */}
               <div>
                 <p className="px-2 pl-3 p-2 mb-0 text-[10px] font-medium uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
@@ -257,8 +293,8 @@ export function Sidebar({ className }: SidebarProps) {
                   <div className="flex items-center">
                     <Avatar className="h-7 w-7 flex-shrink-0 ring-1 ring-offset-1 ring-offset-zinc-50/60 dark:ring-offset-zinc-950/60 ring-zinc-300/50 dark:ring-zinc-700/50">
                       <AvatarImage
-                        src={user?.image || undefined}
-                        alt={user?.name || "User Avatar"}
+                        src={effectiveUser?.image || undefined}
+                        alt={effectiveUser?.name || "User Avatar"}
                       />
                       <AvatarFallback className="bg-zinc-200 text-zinc-700 text-[10px] dark:bg-zinc-800 dark:text-zinc-300 font-medium">
                         {userInitials}
@@ -266,10 +302,10 @@ export function Sidebar({ className }: SidebarProps) {
                     </Avatar>
                     <div className="ml-2.5 overflow-hidden">
                       <p className="truncate text-sm font-medium text-zinc-800 dark:text-zinc-200">
-                        {user?.name || "User Name"}
+                        {effectiveUser?.name || "User Name"}
                       </p>
                       <p className="truncate text-xs text-zinc-500 dark:text-zinc-400">
-                        {user?.email || "user@example.com"}
+                        {effectiveUser?.email || "user@example.com"}
                       </p>
                     </div>
                   </div>
@@ -310,10 +346,21 @@ export function Sidebar({ className }: SidebarProps) {
                     </Button>
                     <Separator className="my-1 bg-zinc-300/40 dark:bg-zinc-700/40" />
                     
-                    {/* Using your GitHub SignOut component */}
-                    <div className="px-1">
-                      <SignOutWithGitHub />
-                    </div>
+                    {/* Show sign-out only for Electron mode users */}
+                    {isBrowser === false && (
+                      <div className="px-1">
+                        <SignOutWithGitHub />
+                      </div>
+                    )}
+                    
+                    {/* For browser mode users, show a note or different action */}
+                    {isBrowser === true && (
+                      <div className="px-3 py-2">
+                        <p className="text-xs text-zinc-500 dark:text-zinc-400 text-center">
+                          Web Version - Limited Access
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

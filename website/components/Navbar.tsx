@@ -158,7 +158,7 @@ export function Navbar() {
                 </button>
                 <button
                   onClick={handleOpenSignUp}
-                  className="inline-flex items-center justify-center rounded-3xl bg-primary px-5 py-2.5 text-base font-medium text-primary-foreground hover:opacity-80 transition-opacity shadow-sm"
+                  className="inline-flex items-center justify-center rounded-3xl bg-[#323232] px-5 py-2.5 text-base font-medium text-primary-foreground hover:opacity-80 transition-opacity shadow-sm"
                 >
                   Sign up
                 </button>

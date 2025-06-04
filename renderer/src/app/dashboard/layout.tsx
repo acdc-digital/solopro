@@ -10,6 +10,7 @@ import { redirect } from "next/navigation";
 // Import our enhanced hooks
 import { useUser, useUpsertUser } from "@/hooks/useUser";
 import { useUserId } from "@/hooks/useUserId";
+import { useBrowserEnvironment } from "@/utils/environment";
 import DraggableHeader from "./_components/DraggableHeader";
 
 interface DashboardLayoutProps {
@@ -18,6 +19,7 @@ interface DashboardLayoutProps {
 
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const { isAuthenticated, isLoading } = useConvexAuth();
+  const isBrowser = useBrowserEnvironment();
 
   // Get user data from our custom hook that provides consistent user ID
   const { userId, isAuthenticated: hasUserId } = useUserId();
@@ -45,10 +47,12 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   // Once authenticated, render the dashboard layout children
   return (
     <div className="flex flex-col h-screen overflow-hidden">
-      {/* Header - fixed height */}
-      <div className="flex-shrink-0 border-b border-gray-200 dark:border-gray-800">
-        <DraggableHeader />
-      </div>
+      {/* Header - fixed height - Only show in Electron mode */}
+      {!isBrowser && (
+        <div className="flex-shrink-0 border-b border-gray-200 dark:border-gray-800">
+          <DraggableHeader />
+        </div>
+      )}
 
       {/* Main content area - takes remaining height */}
       <div className="flex-1 overflow-hidden">

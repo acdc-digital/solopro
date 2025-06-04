@@ -33,13 +33,14 @@ interface DailyLogFormData {
 interface DailyLogFormProps {
   onClose: () => void; // still used for cancel button
   date?: string;
+  hasActiveSubscription?: boolean; // Add subscription status prop
 }
 
 /**
  * Client‑side form for creating/updating a daily log.
  * Server logic lives in `convex/dailyLogs.ts`.
  */
-export default function DailyLogForm({ onClose, date }: DailyLogFormProps) {
+export default function DailyLogForm({ onClose, date, hasActiveSubscription }: DailyLogFormProps) {
   console.log("DailyLogForm mounted");
   const { isAuthenticated, isLoading: userLoading, userId } = useConvexUser();
 
@@ -219,28 +220,30 @@ export default function DailyLogForm({ onClose, date }: DailyLogFormProps) {
   /* ────────────────────────────────────────── */
   return (
     <div className="flex flex-col h-full bg-white dark:bg-zinc-900 text-zinc-800 dark:text-zinc-100 overflow-x-hidden">
-      {/* Fixed Top Section with Generate Random Button */}
-      <div className="px-3 py-3 border-b border-zinc-200 dark:border-zinc-800">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={handleGenerateRandom}
-          disabled={isSubmitting || isGenerating}
-          className="w-full text-sm bg-zinc-50 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 focus:ring-2 focus:ring-emerald-500 focus:ring-offset-1 dark:focus:ring-offset-zinc-900 flex items-center justify-center"
-        >
-          {isGenerating ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Generating...
-            </>
-          ) : (
-            <>
-              <Zap className="mr-2 h-4 w-4" />
-              Generator
-            </>
-          )}
-        </Button>
-      </div>
+      {/* Fixed Top Section with Generate Random Button - Only show for subscribers */}
+      {hasActiveSubscription && (
+        <div className="px-3 py-3 border-b border-zinc-200 dark:border-zinc-800">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={handleGenerateRandom}
+            disabled={isSubmitting || isGenerating}
+            className="w-full text-sm bg-zinc-50 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 focus:ring-2 focus:ring-emerald-500 focus:ring-offset-1 dark:focus:ring-offset-zinc-900 flex items-center justify-center"
+          >
+            {isGenerating ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Generating...
+              </>
+            ) : (
+              <>
+                <Zap className="mr-2 h-4 w-4" />
+                Generator
+              </>
+            )}
+          </Button>
+        </div>
+      )}
 
       <ScrollArea className="flex-1 overflow-x-hidden px-3 py-2">
         <form
