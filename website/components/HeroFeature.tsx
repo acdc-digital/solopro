@@ -50,23 +50,19 @@ export function HeroFeature() {
     setShowFeed(false);
   };
 
-  // Feed mockup data
+  // Feed mockup data - simplified for chat style
   const feedMockupData = [
     {
-      date: "Yesterday", 
-      score: 62,
-      color: "bg-yellow-500",
-      summary: "Steady progress with some challenges",
-      insights: ["Good sleep quality", "Work deadlines caused stress", "Evening exercise helped"],
-      tags: ["Productive", "Stressful", "Active"]
+      message: "Based on your daily check-in, you're maintaining good work-life balance. Your sleep quality and evening exercise are positive patterns worth continuing.",
+      timestamp: "Just now"
     },
     {
-      date: "2 days ago",
-      score: 58,
-      color: "bg-lime-500", 
-      summary: "Balanced day with mixed emotions",
-      insights: ["Morning routine worked well", "Afternoon energy dip", "Social evening lifted mood"],
-      tags: ["Routine", "Social", "Mixed"]
+      message: "I noticed you mentioned work deadlines causing stress. Consider breaking large tasks into smaller chunks tomorrow.",
+      timestamp: "2 min ago"
+    },
+    {
+      message: "Your evening routine seems to help lift your mood. This could be a great anchor habit to build on.",
+      timestamp: "5 min ago"
     }
   ];
 
@@ -132,7 +128,7 @@ export function HeroFeature() {
 
               {/* Action Button */}
               <div className="mt-8">
-                <div className="w-full bg-primary text-primary-foreground font-semibold py-3 px-6 rounded-md text-center">
+                <div className="w-full bg-white text-black font-semibold py-3 px-6 border border-black rounded-md text-center">
                   Soloist.
                 </div>
               </div>
@@ -192,21 +188,21 @@ export function HeroFeature() {
                 </div>
 
                 {/* Submit Button - matches left button with mt-8 */}
-                <div className="mt-8">
+                <div className="mt-7">
                   <button
                     onClick={handleSubmit}
-                    className="w-full bg-primary text-primary-foreground font-semibold py-3 px-6 rounded-md transition-colors"
+                    className="w-full bg-white text-black font-semibold py-3 px-6 border border-black rounded-md transition-colors hover:bg-[#323232] hover:text-white"
                   >
                     Submit Entry
                   </button>
                 </div>
               </div>
             ) : (
-              /* Feed Mockup - Simplified */
+              /* Feed Mockup - Simple Chat Style */
               <>
                 {/* Feed Header */}
-                <div className="mb-4 flex items-center justify-between pb-3 border-b">
-                  <h2 className="text-lg font-semibold">Your Insights</h2>
+                <div className="mb-4 flex items-center justify-between pb-3">
+                  <h2 className="text-lg font-semibold">Your AI Insights</h2>
                   <button
                     onClick={handleBackToForm}
                     className="p-1 hover:bg-muted rounded transition-colors"
@@ -216,39 +212,31 @@ export function HeroFeature() {
                   </button>
                 </div>
 
-                {/* Feed Content - Contained */}
-                <div className="flex-grow overflow-y-auto space-y-3" style={{ maxHeight: '320px' }}>
+                {/* Chat Style Feed */}
+                <div className="flex-grow overflow-y-auto space-y-3 mb-4" style={{ maxHeight: '280px' }}>
                   {feedMockupData.map((entry, index) => (
-                    <div key={index} className="bg-muted/20 rounded-md p-3 border border-border/30">
-                      {/* Entry Header */}
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm font-medium text-muted-foreground">{entry.date}</span>
-                        <div className="flex items-center gap-2">
-                          <div className={`w-2 h-2 rounded-full ${entry.color}`}></div>
-                          <span className="text-sm font-bold">{entry.score}</span>
-                        </div>
+                    <div key={index} className="flex gap-3">
+                      {/* AI Avatar */}
+                      <div className="flex-shrink-0 w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                        <span className="text-white text-xs font-semibold">AI</span>
                       </div>
-
-                      {/* Summary */}
-                      <p className="text-sm text-foreground mb-2">{entry.summary}</p>
-
-                      {/* Tags Only */}
-                      <div className="flex flex-wrap gap-1">
-                        {entry.tags.map((tag, idx) => (
-                          <span key={idx} className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">
-                            {tag}
-                          </span>
-                        ))}
+                      
+                      {/* Message Bubble */}
+                      <div className="flex-grow">
+                        <div className="bg-muted/40 rounded-lg p-3 max-w-[85%]">
+                          <p className="text-sm text-foreground leading-relaxed">{entry.message}</p>
+                        </div>
+                        <span className="text-xs text-muted-foreground mt-1 block">{entry.timestamp}</span>
                       </div>
                     </div>
                   ))}
                 </div>
 
                 {/* Back to Form Button */}
-                <div className="mt-4 pt-3 border-t">
+                <div className="pt-3">
                   <button
                     onClick={handleBackToForm}
-                    className="w-full bg-muted text-foreground font-medium py-2 px-4 rounded-md transition-colors hover:bg-muted/80 flex items-center justify-center gap-2"
+                    className="w-full bg-white text-black font-medium py-3 px-4 rounded-md transition-colors hover:bg-muted/80 border border-black flex items-center justify-center gap-2"
                   >
                     <ArrowLeft className="h-4 w-4" />
                     Back to Form
