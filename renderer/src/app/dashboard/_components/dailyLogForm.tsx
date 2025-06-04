@@ -17,6 +17,7 @@ import { AlertCircle, Loader2, Zap, X, Check, Plus, Minus } from "lucide-react";
 import { useFeedStore } from "@/store/feedStore";
 import { addDays, format, subDays } from "date-fns";
 import { useConvex } from "convex/react";
+import { useBrowserEnvironment } from "@/utils/environment";
 
 interface DailyLogFormData {
   overallMood: number;
@@ -43,6 +44,7 @@ interface DailyLogFormProps {
 export default function DailyLogForm({ onClose, date, hasActiveSubscription }: DailyLogFormProps) {
   console.log("DailyLogForm mounted");
   const { isAuthenticated, isLoading: userLoading, userId } = useConvexUser();
+  const isBrowser = useBrowserEnvironment();
 
   /* ────────────────────────────────────────── */
   /* Feed store hooks                           */
@@ -220,8 +222,8 @@ export default function DailyLogForm({ onClose, date, hasActiveSubscription }: D
   /* ────────────────────────────────────────── */
   return (
     <div className="flex flex-col h-full bg-white dark:bg-zinc-900 text-zinc-800 dark:text-zinc-100 overflow-x-hidden">
-      {/* Fixed Top Section with Generate Random Button - Only show for subscribers */}
-      {hasActiveSubscription && (
+      {/* Fixed Top Section with Generate Random Button - Only show for Electron subscribers */}
+      {isBrowser !== true && hasActiveSubscription && (
         <div className="px-3 py-3 border-b border-zinc-200 dark:border-zinc-800">
           <Button
             type="button"

@@ -459,30 +459,6 @@ export default function Dashboard() {
                 }
               }}
             >
-              {/* Browser mode: Tab switcher */}
-              {isBrowser === true && (
-                <div className="flex-shrink-0 px-4 py-2 border-b border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800/50">
-                  <div className="flex gap-1">
-                    <Button
-                      variant={activeTab === "log" ? "default" : "ghost"}
-                      size="sm"
-                      onClick={() => setActiveTab("log")}
-                      className="text-xs"
-                    >
-                      Daily Log
-                    </Button>
-                    <Button
-                      variant={activeTab === "feed" ? "default" : "ghost"}
-                      size="sm"
-                      onClick={() => setActiveTab("feed")}
-                      className="text-xs"
-                    >
-                      Feed
-                    </Button>
-                  </div>
-                </div>
-              )}
-
               {activeTab === "log" ? (
                 selectedDate ? (
                   <DailyLogForm
