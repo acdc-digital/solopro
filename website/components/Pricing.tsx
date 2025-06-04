@@ -92,9 +92,8 @@ export default function Pricing() {
     console.log(`Subscription state - hasActiveSubscription: ${hasActiveSubscription}`);
     
     if (tier.name === "Free") {
-      // Show sign up modal for free tier
-      setSignInFlow("signUp");
-      setIsSignInModalOpen(true);
+      // Route directly to the dashboard
+      window.location.href = "http://localhost:3002/dashboard";
       return;
     }
 
@@ -189,7 +188,7 @@ export default function Pricing() {
       <div className="container mx-auto px-4 md:px-6">
         {showInstructions && <StripeSetupInstructions />}
         <div className="mx-auto flex max-w-[58rem] flex-col items-center space-y-4 text-center">
-          <div className="inline-flex items-center gap-2 rounded-full bg-black px-4 py-1.5 text-sm font-medium text-white mb-4">
+          <div className="inline-flex items-center gap-2 rounded-full bg-black px-4 py-1.5 text-sm font-medium text-white mb-0">
             <Sparkles className="h-4 w-4" />
             Pricing
           </div>

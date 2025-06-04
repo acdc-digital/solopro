@@ -259,6 +259,11 @@ export default function LandingPage() {
             {/* Status message below buttons */}
             {!authLoading && !downloadsEnabled && (
               <div className="flex justify-left mt-4">
+                {showAuthMessage && (
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-blue-50 border border-blue-100 text-blue-500 text-xs font-normal">
+                    Sign in to get started
+                  </span>
+                )}
                 {showSubscriptionMessage && (
                   <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-red-50 border border-red-100 text-red-500 text-xs font-normal">
                     Active subscription required to download

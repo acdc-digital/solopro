@@ -40,7 +40,7 @@ export function Footer() {
                   <h3 className="text-2xl font-bold text-black">Soloist.</h3>
                 </div>
                 <p className="text-sm text-black leading-relaxed max-w-xs">
-                  Simple mood tracking and AI-powered insights for better emotional well-being.
+                Soloist is owned and developped by ACDC.digital. This is a For-Profit Open Source repository and contributions are welcome. This is a wellness platform where we believe in allowing others to contribute, and take what they need from the work.
                 </p>
               </div>
 
@@ -160,7 +160,7 @@ export function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="py-8 border-t border-border/30">
+        <div className="py-4">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="text-sm text-black">
               © {currentYear} ACDC.digital. All rights reserved.

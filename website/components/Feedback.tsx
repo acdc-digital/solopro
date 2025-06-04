@@ -5,6 +5,9 @@
 
 import React, { useState } from "react";
 import { X, Send, Star, MessageSquare } from "lucide-react";
+import { useMutation } from "convex/react";
+import { api } from "../convex/_generated/api";
+import { useConvexUser } from "../lib/hooks/useConvexUser";
 
 interface FeedbackModalProps {
   children: React.ReactNode;
@@ -28,11 +31,17 @@ export function FeedbackModal({ children }: FeedbackModalProps) {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Get user authentication state and mutation
+  const { userId, isAuthenticated } = useConvexUser();
+  const submitUserFeedback = useMutation(api.feedback.submitUserFeedback);
 
   const openModal = () => setIsOpen(true);
   const closeModal = () => {
     setIsOpen(false);
     setSubmitSuccess(false);
+    setError(null);
   };
 
   const handleInputChange = (field: string, value: string | number) => {
@@ -52,11 +61,28 @@ export function FeedbackModal({ children }: FeedbackModalProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setError(null);
     
-    // Simulate API call - replace with actual implementation later
     try {
       console.log("Feedback submitted:", formData);
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Call the Convex mutation
+      await submitUserFeedback({
+        userId: isAuthenticated ? userId : undefined,
+        email: formData.email || undefined,
+        overallRating: formData.overallRating,
+        mostValuableFeature: formData.mostValuableFeature || undefined,
+        leastValuableFeature: formData.leastValuableFeature || undefined,
+        easeOfUse: formData.easeOfUse,
+        dataAccuracy: formData.dataAccuracy,
+        helpfulnessLevel: formData.helpfulnessLevel,
+        improvementSuggestions: formData.improvementSuggestions || undefined,
+        featureRequests: formData.featureRequests || undefined,
+        privacyConcerns: formData.privacyConcerns || undefined,
+        recommendToFriend: formData.recommendToFriend,
+        additionalComments: formData.additionalComments || undefined,
+      });
+      
       setSubmitSuccess(true);
       
       // Reset form after successful submission
@@ -79,6 +105,7 @@ export function FeedbackModal({ children }: FeedbackModalProps) {
       }, 2000);
     } catch (error) {
       console.error("Failed to submit feedback:", error);
+      setError(error instanceof Error ? error.message : "Failed to submit feedback. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -154,6 +181,13 @@ export function FeedbackModal({ children }: FeedbackModalProps) {
               <p className="text-gray-600 text-sm">
                 Your feedback helps us improve Soloist and create better mood tracking experiences. All responses are anonymous unless you choose to provide your email.
               </p>
+
+              {/* Error Message */}
+              {error && (
+                <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                  <p className="text-sm text-red-600">{error}</p>
+                </div>
+              )}
 
               {/* Email (Optional) */}
               <div>

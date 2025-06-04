@@ -155,4 +155,24 @@ export default defineSchema({
   })
   .index("by_name_and_user", ["name", "userId"])
   .index("by_user", ["userId"]),
+
+  userFeedback: defineTable({
+    userId: v.optional(v.string()), // Optional to handle anonymous feedback
+    email: v.optional(v.string()),
+    overallRating: v.number(),
+    mostValuableFeature: v.optional(v.string()),
+    leastValuableFeature: v.optional(v.string()),
+    easeOfUse: v.number(),
+    dataAccuracy: v.number(),
+    helpfulnessLevel: v.number(),
+    improvementSuggestions: v.optional(v.string()),
+    featureRequests: v.optional(v.string()),
+    privacyConcerns: v.optional(v.string()),
+    recommendToFriend: v.number(),
+    additionalComments: v.optional(v.string()),
+    isAnonymous: v.boolean(),
+    createdAt: v.number(),
+  })
+  .index("byUserId", ["userId"])
+  .index("byCreatedAt", ["createdAt"]),
 });
