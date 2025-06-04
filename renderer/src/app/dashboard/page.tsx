@@ -8,6 +8,8 @@ import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { parseISO, format } from "date-fns";
 import { useRouter } from "next/navigation";
+import { Plus } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 // Hooks & Stores
 import { useUser } from "@/hooks/useUser";
@@ -17,9 +19,12 @@ import { useSidebarStore } from "@/store/sidebarStore";
 import { useFeedStore } from "@/store/feedStore";
 import { getUserId } from "@/utils/userUtils";
 import { shallowEqual } from "@/utils/objectEquals";
+import { useBrowserEnvironment } from "@/utils/environment";
 
 // Components
 import { Sidebar } from "./_components/sidebar";
+import { BrowserNavbar } from "@/components/BrowserNavbar";
+import { BrowserFooter } from "@/components/BrowserFooter";
 import Heatmap from "./_components/Heatmap";
 import Controls from "./_components/Controls";
 import DailyLogForm from "./_components/dailyLogForm";
@@ -39,43 +44,66 @@ export default function Dashboard() {
   console.log("Dashboard rendering");
   
   const { user } = useUser();
-  const { isAuthenticated, isLoading } = useConvexUser();
+  const { isAuthenticated, isLoading, userId: convexUserId } = useConvexUser();
   const router = useRouter();
   const setStoreUser = useUserStore((state) => state.setUser);
-  const { setCollapsed, currentView } = useSidebarStore();
+  const { setCollapsed, currentView, setView } = useSidebarStore();
+  const isBrowser = useBrowserEnvironment();
 
-  // Redirect unauthenticated users to landing page
+  // Check subscription status (skip for browser mode users)
+  const hasActiveSubscription = useQuery(
+    api.userSubscriptions.hasActiveSubscription,
+    isBrowser === false && isAuthenticated && convexUserId ? {} : "skip"
+  );
+
+  // Redirect unauthenticated users to landing page (Electron mode only)
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
+    if (isBrowser === false && !isLoading && !isAuthenticated) {
       console.log("User is not authenticated, redirecting to landing page");
       router.push("/");
     }
-  }, [isAuthenticated, isLoading, router]);
+  }, [isBrowser, isAuthenticated, isLoading, router]);
 
-  // Show loading while checking authentication
-  if (isLoading) {
+  // Redirect non-subscribers away from testing view
+  useEffect(() => {
+    if (currentView === "testing" && hasActiveSubscription === false) {
+      console.log("Non-subscriber trying to access testing view, redirecting to dashboard");
+      setView("dashboard");
+    }
+  }, [currentView, hasActiveSubscription, setView]);
+
+  // Show loading while checking authentication (Electron mode only)
+  if (isBrowser === false && isLoading) {
     return (
-      <div className="flex h-full">
-        <main className="flex-1 flex items-center justify-center bg-zinc-50 dark:bg-zinc-900">
-          <div className="flex flex-col items-center">
-            <Loader2 className="h-8 w-8 text-zinc-500 animate-spin mb-2" />
-            <p className="text-sm text-zinc-400">Checking authentication...</p>
-          </div>
-        </main>
+      <div className="flex flex-col h-full bg-white dark:bg-zinc-900">
+        <div className="flex flex-1 overflow-hidden">
+          <Sidebar />
+          
+          <main className="flex-1 flex items-center justify-center bg-zinc-50 dark:bg-zinc-900">
+            <div className="flex flex-col items-center">
+              <Loader2 className="h-8 w-8 text-zinc-500 animate-spin mb-2" />
+              <p className="text-sm text-zinc-400">Checking authentication...</p>
+            </div>
+          </main>
+        </div>
       </div>
     );
   }
 
-  // Redirect in progress - show loading
-  if (!isAuthenticated) {
+  // Redirect in progress - show loading (Electron mode only)
+  if (isBrowser === false && !isAuthenticated) {
     return (
-      <div className="flex h-full">
-        <main className="flex-1 flex items-center justify-center bg-zinc-50 dark:bg-zinc-900">
-          <div className="flex flex-col items-center">
-            <Loader2 className="h-8 w-8 text-zinc-500 animate-spin mb-2" />
-            <p className="text-sm text-zinc-400">Redirecting to sign in...</p>
-          </div>
-        </main>
+      <div className="flex flex-col h-full bg-white dark:bg-zinc-900">
+        <div className="flex flex-1 overflow-hidden">
+          <Sidebar />
+          
+          <main className="flex-1 flex items-center justify-center bg-zinc-50 dark:bg-zinc-900">
+            <div className="flex flex-col items-center">
+              <Loader2 className="h-8 w-8 text-zinc-500 animate-spin mb-2" />
+              <p className="text-sm text-zinc-400">Redirecting to sign in...</p>
+            </div>
+          </main>
+        </div>
       </div>
     );
   }
@@ -97,6 +125,31 @@ export default function Dashboard() {
     activeTab,
     currentView
   });
+
+  // Browser mode: Automatically open sidebar and set default state
+  useEffect(() => {
+    if (isBrowser === true && currentView === "dashboard") {
+      // Set today as selected date if none selected
+      if (!selectedDate) {
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, "0");
+        const dd = String(today.getDate()).padStart(2, "0");
+        const dateKey = `${yyyy}-${mm}-${dd}`;
+        updateDatePreserveTab(dateKey);
+      }
+      
+      // Always keep sidebar open in browser mode
+      if (!sidebarOpen) {
+        setSidebarOpen(true);
+      }
+      
+      // Default to log tab, unless we already have a feed for today
+      if (activeTab !== "log" && activeTab !== "feed") {
+        setActiveTab("log");
+      }
+    }
+  }, [isBrowser, currentView, selectedDate, sidebarOpen, activeTab, updateDatePreserveTab, setSidebarOpen, setActiveTab]);
 
   // Tag filtering state (new)
   const [availableTags, setAvailableTags] = React.useState<Tag[]>([]);
@@ -204,18 +257,18 @@ export default function Dashboard() {
   const [selectedLegend, setSelectedLegend] = React.useState<string | null>(null);
   const userId = getUserId(user);
 
-  /*  Fetch daily logs (dashboard view only)       */
+  /*  Fetch daily logs (dashboard view only, skip for browser mode)       */
   const dailyLogs = useQuery(
     api.dailyLogs.listDailyLogs,
     { userId, year: selectedYear },
-    { enabled: currentView === "dashboard" && !!userId }
+    { enabled: isBrowser === false && currentView === "dashboard" && !!userId }
   );
 
-  /* Fetch all user tags for filtering */
+  /* Fetch all user tags for filtering (skip for browser mode) */
   const userTags = useQuery(
     api.feed.getFeedTags,
     userId ? { userId } : "skip",
-    { enabled: currentView === "dashboard" && !!userId }
+    { enabled: isBrowser === false && currentView === "dashboard" && !!userId }
   );
 
   // Process tags from the backend
@@ -241,16 +294,19 @@ export default function Dashboard() {
     }
   }, [userTags]);
 
-  if (currentView === "dashboard" && !dailyLogs) {
+  if (isBrowser === false && currentView === "dashboard" && !dailyLogs) {
     return (
-      <div className="flex h-full">
-        <Sidebar />
-        <main className="flex-1 flex items-center justify-center bg-zinc-50 dark:bg-zinc-900">
-          <div className="flex flex-col items-center">
-            <Loader2 className="h-8 w-8 text-zinc-500 animate-spin mb-2" />
-            <p className="text-sm text-zinc-400">Loading your heatmap...</p>
-          </div>
-        </main>
+      <div className="flex flex-col h-full bg-white dark:bg-zinc-900">
+        <div className="flex flex-1 overflow-hidden">
+          <Sidebar />
+          
+          <main className="flex-1 flex items-center justify-center bg-zinc-50 dark:bg-zinc-900">
+            <div className="flex flex-col items-center">
+              <Loader2 className="h-8 w-8 text-zinc-500 animate-spin mb-2" />
+              <p className="text-sm text-zinc-400">Loading your heatmap...</p>
+            </div>
+          </main>
+        </div>
       </div>
     );
   }
@@ -323,93 +379,158 @@ export default function Dashboard() {
   /*  Render                                       */
   /* ───────────────────────────────────────────── */
   return (
-    <div className="flex h-full bg-white dark:bg-zinc-900">
-      {/* Left sidebar */}
-      <Sidebar />
+    <div className="flex flex-col h-full bg-white dark:bg-zinc-900">
+      {/* Browser Navbar - Only show when confirmed browser mode */}
+      {isBrowser === true && <BrowserNavbar />}
+      
+      <div className="flex flex-1 overflow-hidden">
+        {/* Left sidebar - Always show in both browser and Electron modes */}
+        <Sidebar />
 
-      {/* Main content */}
-      {currentView === "dashboard" ? (
-        <>
-          <main className="flex-1 flex flex-col relative">
-            {/* Year controls */}
-            <div className="sticky top-0 z-10 px-4 mt-2">
-              <div className="flex justify-between items-center mb-2">
-                <Controls
-                  selectedYear={selectedYear}
-                  onYearChange={handleYearChange}
-                  selectedLegend={selectedLegend}
-                  onLegendFilterChange={handleLegendFilterChange}
-                  availableTags={availableTags}
-                  selectedTags={selectedTags}
-                  onTagFilterChange={handleTagFilterChange}
+        {/* Main content */}
+        {currentView === "dashboard" ? (
+          <>
+            <main className="flex-1 flex flex-col relative">
+              {/* Browser mode floating action button - Only show for confirmed Electron mode */}
+              {isBrowser === false && (
+                <div className="fixed bottom-6 right-6 z-50">
+                  <Button
+                    onClick={() => {
+                      const today = new Date();
+                      const yyyy = today.getFullYear();
+                      const mm = String(today.getMonth() + 1).padStart(2, "0");
+                      const dd = String(today.getDate()).padStart(2, "0");
+                      const dateKey = `${yyyy}-${mm}-${dd}`;
+                      
+                      updateDatePreserveTab(dateKey);
+                      setActiveTab("log");
+                      setSidebarOpen(true);
+                    }}
+                    className="h-14 w-14 rounded-full shadow-lg hover:shadow-xl transition-shadow"
+                    size="lg"
+                  >
+                    <Plus className="h-6 w-6" />
+                  </Button>
+                </div>
+              )}
+
+              {/* Year controls */}
+              <div className="sticky top-0 z-10 px-4 mt-2">
+                {/* Browser mode indicator - moved above controls */}
+                {isBrowser === true && (
+                  <div className="flex justify-end mb-2">
+                    <Badge variant="outline" className="border-blue-200 text-blue-700 bg-blue-50 text-xs">
+                      Web Version
+                    </Badge>
+                  </div>
+                )}
+                
+                <div className="flex justify-between items-center mb-2">
+                  <Controls
+                    selectedYear={selectedYear}
+                    onYearChange={handleYearChange}
+                    selectedLegend={selectedLegend}
+                    onLegendFilterChange={handleLegendFilterChange}
+                    availableTags={availableTags}
+                    selectedTags={selectedTags}
+                    onTagFilterChange={handleTagFilterChange}
+                  />
+                </div>
+              </div>
+
+              {/* Heatmap */}
+              <div className="flex-1 overflow-auto px-3 pb-2">
+                <Heatmap
+                  year={parseInt(selectedYear)}
+                  onSelectDate={handleSelectDate}
                 />
               </div>
-            </div>
+            </main>
 
-            {/* Heatmap */}
-            <div className="flex-1 overflow-auto px-3 pb-2">
-              <Heatmap
-                year={parseInt(selectedYear)}
-                onSelectDate={handleSelectDate}
-              />
-            </div>
-          </main>
-
-          {/* Right sidebar */}
-          <RightSidebar
-            open={sidebarOpen}
-            title={renderSidebarTitle()}
-            onClose={() => {
-              toggleSidebar();
-              updateDatePreserveTab(null);
-              if (window.innerWidth >= SIDEBAR_AUTO_COLLAPSE_WIDTH) {
-                setCollapsed(false);
-              }
-            }}
-          >
-            {activeTab === "log" ? (
-              selectedDate ? (
-                <DailyLogForm
-                  date={selectedDate}
-                  onClose={() => {
-                    toggleSidebar();
-                    updateDatePreserveTab(null);
-                    if (window.innerWidth >= SIDEBAR_AUTO_COLLAPSE_WIDTH) {
-                      setCollapsed(false);
-                    }
-                  }}
-                />
-              ) : (
-                <div className="p-4 text-sm text-zinc-500">
-                  Click a day on the calendar to open the log form.
+            {/* Right sidebar - Always open in browser mode */}
+            <RightSidebar
+              open={isBrowser === true ? true : sidebarOpen}
+              title={renderSidebarTitle()}
+              onClose={isBrowser === true ? undefined : () => {
+                toggleSidebar();
+                updateDatePreserveTab(null);
+                if (window.innerWidth >= SIDEBAR_AUTO_COLLAPSE_WIDTH) {
+                  setCollapsed(false);
+                }
+              }}
+            >
+              {/* Browser mode: Tab switcher */}
+              {isBrowser === true && (
+                <div className="flex-shrink-0 px-4 py-2 border-b border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800/50">
+                  <div className="flex gap-1">
+                    <Button
+                      variant={activeTab === "log" ? "default" : "ghost"}
+                      size="sm"
+                      onClick={() => setActiveTab("log")}
+                      className="text-xs"
+                    >
+                      Daily Log
+                    </Button>
+                    <Button
+                      variant={activeTab === "feed" ? "default" : "ghost"}
+                      size="sm"
+                      onClick={() => setActiveTab("feed")}
+                      className="text-xs"
+                    >
+                      Feed
+                    </Button>
+                  </div>
                 </div>
-              )
-            ) : activeTab === "feed" ? (
-              (() => {
-                console.log("Rendering Feed component", { activeTab, selectedDate });
-                return <Feed onTagsUpdate={(newTags) => setAvailableTags(newTags)} />;
-              })()
-            ) : (
-              <div className="p-4 text-sm text-zinc-500">No content.</div>
-            )}
-          </RightSidebar>
-        </>
-      ) : currentView === "soloist" ? (
-        /* Soloist view */
-        <main className="flex-1 overflow-hidden">
-          <SoloistPage />
-        </main>
-      ) : currentView === "help" ? (
-        /* Help view */
-        <main className="flex-1 overflow-hidden">
-          <HelpPage />
-        </main>
-      ) : (
-        /* Testing view */
-        <main className="flex-1 overflow-hidden">
-          <TestingPage />
-        </main>
-      )}
+              )}
+
+              {activeTab === "log" ? (
+                selectedDate ? (
+                  <DailyLogForm
+                    date={selectedDate}
+                    hasActiveSubscription={hasActiveSubscription}
+                    onClose={isBrowser === true ? () => setActiveTab("feed") : () => {
+                      toggleSidebar();
+                      updateDatePreserveTab(null);
+                      if (window.innerWidth >= SIDEBAR_AUTO_COLLAPSE_WIDTH) {
+                        setCollapsed(false);
+                      }
+                    }}
+                  />
+                ) : (
+                  <div className="p-4 text-sm text-zinc-500">
+                    Click a day on the calendar to open the log form.
+                  </div>
+                )
+              ) : activeTab === "feed" ? (
+                (() => {
+                  console.log("Rendering Feed component", { activeTab, selectedDate });
+                  return <Feed onTagsUpdate={(newTags) => setAvailableTags(newTags)} />;
+                })()
+              ) : (
+                <div className="p-4 text-sm text-zinc-500">No content.</div>
+              )}
+            </RightSidebar>
+          </>
+        ) : currentView === "soloist" ? (
+          /* Soloist view */
+          <main className="flex-1 overflow-hidden">
+            <SoloistPage />
+          </main>
+        ) : currentView === "help" ? (
+          /* Help view */
+          <main className="flex-1 overflow-hidden">
+            <HelpPage />
+          </main>
+        ) : (
+          /* Testing view */
+          <main className="flex-1 overflow-hidden">
+            <TestingPage />
+          </main>
+        )}
+      </div>
+      
+      {/* Browser Footer - Only show when confirmed browser mode */}
+      {isBrowser === true && <BrowserFooter />}
     </div>
   );
 }

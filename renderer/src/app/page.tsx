@@ -6,6 +6,8 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import DraggableHeader from "./dashboard/_components/DraggableHeader";
+import { BrowserNavbar } from "@/components/BrowserNavbar";
+import { BrowserFooter } from "@/components/BrowserFooter";
 import { useConvexUser } from "@/hooks/useConvexUser";
 import { useAuthActions } from "@convex-dev/auth/react";
 import { useRouter } from "next/navigation";
@@ -13,6 +15,7 @@ import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Button } from "@/components/ui/button";
 import { SignInModal } from "@/components/SignInModal";
+import { useBrowserEnvironment } from "@/utils/environment";
 
 /**
  * Landing Page Component for Electron Renderer
@@ -43,6 +46,7 @@ export default function LandingPage() {
   const router = useRouter();
   const [isSignInModalOpen, setIsSignInModalOpen] = useState(false);
   const [signInFlow, setSignInFlow] = useState<"signIn" | "signUp">("signIn");
+  const isBrowser = useBrowserEnvironment();
 
   // Always call useQuery hook - use "skip" when not authenticated
   const hasActiveSubscription = useQuery(
@@ -50,25 +54,29 @@ export default function LandingPage() {
     isAuthenticated && userId ? {} : "skip"
   );
 
-  // Redirect logic based on authentication and subscription status
+  // Browser mode auto-redirect - skip authentication for browser users
   useEffect(() => {
-    if (isAuthenticated && userId && !isLoading) {
+    if (isBrowser === true) {
+      console.log("Browser mode detected, redirecting to dashboard without authentication");
+      router.push("/dashboard");
+      return;
+    }
+  }, [isBrowser, router]);
+
+  // Redirect logic based on authentication and subscription status (Electron mode only)
+  useEffect(() => {
+    if (isBrowser === false && isAuthenticated && userId && !isLoading) {
       // Wait for subscription query to complete
       if (hasActiveSubscription === undefined) {
         console.log("Waiting for subscription status...");
         return;
       }
 
-      if (hasActiveSubscription) {
-        console.log("User is authenticated and has active subscription, redirecting to dashboard");
-        router.push("/dashboard");
-      } else {
-        console.log("User is authenticated but no active subscription, opening subscription page in browser");
-        // Open subscription page in default browser
-        openInBrowser("http://localhost:3004/#pricing");
-      }
+      // Always redirect authenticated users to dashboard (regardless of subscription status)
+      console.log("User is authenticated, redirecting to dashboard");
+      router.push("/dashboard");
     }
-  }, [isAuthenticated, userId, isLoading, hasActiveSubscription, router]);
+  }, [isBrowser, isAuthenticated, userId, isLoading, hasActiveSubscription, router]);
 
   // Handle authentication success
   const handleAuthSuccess = () => {
@@ -115,8 +123,8 @@ export default function LandingPage() {
           </CardContent>
         </Card>
       );
-    } else if (hasActiveSubscription) {
-      // User has active subscription - show redirecting message
+    } else {
+      // User is authenticated - redirect to dashboard
       content = (
         <Card className="w-full max-w-md shadow-lg">
           <CardContent className="flex justify-center p-8">
@@ -125,41 +133,6 @@ export default function LandingPage() {
               <span className="text-sm text-muted-foreground">Redirecting to dashboard...</span>
             </div>
           </CardContent>
-        </Card>
-      );
-    } else {
-      // User is authenticated but no subscription
-      content = (
-        <Card className="w-full max-w-md shadow-lg">
-          <CardHeader className="text-center">
-            <CardTitle className="text-2xl font-bold">Subscription Required</CardTitle>
-            <CardDescription>
-              This app requires an active subscription to access
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="text-center space-y-4">
-            <p className="text-sm text-muted-foreground">
-              You're signed in successfully, but you need an active subscription to use the desktop app.
-            </p>
-            <div className="space-y-2">
-              <Button
-                onClick={() => openInBrowser("http://localhost:3004/#pricing")}
-                className="w-full"
-              >
-                Open Subscription Plans in Browser
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => signOut()}
-                className="w-full"
-              >
-                Sign Out
-              </Button>
-            </div>
-          </CardContent>
-          <CardFooter className="text-center text-sm text-muted-foreground">
-            <p>Visit our website to purchase a subscription</p>
-          </CardFooter>
         </Card>
       );
     }
@@ -204,11 +177,20 @@ export default function LandingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <DraggableHeader />
-      <div className="flex min-h-screen flex-col items-center justify-center p-4">
+    <div className="flex flex-col h-screen bg-background">
+      {/* Show different headers based on environment */}
+      {isBrowser === true ? (
+        <BrowserNavbar />
+      ) : isBrowser === false ? (
+        <DraggableHeader />
+      ) : null /* Show nothing during hydration */}
+      
+      <div className="flex flex-1 flex-col items-center justify-center p-4">
         {content}
       </div>
+      
+      {/* Browser Footer - Only show when confirmed browser mode */}
+      {isBrowser === true && <BrowserFooter />}
     </div>
   );
 }

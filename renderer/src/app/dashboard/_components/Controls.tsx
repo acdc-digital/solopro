@@ -265,7 +265,7 @@ export default function Controls({
 
       {/* ----- Rightmost: Tabs for Right Sidebar View ----- */}
       <Tabs value={activeTab} onValueChange={handleTabChange} className="w-[150px] flex-shrink-0">
-        <TabsList className="grid w-full grid-cols-2 h-8">
+        <TabsList className="grid w-full grid-cols-2 h-9">
           <TabsTrigger value="log" className="text-xs h-7">
             Log
           </TabsTrigger>

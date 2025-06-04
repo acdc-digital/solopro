@@ -4,11 +4,12 @@
 "use client";
 
 import React, { useState } from "react";
-import { Calendar, Sliders, MessageSquare, Users } from "lucide-react";
+import { Calendar, Sliders, MessageSquare, Users, Send, X, ArrowLeft, TrendingUp } from "lucide-react";
 
 export function HeroFeature() {
   const [selectedDay, setSelectedDay] = useState(21);
   const [workLifeBalance, setWorkLifeBalance] = useState(5);
+  const [showFeed, setShowFeed] = useState(false);
 
   // Generate calendar data matching the hero image
   const calendarData = [
@@ -40,6 +41,34 @@ export function HeroFeature() {
   };
 
   const dayNames = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+
+  const handleSubmit = () => {
+    setShowFeed(true);
+  };
+
+  const handleBackToForm = () => {
+    setShowFeed(false);
+  };
+
+  // Feed mockup data
+  const feedMockupData = [
+    {
+      date: "Yesterday", 
+      score: 62,
+      color: "bg-yellow-500",
+      summary: "Steady progress with some challenges",
+      insights: ["Good sleep quality", "Work deadlines caused stress", "Evening exercise helped"],
+      tags: ["Productive", "Stressful", "Active"]
+    },
+    {
+      date: "2 days ago",
+      score: 58,
+      color: "bg-lime-500", 
+      summary: "Balanced day with mixed emotions",
+      insights: ["Morning routine worked well", "Afternoon energy dip", "Social evening lifted mood"],
+      tags: ["Routine", "Social", "Mixed"]
+    }
+  ];
 
   return (
     <div className="w-full max-w-5xl mx-auto">
@@ -103,78 +132,130 @@ export function HeroFeature() {
 
               {/* Action Button */}
               <div className="mt-8">
-                <button className="w-full bg-primary text-primary-foreground font-semibold py-3 px-6 rounded-md transition-colors">
+                <div className="w-full bg-primary text-primary-foreground font-semibold py-3 px-6 rounded-md text-center">
                   Soloist.
-                </button>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Right Side - Daily Log Form */}
-          <div className="bg-card text-card-foreground p-4 flex flex-col border-l border-border">
-            {/* Header */}
-            <div className="mb-6">
-              <h2 className="text-xl font-semibold mb-2">Daily Log Form</h2>
-              <p className="text-sm text-muted-foreground">Track your daily wellness metrics</p>
-            </div>
-
-            {/* Work-Life Balance Section */}
-            <div className="mb-0">
-              <div className="flex items-center gap-2 mb-4">
-                <Sliders className="h-4 w-4 text-muted-foreground" />
-                <h3 className="text-lg font-medium">Work-Life Balance</h3>
-              </div>
-              
-              {/* Slider */}
-              <div className="mb-4">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm text-muted-foreground">Balance Level</span>
-                  <span className="text-lg font-bold text-primary">{workLifeBalance}</span>
+          {/* Right Side - Form or Feed */}
+          <div className="bg-card text-card-foreground p-6 border-l border-border h-[500px]">
+            {!showFeed ? (
+              /* Daily Log Form - Match Left Structure */
+              <div className="text-left mb-8">
+                {/* Header - matches left tagline */}
+                <div className="mb-6">
+                  <h2 className="text-xl font-semibold mb-2">Daily Check-in</h2>
+                  <p className="text-sm text-muted-foreground">How are you feeling today?</p>
                 </div>
-                <div className="relative">
+
+                {/* Work-Life Balance */}
+                <div className="mb-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium">Work-Life Balance</span>
+                    <span className="text-lg font-bold text-primary">{workLifeBalance}/10</span>
+                  </div>
                   <input
                     type="range"
                     min="1"
                     max="10"
                     value={workLifeBalance}
                     onChange={(e) => setWorkLifeBalance(parseInt(e.target.value))}
-                    className="w-full h-4 bg-muted border border-input rounded-lg appearance-none cursor-pointer"
+                    className="w-full h-2 bg-muted border border-input rounded-lg appearance-none cursor-pointer"
                     aria-label="Work-life balance level"
                   />
                 </div>
-              </div>
-            </div>
 
-            {/* Basic Wellness Section */}
-            <div className="mb-6">
-              <h3 className="text-lg font-medium mb-4">Basic Wellness</h3>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm text-muted-foreground mb-2">Hours of sleep?</label>
-                  <input
-                    type="text"
-                    placeholder="Enter hours..."
-                    className="w-full bg-background border border-input rounded-md px-3 py-2 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-                  />
+                {/* Form Fields - equivalent to calendar grid */}
+                <div className="space-y-2 mb-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Sleep Quality</label>
+                    <select 
+                      className="w-full bg-background border border-input rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                      aria-label="Sleep quality"
+                    >
+                      <option>Great (8+ hrs)</option>
+                      <option>Good (6-7 hrs)</option>
+                      <option>Poor (&lt;6 hrs)</option>
+                    </select>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Today's Highlight</label>
+                    <textarea
+                      placeholder="What made today special?"
+                      rows={2}
+                      className="w-full bg-background border border-input rounded-md px-3 py-5 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring resize-none"
+                    />
+                  </div>
+                </div>
+
+                {/* Submit Button - matches left button with mt-8 */}
+                <div className="mt-8">
+                  <button
+                    onClick={handleSubmit}
+                    className="w-full bg-primary text-primary-foreground font-semibold py-3 px-6 rounded-md transition-colors"
+                  >
+                    Submit Entry
+                  </button>
                 </div>
               </div>
-            </div>
+            ) : (
+              /* Feed Mockup - Simplified */
+              <>
+                {/* Feed Header */}
+                <div className="mb-4 flex items-center justify-between pb-3 border-b">
+                  <h2 className="text-lg font-semibold">Your Insights</h2>
+                  <button
+                    onClick={handleBackToForm}
+                    className="p-1 hover:bg-muted rounded transition-colors"
+                    aria-label="Back to form"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
 
-            {/* Quick Reflections Section */}
-            <div className="mb-0">
-              <div className="flex items-center gap-2 mb-0">
-                <MessageSquare className="h-4 w-4 text-muted-foreground" />
-                <h3 className="text-lg font-medium">Quick Reflections</h3>
-              </div>
-              <div>
-                <label className="block text-sm text-muted-foreground mb-2">What was the best part of your day?</label>
-                <textarea
-                  placeholder="Share your thoughts..."
-                  rows={3}
-                  className="w-full bg-background border border-input rounded-md px-3 py-2 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring resize-none"
-                />
-              </div>
-            </div>
+                {/* Feed Content - Contained */}
+                <div className="flex-grow overflow-y-auto space-y-3" style={{ maxHeight: '320px' }}>
+                  {feedMockupData.map((entry, index) => (
+                    <div key={index} className="bg-muted/20 rounded-md p-3 border border-border/30">
+                      {/* Entry Header */}
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm font-medium text-muted-foreground">{entry.date}</span>
+                        <div className="flex items-center gap-2">
+                          <div className={`w-2 h-2 rounded-full ${entry.color}`}></div>
+                          <span className="text-sm font-bold">{entry.score}</span>
+                        </div>
+                      </div>
+
+                      {/* Summary */}
+                      <p className="text-sm text-foreground mb-2">{entry.summary}</p>
+
+                      {/* Tags Only */}
+                      <div className="flex flex-wrap gap-1">
+                        {entry.tags.map((tag, idx) => (
+                          <span key={idx} className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Back to Form Button */}
+                <div className="mt-4 pt-3 border-t">
+                  <button
+                    onClick={handleBackToForm}
+                    className="w-full bg-muted text-foreground font-medium py-2 px-4 rounded-md transition-colors hover:bg-muted/80 flex items-center justify-center gap-2"
+                  >
+                    <ArrowLeft className="h-4 w-4" />
+                    Back to Form
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>
