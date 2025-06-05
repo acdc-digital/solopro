@@ -10,7 +10,6 @@ import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useConvexUser } from "@/lib/hooks/useConvexUser";
 import { HeroFeature } from "./HeroFeature";
-import { DemoModal } from "./(demo)/DemoModal";
 import { DocsModal } from "./Docs";
 import { DownloadModal } from "./DownloadModal";
 

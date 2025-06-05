@@ -136,7 +136,7 @@ export function Navbar() {
             ) : isAuthenticated ? (
               <>
                 <Link
-                  href={process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3002"}
+                  href={process.env.NEXT_PUBLIC_APP_URL || "https://app.acdc.digital"}
                   className="inline-flex items-center justify-center rounded-full bg-blue-600 border border-blue-600 px-5 py-2.5 text-base font-bold text-white hover:bg-blue-700 hover:border-blue-700 transition-all duration-200"
                 >
                   Soloist.

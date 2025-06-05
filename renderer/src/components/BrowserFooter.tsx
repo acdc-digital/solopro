@@ -54,14 +54,14 @@ export function BrowserFooter() {
             {/* Center: Quick Links */}
             <div className="flex items-center gap-6 text-sm">
               <button
-                onClick={() => handleLinkClick(process.env.NEXT_PUBLIC_WEBSITE_URL || "http://localhost:3004")}
+                onClick={() => handleLinkClick(process.env.NEXT_PUBLIC_WEBSITE_URL || "https://www.acdc.digital")}
                 className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors flex items-center gap-1"
               >
                 Main Website
                 <ExternalLink className="h-3 w-3" />
               </button>
               <button
-                onClick={() => handleLinkClick((process.env.NEXT_PUBLIC_WEBSITE_URL || "http://localhost:3004") + "/#pricing")}
+                onClick={() => handleLinkClick((process.env.NEXT_PUBLIC_WEBSITE_URL || "https://www.acdc.digital") + "/#pricing")}
                 className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
               >
                 Pricing
@@ -97,7 +97,7 @@ export function BrowserFooter() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => handleLinkClick(process.env.NEXT_PUBLIC_WEBSITE_URL || "http://localhost:3004")}
+                onClick={() => handleLinkClick(process.env.NEXT_PUBLIC_WEBSITE_URL || "https://www.acdc.digital")}
                 className="flex items-center gap-2"
               >
                 <Download className="h-4 w-4" />
