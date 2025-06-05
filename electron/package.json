@@ -1,7 +1,7 @@
 {
-  "name": "soloist-pro",
-  "version": "1.4.2",
-  "description": "Soloist Pro - Professional Music Practice App",
+  "name": "solopro-electron",
+  "version": "1.5.0",
+  "description": "SoloPro - AI-powered mood tracking and emotional well-being platform",
   "main": "index.js",
   "repository": {
     "type": "git",

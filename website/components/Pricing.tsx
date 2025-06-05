@@ -93,7 +93,7 @@ export default function Pricing() {
     
     if (tier.name === "Free") {
       // Route directly to the dashboard
-      window.location.href = "http://localhost:3002/dashboard";
+      window.location.href = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3002" + "/dashboard";
       return;
     }
 

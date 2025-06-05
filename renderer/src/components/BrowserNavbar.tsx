@@ -90,7 +90,7 @@ export function BrowserNavbar() {
 
   const handleDownloadApp = () => {
     // Open the main website's download page
-    window.open("http://localhost:3004", "_blank");
+    window.open(process.env.NEXT_PUBLIC_WEBSITE_URL || "http://localhost:3004", "_blank");
   };
 
   if (!isAuthenticated) {
@@ -103,7 +103,7 @@ export function BrowserNavbar() {
         {/* Logo/Brand */}
         <div className="flex items-center gap-3">
           <button 
-            onClick={() => window.location.href = "http://localhost:3004"}
+            onClick={() => window.location.href = process.env.NEXT_PUBLIC_WEBSITE_URL || "http://localhost:3004"}
             className="flex items-center gap-3 hover:opacity-80 transition-opacity"
           >
             <Image

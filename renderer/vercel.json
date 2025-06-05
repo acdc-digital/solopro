@@ -1,3 +1,10 @@
 {
-  "framework": "nextjs"
+  "framework": "nextjs",
+  "buildCommand": "npm run build",
+  "installCommand": "npm install",
+  "env": {
+    "CONVEX_DEPLOY_KEY": "",
+    "NEXT_PUBLIC_WEBSITE_URL": "",
+    "NEXT_PUBLIC_CONVEX_URL": ""
+  }
 } 
