@@ -9,7 +9,7 @@ Set these in Vercel for your website project:
 
 ```bash
 NEXT_PUBLIC_BASE_URL=https://www.acdc.digital
-NEXT_PUBLIC_APP_URL=https://app.acdc.digital
+NEXT_PUBLIC_APP_URL=https://app.acdc.digitalim
 CONVEX_DEPLOY_KEY=your_convex_production_key
 STRIPE_SECRET_KEY=sk_live_your_stripe_secret_key
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_live_your_stripe_publishable_key

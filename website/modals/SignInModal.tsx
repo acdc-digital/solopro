@@ -21,7 +21,70 @@ export function SignInModal({
   const { signIn } = useAuthActions();
   const [flow, setFlow] = useState<"signIn" | "signUp">(initialFlow);
   const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
+
+  // Helper function to provide user-friendly error messages
+  const getErrorMessage = (error: any, currentFlow: "signIn" | "signUp") => {
+    const errorMessage = error?.message || error?.toString() || "An error occurred";
+    
+    // Check for common "user not found" patterns
+    const userNotFoundPatterns = [
+      'user not found',
+      'user does not exist',
+      'invalid credentials',
+      'account not found',
+      'no user found',
+      'authentication failed',
+      'server error' // Common when user doesn't exist
+    ];
+    
+    const isUserNotFound = userNotFoundPatterns.some(pattern => 
+      errorMessage.toLowerCase().includes(pattern)
+    );
+    
+    if (isUserNotFound && currentFlow === "signIn") {
+      return {
+        message: "Account not found. Would you like to create an account instead?",
+        suggestionAction: "switch-to-signup",
+        showSwitchButton: true
+      };
+    }
+    
+    // Check for "user already exists" patterns
+    const userExistsPatterns = [
+      'user already exists',
+      'account already exists',
+      'email already registered',
+      'user already registered'
+    ];
+    
+    const isUserExists = userExistsPatterns.some(pattern => 
+      errorMessage.toLowerCase().includes(pattern)
+    );
+    
+    if (isUserExists && currentFlow === "signUp") {
+      return {
+        message: "Account already exists. Would you like to sign in instead?",
+        suggestionAction: "switch-to-signin",
+        showSwitchButton: true
+      };
+    }
+    
+    // Default error message
+    return {
+      message: errorMessage,
+      suggestionAction: null,
+      showSwitchButton: false
+    };
+  };
+
+  // State for enhanced error handling
+  const [errorInfo, setErrorInfo] = useState<{
+    message: string;
+    suggestionAction: string | null;
+    showSwitchButton: boolean;
+  } | null>(null);
 
   // Reset flow when modal opens and check localStorage for flow preference
   useEffect(() => {
@@ -36,6 +99,7 @@ export function SignInModal({
         setFlow(initialFlow);
       }
       setError(null);
+      setErrorInfo(null);
     }
   }, [isOpen, initialFlow]);
 
@@ -79,12 +143,21 @@ export function SignInModal({
           className="space-y-4"
           onSubmit={(e) => {
             e.preventDefault();
+            setIsSubmitting(true);
+            setError(null);
+            setErrorInfo(null);
+            
             const formData = new FormData(e.target as HTMLFormElement);
             formData.set("flow", flow);
             void signIn("password", formData)
               .then(handleAuthSuccess)
               .catch((error) => {
-                setError(error.message);
+                const errorDetails = getErrorMessage(error, flow);
+                setError(errorDetails.message);
+                setErrorInfo(errorDetails);
+              })
+              .finally(() => {
+                setIsSubmitting(false);
               });
           }}
         >
@@ -117,15 +190,43 @@ export function SignInModal({
           </div>
           
           <button
-            className="w-full py-2 px-4 bg-primary hover:bg-primary/90 text-primary-foreground font-medium rounded-full shadow focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors"
+            className="w-full py-2 px-4 bg-primary hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed text-primary-foreground font-medium rounded-full shadow focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors"
             type="submit"
+            disabled={isSubmitting}
           >
-            {flow === "signIn" ? "Sign in" : "Sign up"}
+            {isSubmitting ? (
+              <span className="flex items-center justify-center">
+                <svg className="animate-spin -ml-1 mr-3 h-4 w-4 text-current" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                {flow === "signIn" ? "Signing in..." : "Creating account..."}
+              </span>
+            ) : (
+              flow === "signIn" ? "Sign in" : "Sign up"
+            )}
           </button>
           
           {error && (
-            <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md text-red-800 dark:text-red-300">
-              <p className="text-sm">{error}</p>
+            <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md">
+              <p className="text-sm text-red-800 dark:text-red-300">{error}</p>
+              {errorInfo?.showSwitchButton && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (errorInfo.suggestionAction === "switch-to-signup") {
+                      setFlow("signUp");
+                    } else if (errorInfo.suggestionAction === "switch-to-signin") {
+                      setFlow("signIn");
+                    }
+                    setError(null);
+                    setErrorInfo(null);
+                  }}
+                  className="mt-2 px-3 py-1 bg-red-100 dark:bg-red-800 hover:bg-red-200 dark:hover:bg-red-700 text-red-800 dark:text-red-200 text-xs font-medium rounded border border-red-300 dark:border-red-600 transition-colors"
+                >
+                  {errorInfo.suggestionAction === "switch-to-signup" ? "Create Account" : "Sign In Instead"}
+                </button>
+              )}
             </div>
           )}
           
@@ -134,7 +235,11 @@ export function SignInModal({
             <button
               type="button"
               className="text-primary dark:text-primary hover:underline font-medium"
-              onClick={() => setFlow(flow === "signIn" ? "signUp" : "signIn")}
+              onClick={() => {
+                setFlow(flow === "signIn" ? "signUp" : "signIn");
+                setError(null);
+                setErrorInfo(null);
+              }}
             >
               {flow === "signIn" ? "Sign up" : "Sign in"}
             </button>
@@ -155,7 +260,17 @@ export function SignInModal({
           
           <div className="mt-6">
             <button
-              onClick={() => signIn("github", {}).then(handleAuthSuccess)}
+              onClick={() => {
+                setError(null);
+                setErrorInfo(null);
+                signIn("github", {})
+                  .then(handleAuthSuccess)
+                  .catch((error) => {
+                    const errorDetails = getErrorMessage(error, flow);
+                    setError(errorDetails.message);
+                    setErrorInfo(errorDetails);
+                  });
+              }}
               className="w-full flex items-center justify-center py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-full shadow-sm bg-white dark:bg-gray-700 text-gray-700 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-primary transition-colors"
             >
               <svg className="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
