@@ -135,12 +135,12 @@ export function Navbar() {
               </button>
             ) : isAuthenticated ? (
               <>
-                <a 
-                  href="http://localhost:3002" 
+                <Link
+                  href={process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3002"}
                   className="inline-flex items-center justify-center rounded-full bg-blue-600 border border-blue-600 px-5 py-2.5 text-base font-bold text-white hover:bg-blue-700 hover:border-blue-700 transition-all duration-200"
                 >
                   Soloist.
-                </a>
+                </Link>
                 <button
                   onClick={handleSignOut}
                   className="inline-flex items-center justify-center rounded-3xl border border-input bg-background px-5 py-2.5 text-base font-medium text-foreground hover:bg-accent hover:text-accent-foreground hover:border-foreground transition-all duration-200"

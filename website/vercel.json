@@ -3,6 +3,11 @@
   "buildCommand": "npm run prebuild && npm run build",
   "installCommand": "npm install",
   "env": {
-    "CONVEX_DEPLOY_KEY": ""
+    "CONVEX_DEPLOY_KEY": "",
+    "NEXT_PUBLIC_BASE_URL": "",
+    "NEXT_PUBLIC_APP_URL": "",
+    "STRIPE_SECRET_KEY": "",
+    "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY": "",
+    "STRIPE_WEBHOOK_SECRET": ""
   }
 } 

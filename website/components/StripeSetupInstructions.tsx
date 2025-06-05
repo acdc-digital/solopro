@@ -25,7 +25,7 @@ NEXT_PUBLIC_STRIPE_PUBLIC_KEY=pk_test_your_public_key_here
 STRIPE_SECRET_KEY=sk_test_your_secret_key_here
 
 # App URL
-NEXT_PUBLIC_BASE_URL=http://localhost:3000`}
+NEXT_PUBLIC_BASE_URL=https://your-domain.com`}
           </code>
         </pre>
         

@@ -40,7 +40,7 @@ export function Footer() {
                   <h3 className="text-2xl font-bold text-black">Soloist.</h3>
                 </div>
                 <p className="text-sm text-black leading-relaxed max-w-xs">
-                Soloist is owned and developped by ACDC.digital. This is a For-Profit Open Source repository and contributions are welcome. This is a wellness platform where we believe in allowing others to contribute, and take what they need from the work.
+                Soloist is a for-profit, open-source wellness platform by ACDC.digital. Contributions are welcome—take what you need.
                 </p>
               </div>
 
