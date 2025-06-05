@@ -54,18 +54,9 @@ export default function LandingPage() {
     isAuthenticated && userId ? {} : "skip"
   );
 
-  // Browser mode auto-redirect - skip authentication for browser users
+  // Redirect logic for authenticated users (both browser and Electron mode)
   useEffect(() => {
-    if (isBrowser === true) {
-      console.log("Browser mode detected, redirecting to dashboard without authentication");
-      router.push("/dashboard");
-      return;
-    }
-  }, [isBrowser, router]);
-
-  // Redirect logic based on authentication and subscription status (Electron mode only)
-  useEffect(() => {
-    if (isBrowser === false && isAuthenticated && userId && !isLoading) {
+    if (isAuthenticated && userId && !isLoading) {
       // Wait for subscription query to complete
       if (hasActiveSubscription === undefined) {
         console.log("Waiting for subscription status...");
@@ -76,7 +67,7 @@ export default function LandingPage() {
       console.log("User is authenticated, redirecting to dashboard");
       router.push("/dashboard");
     }
-  }, [isBrowser, isAuthenticated, userId, isLoading, hasActiveSubscription, router]);
+  }, [isAuthenticated, userId, isLoading, hasActiveSubscription, router]);
 
   // Handle authentication success
   const handleAuthSuccess = () => {
