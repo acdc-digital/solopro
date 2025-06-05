@@ -49,7 +49,7 @@ export async function POST(request: Request) {
     console.log(`Creating Stripe checkout session for price ID: ${priceId} and user ID: ${userId}`);
     
     // Get the origin for redirect URLs
-    const origin = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+    const origin = process.env.NEXT_PUBLIC_BASE_URL || "https://www.acdc.digital";
     console.log("Using origin for redirects:", origin);
 
     // Common session parameters
