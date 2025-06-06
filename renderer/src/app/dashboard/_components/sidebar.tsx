@@ -243,7 +243,7 @@ export function Sidebar({ className }: SidebarProps) {
                       Limited Access
                     </p>
                     <p className="text-xs text-amber-700 dark:text-amber-300">
-                      Subscribe for full features
+                      Subscribe for full features including the desktop app.
                     </p>
                   </div>
                   <Separator className="bg-zinc-300/40 dark:bg-zinc-700/40" />
