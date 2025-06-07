@@ -143,7 +143,7 @@ export function Navbar() {
                 </Link>
                 <button
                   onClick={handleSignOut}
-                  className="inline-flex items-center justify-center rounded-3xl border border-input bg-background px-5 py-2.5 text-base font-medium text-foreground hover:bg-accent hover:text-accent-foreground hover:border-foreground transition-all duration-200"
+                  className="inline-flex items-center justify-center rounded-3xl border border-black bg-white px-5 py-2.5 text-base font-medium text-foreground hover:bg-accent hover:text-accent-foreground hover:border-foreground transition-all duration-200"
                 >
                   Sign out
                 </button>

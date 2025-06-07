@@ -4,9 +4,7 @@
 "use client";
 
 import React, { useState } from "react";
-import Image from "next/image";
-import { Github, ExternalLink, Download } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Github, ExternalLink } from "lucide-react";
 import { PrivacyPolicyModal } from "./privacyPolicy";
 import { TermsOfServiceModal } from "./termsOfService";
 import {
@@ -31,38 +29,21 @@ export function BrowserFooter() {
 
   return (
     <>
-      <footer className="bg-stone-50 dark:bg-zinc-900 border-t border-zinc-200 dark:border-zinc-800 py-6 px-4">
+      <footer className="bg-white dark:bg-zinc-900 border-t border-zinc-200 dark:border-zinc-800 py-2 px-12">
         <div className="w-full">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            {/* Left: Branding */}
-            <div className="flex items-center gap-3">
-              <Image
-                src="/solologo.svg"
-                alt="Soloist Logo"
-                width={24}
-                height={24}
-                className="w-6 h-6"
-              />
-              <span className="text-lg font-bold text-zinc-900 dark:text-zinc-100">
-                Soloist.
-              </span>
-              <span className="text-sm text-zinc-500 dark:text-zinc-400">
-                © {currentYear}
+            {/* Left: ACDC.digital branding */}
+            <div className="flex items-center">
+              <span className="text-sm text-black dark:text-zinc-400">
+                ACDC.digital © 2025
               </span>
             </div>
 
-            {/* Center: Quick Links */}
-            <div className="flex items-center gap-6 text-sm">
-              <button
-                onClick={() => handleLinkClick(process.env.NEXT_PUBLIC_WEBSITE_URL || "https://www.acdc.digital")}
-                className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors flex items-center gap-1"
-              >
-                Main Website
-                <ExternalLink className="h-3 w-3" />
-              </button>
+            {/* Right: Quick Links */}
+            <div className="flex items-center gap-6 text-sm pr-4">
               <button
                 onClick={() => handleLinkClick((process.env.NEXT_PUBLIC_WEBSITE_URL || "https://www.acdc.digital") + "/#pricing")}
-                className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
+                className="text-black dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
               >
                 Pricing
               </button>
@@ -70,7 +51,7 @@ export function BrowserFooter() {
               {/* Privacy Policy Modal */}
               <button 
                 onClick={() => setPrivacyModalOpen(true)}
-                className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors cursor-pointer"
+                className="text-black dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors cursor-pointer"
               >
                 Privacy Policy
               </button>
@@ -78,31 +59,18 @@ export function BrowserFooter() {
               {/* Terms of Service Modal */}
               <button 
                 onClick={() => setTermsModalOpen(true)}
-                className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors cursor-pointer"
+                className="text-black dark:text-zinc-400 hover:text-black dark:hover:text-zinc-100 transition-colors cursor-pointer"
               >
                 Terms of Service
               </button>
               
               <button
                 onClick={() => handleLinkClick("https://github.com/acdc-digital/solopro")}
-                className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors flex items-center gap-1"
+                className="text-black dark:text-zinc-400 hover:text-black dark:hover:text-zinc-100 transition-colors flex items-center gap-1"
               >
                 <Github className="h-4 w-4" />
                 GitHub
               </button>
-            </div>
-
-            {/* Right: Download App */}
-            <div className="flex items-center">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => handleLinkClick(process.env.NEXT_PUBLIC_WEBSITE_URL || "https://www.acdc.digital")}
-                className="flex items-center gap-2"
-              >
-                <Download className="h-4 w-4" />
-                Download Desktop App
-              </Button>
             </div>
           </div>
 

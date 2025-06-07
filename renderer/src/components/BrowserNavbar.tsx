@@ -14,7 +14,8 @@ import {
   HelpCircle, 
   Download,
   Menu,
-  X
+  X,
+  HomeIcon
 } from "lucide-react";
 import { useConvexUser } from "@/hooks/useConvexUser";
 import { useQuery } from "convex/react";
@@ -98,7 +99,7 @@ export function BrowserNavbar() {
   }
 
   return (
-    <nav className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 px-4 py-3">
+    <nav className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 px-12 py-3">
       <div className="flex items-center justify-between w-full">
         {/* Logo/Brand */}
         <div className="flex items-center gap-3">
@@ -117,24 +118,14 @@ export function BrowserNavbar() {
               Soloist.
             </div>
           </button>
-          <Badge variant="secondary" className="text-xs">
-            Web App
-          </Badge>
         </div>
 
         {/* Right side actions */}
         <div className="flex items-center gap-3">
-          {/* Subscription Status */}
-          {hasActiveSubscription === false && (
-            <Badge variant="outline" className="text-amber-700 border-amber-300 bg-amber-50">
-              Limited Access
-            </Badge>
-          )}
-
           {/* User Menu */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+              <Button variant="ghost" className="relative h-8 w-8 rounded-full pr-4">
                 <Avatar className="h-8 w-8">
                   <AvatarImage src={user?.image || undefined} alt={user?.name || "User"} />
                   <AvatarFallback className="text-xs">{userInitials}</AvatarFallback>
