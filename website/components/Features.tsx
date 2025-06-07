@@ -13,7 +13,7 @@ export function Features() {
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <div className="text-center mb-8 md:mb-12">
-          <div className="inline-flex items-center gap-2 rounded-full bg-black px-4 py-1.5 text-sm font-medium text-white mb-4">
+          <div className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-sm font-medium text-black mb-4 border border-black">
             <Sparkles className="h-4 w-4" />
             Core Features
           </div>

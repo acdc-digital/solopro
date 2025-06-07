@@ -188,7 +188,7 @@ export default function Pricing() {
       <div className="container mx-auto px-4 md:px-6">
         {showInstructions && <StripeSetupInstructions />}
         <div className="mx-auto flex max-w-[58rem] flex-col items-center space-y-4 text-center">
-          <div className="inline-flex items-center gap-2 rounded-full bg-black px-4 py-1.5 text-sm font-medium text-white mb-0">
+          <div className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-sm font-medium text-black mb-0 border border-black">
             <Sparkles className="h-4 w-4" />
             Pricing
           </div>

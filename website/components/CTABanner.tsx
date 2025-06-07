@@ -23,7 +23,7 @@ export function CTABanner() {
         <div className="max-w-3xl mx-auto text-center">
           
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 rounded-full bg-black px-3 py-1 text-sm font-medium text-white mb-6">
+          <div className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-sm font-medium text-black mb-6 border border-black">
             <Sparkles className="h-3 w-3" />
             <span>Join the mood tracking revolution</span>
           </div>

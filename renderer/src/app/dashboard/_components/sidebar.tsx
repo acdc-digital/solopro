@@ -19,6 +19,7 @@ import {
   ChevronDown,
   User,
   Calendar,
+  Download,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -159,6 +160,11 @@ export function Sidebar({ className }: SidebarProps) {
     console.log("Help action clicked");
   };
   
+  const handleDownload = () => {
+    // Open the main website in a new tab/window for downloads
+    window.open(process.env.NEXT_PUBLIC_WEBSITE_URL || "https://www.acdc.digital", "_blank");
+  };
+  
   const handleProfileClick = () => {
     console.log("Profile clicked");
     setAccountMenuOpen(false);
@@ -178,6 +184,8 @@ export function Sidebar({ className }: SidebarProps) {
     { id: "new-log",  label: "Create New Log", icon: Plus,            action: handleCreateNewLog, active: false },
     { id: "settings", label: "Settings",       icon: Settings,        action: handleGoToSettings },
     { id: "help",     label: "Help",           icon: CircleHelpIcon,  action: handleGoTohelp },
+    // Only show download button for browser mode users
+    ...(isBrowser === true ? [{ id: "download", label: "Download Desktop App", icon: Download, action: handleDownload }] : []),
   ];
   
   // Get user initials for avatar fallback
@@ -275,97 +283,6 @@ export function Sidebar({ className }: SidebarProps) {
         </div>
         {/* BOTTOM SECTION */}
         <div className="relative">
-          {/* ACCOUNT ACCORDION */}
-          {!collapsed && (
-            <>
-              <Separator className="bg-zinc-300/40 dark:bg-zinc-700/40 mt-3" />
-              <div className="mt-3 mb-2 pb-2 relative">
-                <p className="px-2 mb-1 text-[10px] font-medium uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-                  Account
-                </p>
-                
-                {/* Account Button */}
-                <Button
-                  variant="ghost"
-                  onClick={() => setAccountMenuOpen(!accountMenuOpen)}
-                  className="w-[90%] ml-3 py-1.5 px-2 flex items-center justify-between text-left rounded-lg hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50"
-                >
-                  <div className="flex items-center">
-                    <Avatar className="h-7 w-7 flex-shrink-0 ring-1 ring-offset-1 ring-offset-zinc-50/60 dark:ring-offset-zinc-950/60 ring-zinc-300/50 dark:ring-zinc-700/50">
-                      <AvatarImage
-                        src={effectiveUser?.image || undefined}
-                        alt={effectiveUser?.name || "User Avatar"}
-                      />
-                      <AvatarFallback className="bg-zinc-200 text-zinc-700 text-[10px] dark:bg-zinc-800 dark:text-zinc-300 font-medium">
-                        {userInitials}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="ml-2.5 overflow-hidden">
-                      <p className="truncate text-sm font-medium text-zinc-800 dark:text-zinc-200">
-                        {effectiveUser?.name || "User Name"}
-                      </p>
-                      <p className="truncate text-xs text-zinc-500 dark:text-zinc-400">
-                        {effectiveUser?.email || "user@example.com"}
-                      </p>
-                    </div>
-                  </div>
-                  {accountMenuOpen ? (
-                    <ChevronUp className="h-4 w-4 text-zinc-500" />
-                  ) : (
-                    <ChevronDown className="h-4 w-4 text-zinc-500" />
-                  )}
-                </Button>
-
-                {/* Accordion Content */}
-                <div 
-                  className={cn(
-                    "absolute bottom-full left-0 w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg shadow-lg overflow-hidden transition-all duration-200 mb-1",
-                    accountMenuOpen ? "max-h-40 opacity-100" : "max-h-0 opacity-0 pointer-events-none"
-                  )}
-                  style={{ 
-                    transform: accountMenuOpen ? 'translateY(0)' : 'translateY(8px)',
-                    zIndex: 50
-                  }}
-                >
-                  <div className="p-1">
-                    <Button
-                      variant="ghost"
-                      onClick={handleProfileClick}
-                      className="w-full justify-start px-3 py-2 text-sm font-normal hover:bg-zinc-200/60 dark:hover:bg-zinc-800/60 rounded-md"
-                    >
-                      <User className="mr-2 h-4 w-4 text-zinc-500" />
-                      Profile
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      onClick={handleSettingsClick}
-                      className="w-full justify-start px-3 py-2 text-sm font-normal hover:bg-zinc-200/60 dark:hover:bg-zinc-800/60 rounded-md"
-                    >
-                      <Settings className="mr-2 h-4 w-4 text-zinc-500" />
-                      Settings
-                    </Button>
-                    <Separator className="my-1 bg-zinc-300/40 dark:bg-zinc-700/40" />
-                    
-                    {/* Show sign-out only for Electron mode users */}
-                    {isBrowser === false && (
-                      <div className="px-1">
-                        <SignOutWithGitHub />
-                      </div>
-                    )}
-                    
-                    {/* For browser mode users, show a note or different action */}
-                    {isBrowser === true && (
-                      <div className="px-3 py-2">
-                        <p className="text-xs text-zinc-500 dark:text-zinc-400 text-center">
-                          Web Version - Limited Access
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </>
-          )}
           {/* Additional padding at bottom */}
           <div className="h-10"></div>
         </div>

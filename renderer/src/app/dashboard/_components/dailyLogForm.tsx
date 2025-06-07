@@ -359,7 +359,7 @@ export default function DailyLogForm({ onClose, date, hasActiveSubscription }: D
       </ScrollArea>
 
       {/* Footer */}
-      <div className="sticky bottom-0 w-full border-t border-zinc-100 dark:border-zinc-700 bg-white dark:bg-zinc-900 p-2 pb-6 pt-6">
+      <div className="sticky bottom-0 w-full border-t border-zinc-100 dark:border-zinc-700 bg-white dark:bg-zinc-900 p-2 pb-2 pt-2">
         {error && (
           <div className="flex items-center space-x-2 mb-2 text-red-600">
             <AlertCircle size={16} />
