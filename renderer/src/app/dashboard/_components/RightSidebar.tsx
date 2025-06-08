@@ -3,7 +3,7 @@
 
 "use client";
 
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { X, GripVertical } from "lucide-react";
 import { initResize } from "@/lib/resizer";
@@ -22,9 +22,35 @@ export function RightSidebar({
   children,
 }: RightSidebarProps) {
   const [width, setWidth] = useState(320);
+  const [windowWidth, setWindowWidth] = useState(0);
   const MIN_WIDTH = 240;
-  const MAX_WIDTH = 500;
+  // Dynamic MAX_WIDTH: 50% of window width, with a reasonable minimum
+  const MAX_WIDTH = Math.max(500, Math.floor(windowWidth * 0.35));
   const [isResizeHovered, setIsResizeHovered] = useState(false);
+
+  // Track window width for dynamic max width calculation
+  useEffect(() => {
+    const updateWindowWidth = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    // Set initial width
+    updateWindowWidth();
+
+    // Add resize listener
+    window.addEventListener('resize', updateWindowWidth);
+
+    return () => {
+      window.removeEventListener('resize', updateWindowWidth);
+    };
+  }, []);
+
+  // Ensure current width doesn't exceed new MAX_WIDTH when window resizes
+  useEffect(() => {
+    if (width > MAX_WIDTH) {
+      setWidth(MAX_WIDTH);
+    }
+  }, [MAX_WIDTH, width]);
 
   // If not open, width = 0 hides the panel
   const actualWidth = open ? width : 0;
@@ -33,7 +59,7 @@ export function RightSidebar({
     (e: React.MouseEvent | React.TouchEvent) => {
       initResize(e, setWidth, MIN_WIDTH, MAX_WIDTH, "rightSidebar");
     },
-    []
+    [MIN_WIDTH, MAX_WIDTH]
   );
 
   return (
@@ -105,12 +131,14 @@ export function RightSidebar({
         style={{ transition: "opacity 0.2s ease-in-out" }}
       >
         {/* Header */}
-        <div className="flex-shrink-0 flex items-center justify-between px-4 py-3 border-b border-zinc-200 dark:border-zinc-700">
-          <h2 className="text-sm font-semibold text-zinc-800 dark:text-zinc-100 truncate">
-            {title}
-          </h2>
+        <div className="flex-shrink-0 flex items-start justify-between px-4 py-3 border-b border-zinc-200 dark:border-zinc-700 min-h-0">
+          <div className="flex-1 min-w-0 mr-2">
+            <div className="text-sm font-semibold text-zinc-800 dark:text-zinc-100">
+              {title}
+            </div>
+          </div>
           {onClose && (
-            <Button variant="ghost" size="icon" onClick={onClose}>
+            <Button variant="ghost" size="icon" onClick={onClose} className="flex-shrink-0">
               <X className="h-4 w-4" />
               <span className="sr-only">Close sidebar</span>
             </Button>

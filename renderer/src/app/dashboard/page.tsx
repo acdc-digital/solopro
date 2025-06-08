@@ -34,8 +34,10 @@ import SoloistPage from "./soloist/page";
 import TestingPage from "./testing/page";
 import { Loader2, ArrowRightToLine } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import HelpPage from "../help/page";
 import { Tag } from "./_components/Tags";
+import TemplateSelector from "./_components/TemplateSelector";
+import Templates, { Template } from "./_components/Templates";
+import { useTemplates } from "@/hooks/useTemplates";
 
 // Responsive breakpoint for auto-collapse in pixels
 const SIDEBAR_AUTO_COLLAPSE_WIDTH = 1256;
@@ -155,6 +157,16 @@ export default function Dashboard() {
   const [availableTags, setAvailableTags] = React.useState<Tag[]>([]);
   const [selectedTags, setSelectedTags] = React.useState<Tag[]>([]);
 
+  // Templates state
+  const [showTemplates, setShowTemplates] = React.useState(false);
+  
+  // Templates hook
+  const {
+    activeTemplate,
+    saveTemplate,
+    templates,
+  } = useTemplates({ userId: convexUserId || undefined });
+
   /* ───────────────────────────────────────────── */
   /*  Sync user from Convex → Zustand store        */
   /* ───────────────────────────────────────────── */
@@ -206,6 +218,15 @@ export default function Dashboard() {
     window.addEventListener("resize", checkWidth);
     return () => window.removeEventListener("resize", checkWidth);
   }, [sidebarOpen, setCollapsed]);
+
+  /* ───────────────────────────────────────────── */
+  /*  Reset templates view when switching tabs     */
+  /* ───────────────────────────────────────────── */
+  useEffect(() => {
+    if (activeTab !== "log" && showTemplates) {
+      setShowTemplates(false);
+    }
+  }, [activeTab, showTemplates]);
 
   // Collapse left sidebar when right sidebar opens on narrow viewports
   useEffect(() => {
@@ -344,15 +365,31 @@ export default function Dashboard() {
     
     // Daily Log
     if (activeTab === "log") {
-      if (!selectedDate) return "Daily Log Form";
+      if (!selectedDate) {
+        return (
+          <div className="flex flex-col space-y-2">
+            <span className="font-semibold">Daily Log Form</span>
+            <TemplateSelector
+              userId={convexUserId || undefined}
+              onCustomize={() => setShowTemplates(!showTemplates)}
+              showTemplates={showTemplates}
+            />
+          </div>
+        );
+      }
       const parsed = parseISO(selectedDate);
       const formatted = format(parsed, "MMM d, yyyy");
       return (
-        <div className="flex flex-col">
+        <div className="flex flex-col space-y-1">
           <span className="font-semibold">Daily Log Form</span>
-          <span className="text-xs text-zinc-500 dark:text-zinc-400">
+          <span className="text-xs text-zinc-500 dark:text-zinc-400 pb-4">
             {formatted}
           </span>
+          <TemplateSelector
+            userId={convexUserId || undefined}
+            onCustomize={() => setShowTemplates(!showTemplates)}
+            showTemplates={showTemplates}
+          />
         </div>
       );
     }
@@ -452,6 +489,7 @@ export default function Dashboard() {
               open={isBrowser === true ? true : sidebarOpen}
               title={renderSidebarTitle()}
               onClose={isBrowser === true ? undefined : () => {
+                setShowTemplates(false); // Close templates if open
                 toggleSidebar();
                 updateDatePreserveTab(null);
                 if (window.innerWidth >= SIDEBAR_AUTO_COLLAPSE_WIDTH) {
@@ -459,7 +497,17 @@ export default function Dashboard() {
                 }
               }}
             >
-              {activeTab === "log" ? (
+              {showTemplates ? (
+                <Templates
+                  onClose={() => setShowTemplates(false)}
+                  onSaveTemplate={(template: Template) => {
+                    saveTemplate(template, true); // Set as active when saved
+                    setShowTemplates(false);
+                  }}
+                  currentTemplate={activeTemplate || undefined}
+                  templates={templates}
+                />
+              ) : activeTab === "log" ? (
                 selectedDate ? (
                   <DailyLogForm
                     date={selectedDate}
@@ -491,11 +539,6 @@ export default function Dashboard() {
           /* Soloist view */
           <main className="flex-1 overflow-hidden">
             <SoloistPage />
-          </main>
-        ) : currentView === "help" ? (
-          /* Help view */
-          <main className="flex-1 overflow-hidden">
-            <HelpPage />
           </main>
         ) : (
           /* Testing view */

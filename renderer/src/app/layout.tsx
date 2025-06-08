@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Soloist Pro - Desktop App",
+  title: "Soloist. | Take control of tomorrow, today.",
   description: "Soloist Pro desktop application built with Electron and Next.js",
 };
 

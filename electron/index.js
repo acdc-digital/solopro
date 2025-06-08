@@ -149,7 +149,7 @@ function loadFallbackHTML(win) {
       <html>
         <head>
           <meta charset="UTF-8">
-          <title>Soloist Pro</title>
+          <title>Soloist. | Take control of tomorrow, today.</title>
           <style>
             body { 
               font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 

@@ -39,6 +39,7 @@ import {
   ArrowRight
 } from "lucide-react";
 import { useConvexUser } from "@/hooks/useConvexUser";
+import { useFeedStore } from "@/store/feedStore";
 import WeeklyPatterns from "./_components/WeeklyPatterns";
 import { format, subDays } from 'date-fns';
 
@@ -145,6 +146,9 @@ export default function SoloistPage() {
   const [forecastError, setForecastError] = useState<string | null>(null);
   const [lastForecastDate, setLastForecastDate] = useState<string | null>(null);
 
+  // Feed store for opening daily log form
+  const { setSelectedDate, setActiveTab, setSidebarOpen } = useFeedStore();
+  
   // Get user's local today string
   const localToday = format(new Date(), 'yyyy-MM-dd');
 
@@ -168,31 +172,88 @@ export default function SoloistPage() {
        (forecastData.filter(day => day.emotionScore !== null && day.emotionScore > 0).length || 1)).toFixed(1)
     : "N/A";
 
-  // Effect to set default selected day
+  // Effect to set default selected day (today is always at index 3)
   useEffect(() => {
-    if (Array.isArray(forecastData) && forecastData.length > 0) {
-      const todayIndex = forecastData.findIndex(day => day.isToday);
-      const defaultIndex = todayIndex !== -1 ? todayIndex : Math.min(3, forecastData.length - 1);
-      setSelectedDayIndex(defaultIndex);
-    }
-    // Only run when forecastData changes
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [forecastData]);
+    setSelectedDayIndex(3); // Today is always at index 3 in our 7-day structure
+  }, []); // Only run once on mount
 
   // Navigation handlers
   const navigatePrevDay = () => setSelectedDayIndex(prev => Math.max(0, prev - 1));
   const navigateNextDay = () => {
-    const maxIndex = Array.isArray(forecastData) ? forecastData.length - 1 : 0;
-    setSelectedDayIndex(prev => Math.min(maxIndex, prev + 1));
+    setSelectedDayIndex(prev => Math.min(6, prev + 1)); // Always 7 days (indices 0-6)
   };
 
   // Check if forecast was already generated today
   const forecastGeneratedToday = lastForecastDate === localToday;
   
-  // Check if we need forecasts (only if data is an array)
-  const needsForecasts = Array.isArray(forecastData) && forecastData.some(day =>
+  // Ensure we always have a consistent 7-day view: 3 past + today + 3 future
+  const processedForecastData = useMemo(() => {
+    const today = new Date();
+    const sevenDayStructure = [];
+    
+    // Generate the 7-day structure (3 past, today, 3 future)
+    for (let i = -3; i <= 3; i++) {
+      const targetDate = new Date(today);
+      targetDate.setDate(today.getDate() + i);
+      const dateString = format(targetDate, 'yyyy-MM-dd');
+      
+      // Try to find existing data for this date
+      const existingData = Array.isArray(forecastData) 
+        ? forecastData.find(day => day.date === dateString)
+        : null;
+      
+      // Determine day type
+      const isPast = i < 0;
+      const isToday = i === 0;
+      const isFuture = i > 0;
+      
+      // Create day object with existing data or placeholder
+      const dayObject = existingData || {
+        date: dateString,
+        day: isToday ? 'Today' : format(targetDate, 'EEEE'),
+        shortDay: format(targetDate, 'EEE'),
+        formattedDate: format(targetDate, 'MMM d'),
+        emotionScore: null,
+        description: isPast 
+          ? 'No log recorded' 
+          : isToday 
+            ? 'No log for today' 
+            : 'Forecast needed',
+        trend: null,
+        details: isPast
+          ? `No entry recorded for ${format(targetDate, 'EEEE, MMMM d')}. Past logs help improve future forecasts.`
+          : isToday
+            ? 'No entry for today. Log your day to see your real score.'
+            : 'Generate forecast for predictions about this day.',
+        recommendation: isPast
+          ? 'Consider logging past experiences when possible for better insights.'
+          : isToday
+            ? 'Log your day to update your forecast.'
+            : 'Complete recent logs to generate forecasts.',
+        isPast,
+        isToday,
+        isFuture,
+        canGenerateForecast: false,
+        confidence: existingData?.confidence || 0,
+      };
+      
+      sevenDayStructure.push(dayObject);
+    }
+    
+    return sevenDayStructure;
+  }, [forecastData, localToday]);
+
+  // Check if we need forecasts (based on our consistent 7-day structure)
+  const needsForecasts = processedForecastData.some(day =>
     day.isFuture &&
-    (day.emotionScore === 0 || day.emotionScore === null || day.description === "Forecast Needed")
+    (day.emotionScore === 0 || day.emotionScore === null || 
+     day.description === "Forecast needed" || day.description?.toLowerCase().includes('forecast needed'))
+  );
+
+  // Check if user needs to submit logs (has no data for past days or today)
+  const needsLogs = processedForecastData.some(day =>
+    !day.isFuture &&
+    (day.emotionScore === 0 || day.emotionScore === null)
   );
 
   // Forecast generation handler
@@ -250,40 +311,11 @@ export default function SoloistPage() {
             error={forecastError} />;
   }
 
-  // Ensure 'today' is always present in the forecast strip
-  const processedForecastData = Array.isArray(forecastData) ? [...forecastData] : [];
-  if (processedForecastData.length === 7) {
-    // Already 7 days, do nothing
-  } else if (processedForecastData.length === 6) {
-    // Check if today is missing
-    const hasToday = processedForecastData.some(day => day.isToday);
-    if (!hasToday) {
-      // Find the index where today should be (4th position, index 3)
-      const today = new Date(localToday + 'T00:00:00');
-      processedForecastData.splice(3, 0, {
-        date: localToday,
-        day: 'Today',
-        shortDay: format(today, 'EEE'),
-        formattedDate: format(today, 'MMM d'),
-        emotionScore: null,
-        description: 'No log for today',
-        trend: null,
-        details: 'No entry for today. Log your day to see your real score.',
-        recommendation: 'Log your day to update your forecast.',
-        isPast: false,
-        isToday: true,
-        isFuture: false,
-        canGenerateForecast: false,
-        confidence: 0,
-      });
-    }
-  }
-
   // --- Main Render - Only proceeds if userId exists and forecastData is a non-empty array ---
   return (
     <div className="flex-1 h-full flex flex-col overflow-hidden bg-zinc-50 dark:bg-zinc-900">
       <div className="flex-1 overflow-auto">
-        <div className="container mx-auto py-4 px-4 flex flex-col h-full max-w-5xl">
+        <div className="w-full py-4 px-4 flex flex-col h-full">
           <Card className="border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 shadow-sm mb-4">
             <CardHeader className="pb-2">
               <div className="flex items-center justify-between flex-wrap gap-2">
@@ -324,18 +356,7 @@ export default function SoloistPage() {
 
               {/* Generate Forecast Button */}
               <div className="mb-3 flex justify-between items-center">
-                {(
-                  !processedForecastData ||
-                  processedForecastData.length === 0 ||
-                  processedForecastData.every(
-                    day =>
-                      !day ||
-                      day.emotionScore === null ||
-                      day.emotionScore === undefined ||
-                      day.emotionScore === 0 ||
-                      (typeof day.description === 'string' && day.description.toLowerCase().includes('forecast needed'))
-                  )
-                ) ? (
+                {needsLogs ? (
                   <div className="text-sm text-zinc-400 whitespace-nowrap">Submit a log to start your forecast.</div>
                 ) : <div />}
                 <TooltipProvider>
@@ -347,7 +368,7 @@ export default function SoloistPage() {
                           size="sm"
                           onClick={handleGenerateForecast}
                           disabled={isGeneratingForecast || forecastGeneratedToday || !needsForecasts}
-                          className="text-xs"
+                          className="text-xs border border-black"
                         >
                           {isGeneratingForecast ? "Generating..." : "Generate Forecast"}
                         </Button>
@@ -376,22 +397,30 @@ export default function SoloistPage() {
                   const isFutureDay = day.isFuture;
                   const needsGen = isFutureDay && (score === 0 || score === null || day.description === "Forecast Needed");
                   const isSelected = selectedDayIndex === idx;
+                  
+                  // Check if this day can be clicked to open log form
+                  const canOpenLogForm = (!day.isFuture && (day.emotionScore === null || day.emotionScore === 0)) || 
+                                        (day.isToday && (day.emotionScore === null || day.emotionScore === 0));
 
                   return (
                     <div
                       key={day.date || idx} // Use date if available, otherwise index
-                      title={`Date: ${day.date}, Score: ${score ?? 'N/A'}`} // Add tooltip for debugging
+                      title={`Date: ${day.date}, Score: ${score ?? 'N/A'}${canOpenLogForm ? ' - Click to log this day' : ''}`} // Add tooltip for debugging
                       className={`
-                        flex flex-col items-center justify-between p-1 sm:p-1.5 rounded-md cursor-pointer border aspect-square
+                        flex flex-col items-center justify-between p-1 sm:p-1.5 rounded-md border aspect-square
                         ${colorClass} ${borderColorClass}
                         ${isSelected ? 'ring-2 ring-offset-1 ring-offset-zinc-900 dark:ring-offset-black ring-indigo-400' : ''}
                         ${day.isPast ? 'opacity-80 hover:opacity-100' : ''}
                         ${day.isToday ? 'relative ring-1 ring-inset ring-white/50' : ''}
                         ${isFutureDay && !needsGen ? 'opacity-85 hover:opacity-100' : ''}
                         ${needsGen ? 'border-dashed border-zinc-500 bg-zinc-800/30 hover:bg-zinc-700/40' : ''}
+                        ${canOpenLogForm ? 'cursor-pointer hover:ring-1 hover:ring-emerald-500 hover:border-emerald-500' : 'cursor-pointer'}
                         transition-all duration-150 ease-in-out
                       `}
-                      onClick={() => setSelectedDayIndex(idx)}
+                      onClick={() => {
+                        // Just select the day to show details below
+                        setSelectedDayIndex(idx);
+                      }}
                     >
                       <div className="text-xs font-medium text-center">
                         <div className={`${needsGen ? 'text-zinc-400' : textColorClass} text-[10px] sm:text-xs font-semibold`}>{day.shortDay}</div>
@@ -414,7 +443,7 @@ export default function SoloistPage() {
               </div>
 
               {/* Separator, Navigation, and Details only if selected day is valid */}
-              {selectedDayIndex >= 0 && selectedDayIndex < processedForecastData.length && processedForecastData[selectedDayIndex] && (
+              {selectedDayIndex >= 0 && selectedDayIndex <= 6 && processedForecastData[selectedDayIndex] && (
                 <>
                   <Separator className="my-3 bg-zinc-200 dark:bg-zinc-800" />
 
@@ -426,7 +455,7 @@ export default function SoloistPage() {
                     <h3 className="text-base font-medium text-center text-zinc-900 dark:text-zinc-50">
                       {processedForecastData[selectedDayIndex]?.day || "Selected Day"} - {processedForecastData[selectedDayIndex]?.formattedDate || ""}
                     </h3>
-                    <Button variant="ghost" size="sm" disabled={selectedDayIndex >= processedForecastData.length - 1} onClick={navigateNextDay} className="h-8 px-2 text-zinc-600 dark:text-zinc-300">
+                    <Button variant="ghost" size="sm" disabled={selectedDayIndex >= 6} onClick={navigateNextDay} className="h-8 px-2 text-zinc-600 dark:text-zinc-300">
                       Next <ChevronRight className="h-4 w-4 ml-1" />
                     </Button>
                   </div>
@@ -439,6 +468,9 @@ export default function SoloistPage() {
                     const score = selectedDay.emotionScore;
                     const isFutureDay = selectedDay.isFuture;
                     const needsGen = isFutureDay && (score === 0 || score === null || selectedDay.description === "Forecast Needed");
+                    
+                    // Check if this is a day without logs (past or today with no data)
+                    const needsLog = !isFutureDay && (score === null || score === 0);
 
                     return (
                       <div className="flex flex-col sm:flex-row gap-4 p-3 rounded-md border border-zinc-200 dark:border-zinc-700 bg-white/30 dark:bg-zinc-900/30">
@@ -447,27 +479,31 @@ export default function SoloistPage() {
                           flex-shrink-0 w-full sm:w-28 h-28 rounded-md flex flex-col items-center justify-center border
                           ${getColorClass(score)}
                           ${getBorderColorClass(score)}
-                          ${needsGen ? 'border-dashed border-zinc-500' : ''}
+                          ${(needsGen || needsLog) ? 'border-dashed border-zinc-500' : ''}
                          `}>
-                          <span className={`text-4xl font-bold ${needsGen ? 'text-zinc-400' : getTextColorClass(score)}`}>
-                            {score !== null ? (needsGen ? '?' : score) : '—'}
+                          <span className={`text-4xl font-bold ${(needsGen || needsLog) ? 'text-zinc-400' : getTextColorClass(score)}`}>
+                            {score !== null && score > 0 ? score : needsGen ? '?' : '—'}
                           </span>
                           <div className="flex items-center mt-1">
-                             {/* Only show trend icon if score exists, it's not needing generation, and trend is present */}
-                            {score !== null && score > 0 && !needsGen && selectedDay.trend && (
+                             {/* Only show trend icon if score exists, it's not needing generation/log, and trend is present */}
+                            {score !== null && score > 0 && !needsGen && !needsLog && selectedDay.trend && (
                                <>
                                 <TrendIcon trend={selectedDay.trend} />
-                                <span className={`text-xs ml-1 ${needsGen ? 'text-zinc-400' : getTextColorClass(score)} opacity-90`}>
+                                <span className={`text-xs ml-1 ${getTextColorClass(score)} opacity-90`}>
                                   {selectedDay.trend === "up" ? "Rising" : selectedDay.trend === "down" ? "Falling" : "Stable"}
                                 </span>
                                </>
                             )}
-                             {/* Placeholder if no trend */}
-                             {!(score !== null && score > 0 && !needsGen && selectedDay.trend) && !needsGen && (
+                             {/* Placeholder if no trend and no special states */}
+                             {!(score !== null && score > 0 && !needsGen && !needsLog && selectedDay.trend) && !needsGen && !needsLog && (
                                 <span className={`text-xs ml-1 ${getTextColorClass(score)} opacity-70`}>-</span>
                              )}
+                             {/* Special state labels */}
                              {needsGen && (
                                 <span className={`text-xs ml-1 text-zinc-400 opacity-70`}>Forecast</span>
+                             )}
+                             {needsLog && (
+                                <span className={`text-xs ml-1 text-zinc-400 opacity-70`}>No Log</span>
                              )}
                           </div>
                         </div>
@@ -477,10 +513,15 @@ export default function SoloistPage() {
                             {selectedDay.description || "No description"}
                           </h3>
                           <div className="text-sm text-zinc-700 dark:text-zinc-300 mb-3 min-h-[3em]">
-                            {selectedDay.details || (needsGen ? "Generate forecast for details." : "No details available.")}
+                            {selectedDay.details || (needsGen ? "Generate forecast for details." : needsLog ? "No log entry found for this day." : "No details available.")}
                             {needsGen && (
                               <div className="mt-1 text-blue-500 dark:text-blue-400">
                                 Click {needsForecasts ? '"Generate Forecast"' : '"Update Forecast"'} above to create predictions.
+                              </div>
+                            )}
+                            {needsLog && (
+                              <div className="mt-1 text-emerald-500 dark:text-emerald-400">
+                                {selectedDay.isToday ? 'Click to log your day and see your emotional score.' : 'Consider logging this day to improve future forecasts.'}
                               </div>
                             )}
                           </div>

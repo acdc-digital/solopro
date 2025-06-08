@@ -18,7 +18,8 @@ import {
   Calendar,
   Info,
   FileEdit,
-  AlertCircle
+  AlertCircle,
+  Zap
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
@@ -557,78 +558,72 @@ export default function Feed({ onTagsUpdate }: FeedProps) {
             ))
           ) : !hasLogForDate ? (
             // No daily log exists for this date
-            <div className="flex flex-col items-center justify-center h-full text-center">
-              <div className="mb-4 p-3 rounded-full bg-amber-100">
-                <AlertCircle className="h-8 w-8 text-amber-600" />
+            <div className="flex flex-col items-center justify-center h-full p-6 text-center">
+              <div className="mb-6 p-4 rounded-full bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20">
+                <AlertCircle className="h-10 w-10 text-amber-600 dark:text-amber-500" />
               </div>
-              <h3 className="text-xl font-medium mb-2 text-gray-900">No Daily Log Found</h3>
-              <p className="text-sm text-gray-600 max-w-xs mb-2">
-                You need to create a daily log for {new Date(selectedDate).toLocaleDateString()} before generating insights.
+              <h3 className="text-xl font-semibold mb-3 text-zinc-900 dark:text-zinc-100">
+                No Daily Log Yet
+              </h3>
+              <p className="text-sm text-zinc-600 dark:text-zinc-400 max-w-sm mb-6 leading-relaxed">
+                Start your day by creating a daily log for {new Date(selectedDate).toLocaleDateString('en-US', { 
+                  weekday: 'long', 
+                  year: 'numeric', 
+                  month: 'long', 
+                  day: 'numeric' 
+                })}.
               </p>
               
-              {/* Debug information */}
-              <div className="mt-2 text-xs text-gray-500 p-2 border border-gray-200 rounded max-w-xs overflow-hidden mb-4">
-                <div className="text-left mb-1">Debug info:</div>
-                <div className="text-left">User ID: {userId || "none"}</div>
-                <div className="text-left">Date: {selectedDate}</div>
-                <div className="text-left">Log count: {allUserLogs?.length || 0}</div>
-              </div>
+              <Button 
+                onClick={handleCreateDailyLog}
+                className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2 rounded-lg shadow-sm transition-all duration-200 flex items-center gap-2"
+              >
+                <FileEdit className="h-4 w-4" />
+                Create Daily Log
+              </Button>
               
-              <div className="flex flex-col gap-2">
-                <Button 
-                  onClick={handleCreateDailyLog}
-                  className="flex items-center gap-2"
-                >
-                  <FileEdit className="h-4 w-4" />
-                  Create Daily Log
-                </Button>
-                
-                <Button
-                  onClick={forceRefresh}
-                  variant="outline"
-                  className="text-xs"
-                >
-                  Force Refresh
-                </Button>
-              </div>
+              <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-4">
+                Switch to the Log tab to get started
+              </p>
             </div>
           ) : (
             // Daily log exists but no feed yet
-            <div className="flex flex-col items-center justify-center h-full text-center">
-              <div className="mb-4 p-3 rounded-full bg-gray-100">
-                <RefreshCw className="h-8 w-8 text-blue-600" />
+            <div className="flex flex-col items-center justify-center h-full p-6 text-center">
+              <div className="mb-6 p-4 rounded-full bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20">
+                <RefreshCw className="h-10 w-10 text-blue-600 dark:text-blue-500" />
               </div>
-              <h3 className="text-xl font-medium mb-2 text-gray-900">No insights yet</h3>
-              <p className="text-sm text-gray-600 max-w-xs mb-4">
-                Generate AI insights based on your log for {new Date(selectedDate).toLocaleDateString()}.
+              <h3 className="text-xl font-semibold mb-3 text-zinc-900 dark:text-zinc-100">
+                Ready for Insights
+              </h3>
+              <p className="text-sm text-zinc-600 dark:text-zinc-400 max-w-sm mb-6 leading-relaxed">
+                Your daily log for {new Date(selectedDate).toLocaleDateString('en-US', { 
+                  weekday: 'long', 
+                  month: 'long', 
+                  day: 'numeric' 
+                })} is complete. Generate AI-powered insights to discover patterns and recommendations.
               </p>
               
-              {/* Debug information */}
-              <div className="mt-2 text-xs text-gray-500 p-2 border border-gray-200 rounded max-w-xs overflow-hidden mb-4">
-                <div className="text-left mb-1">Debug info:</div>
-                <div className="text-left">User ID: {userId || "none"}</div>
-                <div className="text-left">Date: {selectedDate}</div>
-                <div className="text-left">Log found: {dailyLog ? "Yes" : "No"}</div>
-              </div>
+              <Button 
+                onClick={handleGenerateFeed} 
+                disabled={loading}
+                className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white px-6 py-2 rounded-lg shadow-sm transition-all duration-200 flex items-center gap-2"
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <Zap className="h-4 w-4" />
+                    Generate Insights
+                  </>
+                )}
+              </Button>
               
-              <div className="flex flex-col gap-2">
-                <Button 
-                  onClick={handleGenerateFeed} 
-                  disabled={loading}
-                  className="flex items-center gap-2"
-                >
-                  {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-                  Generate Insights
-                </Button>
-                
-                <Button
-                  onClick={forceRefresh}
-                  variant="outline"
-                  className="text-xs"
-                >
-                  Force Refresh
-                </Button>
-              </div>
+              <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-4">
+                This usually takes a few seconds
+              </p>
             </div>
           )}
 

@@ -156,6 +156,37 @@ export default defineSchema({
   .index("by_name_and_user", ["name", "userId"])
   .index("by_user", ["userId"]),
 
+  // New daily log templates for customizable forms
+  dailyLogTemplates: defineTable({
+    name: v.string(),
+    userId: v.string(),
+    fields: v.array(
+      v.object({
+        id: v.string(),
+        type: v.union(
+          v.literal("slider"),
+          v.literal("number"),
+          v.literal("checkbox"),
+          v.literal("textarea"),
+          v.literal("text")
+        ),
+        label: v.string(),
+        placeholder: v.optional(v.string()),
+        min: v.optional(v.number()),
+        max: v.optional(v.number()),
+        step: v.optional(v.number()),
+        defaultValue: v.optional(v.any()),
+        required: v.optional(v.boolean()),
+        category: v.optional(v.string()),
+      })
+    ),
+    isActive: v.optional(v.boolean()),
+    createdAt: v.string(),
+    updatedAt: v.string(),
+  })
+  .index("by_user_id", ["userId"])
+  .index("by_user_id_and_active", ["userId", "isActive"]),
+
   userFeedback: defineTable({
     userId: v.optional(v.string()), // Optional to handle anonymous feedback
     email: v.optional(v.string()),
