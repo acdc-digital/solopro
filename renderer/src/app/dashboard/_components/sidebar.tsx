@@ -1,4 +1,4 @@
-// LEFT SIDEBAR
+// NAVIGATION SIDEBAR
 // /Users/matthewsimon/Documents/Github/electron-nextjs/renderer/src/app/dashboard/_components/sidebar.tsx
 
 "use client";
@@ -27,6 +27,7 @@ import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 // Import Stores & Modals
 import { SettingsDialog } from "@/app/settings/SettingsDialog";
+import { HelpModal } from "@/components/HelpModal";
 import { useFeedStore } from "@/store/feedStore";
 import { useConvexUser } from "@/hooks/useConvexUser";
 import { useQuery } from "convex/react";
@@ -82,6 +83,9 @@ export function Sidebar({ className }: SidebarProps) {
   // State to control the SettingsDialog
   const [isSettingsOpen, setIsSettingsOpen] = React.useState(false);
   
+  // State to control the HelpModal
+  const [isHelpOpen, setIsHelpOpen] = React.useState(false);
+  
   // Handlers
   const handleGoToSettings = () => {
     setIsSettingsOpen(true);
@@ -96,20 +100,27 @@ export function Sidebar({ className }: SidebarProps) {
       setSelectedDate,
       setActiveTab,
     } = useFeedStore.getState();
+    
+    console.log("Create New Log clicked - Current state:", { sidebarOpen, activeTab });
+    
     // Set view to dashboard when creating a new log
     setView("dashboard");
-    // If it's already open on "log", close it
+    
+    // If it's already open on "log", close it (TOGGLE OFF)
     if (sidebarOpen && activeTab === "log") {
+      console.log("Toggling sidebar OFF - closing sidebar");
       setSidebarOpen(false);
-      resetFeed(); // optional if you want to clear the feed on close
       return;
     }
-    // Otherwise, open and reset the "log" tab
+    
+    // Otherwise, open and set up the "log" tab (TOGGLE ON)
+    console.log("Toggling sidebar ON - opening log tab");
     const today = new Date();
     const yyyy = today.getFullYear();
     const mm = String(today.getMonth() + 1).padStart(2, "0");
     const dd = String(today.getDate()).padStart(2, "0");
     const dateKey = `${yyyy}-${mm}-${dd}`;
+    
     resetFeed();
     setSelectedDate(dateKey);
     setActiveTab("log");
@@ -150,14 +161,10 @@ export function Sidebar({ className }: SidebarProps) {
   };
   
   const handleGoTohelp = () => {
-    // Switch to Help view
-    setView("help");
+    // Open the help modal
+    setIsHelpOpen(true);
     
-    // Close the right sidebar if it's open
-    const { setSidebarOpen } = useFeedStore.getState();
-    setSidebarOpen(false);
-    
-    console.log("Help action clicked");
+    console.log("Help modal opened");
   };
   
   const handleDownload = () => {
@@ -177,15 +184,28 @@ export function Sidebar({ className }: SidebarProps) {
   
   // Items that show only if expanded
   const mainActions = [
-    { id: "soloist",  label: "Soloist",        icon: PersonStanding,  action: handleSoloist, active: currentView === "soloist" },
-    // Only show playground if user has active subscription
-    ...(effectiveSubscription ? [{ id: "testing",  label: "Playground",     icon: Activity,        action: handleTesting, active: currentView === "testing" }] : []),
-    { id: "calendar", label: "Calendar",       icon: Calendar,        action: handleCalendar, active: currentView === "dashboard" },
-    { id: "new-log",  label: "Create New Log", icon: Plus,            action: handleCreateNewLog, active: false },
-    { id: "settings", label: "Settings",       icon: Settings,        action: handleGoToSettings },
-    { id: "help",     label: "Help",           icon: CircleHelpIcon,  action: handleGoTohelp },
-    // Only show download button for browser mode users
-    ...(isBrowser === true ? [{ id: "download", label: "Download Desktop App", icon: Download, action: handleDownload }] : []),
+    { id: "soloist",  label: "Soloist",        icon: PersonStanding,  action: handleSoloist, active: currentView === "soloist", disabled: false },
+    // For browser users: always show playground but disabled if no subscription
+    // For desktop users: only show if they have subscription
+    ...(isBrowser === true ? [{
+      id: "testing", 
+      label: "Playground", 
+      icon: Activity, 
+      action: effectiveSubscription ? handleTesting : () => {}, 
+      active: currentView === "testing",
+      disabled: !effectiveSubscription
+    }] : effectiveSubscription ? [{
+      id: "testing", 
+      label: "Playground", 
+      icon: Activity, 
+      action: handleTesting, 
+      active: currentView === "testing",
+      disabled: false
+    }] : []),
+    { id: "calendar", label: "Calendar",       icon: Calendar,        action: handleCalendar, active: currentView === "dashboard", disabled: false },
+    { id: "new-log",  label: "Create New Log", icon: Plus,            action: handleCreateNewLog, active: false, disabled: false },
+    { id: "settings", label: "Settings",       icon: Settings,        action: handleGoToSettings, disabled: false },
+    { id: "help",     label: "Help",           icon: CircleHelpIcon,  action: handleGoTohelp, disabled: false },
   ];
   
   // Get user initials for avatar fallback
@@ -223,36 +243,41 @@ export function Sidebar({ className }: SidebarProps) {
           {/* Everything below is hidden if collapsed */}
           {!collapsed && (
             <div className="mt-1 space-y-3">
-              {/* SEARCH */}
-              <div>
-                <p className="px-1 pl-3 pr-2 p-2 mb-0 text-[10px] font-medium uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-                  Search
-                </p>
-                <div className="relative pl-2 pr-4">
-                  <Search
-                    size={15}
-                    className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400"
-                  />
-                  <Input
-                    placeholder="Search"
-                    className="h-9 pl-8 bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300/60 dark:border-zinc-700/60"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                  />
+              {/* APPLICATION - Only show for browser mode users */}
+              {isBrowser === true && (
+                <div>
+                  <p className="px-1 pl-3 pr-2 p-2 mb-0 text-[10px] font-medium uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+                    Application
+                  </p>
+                  <div className="relative pl-2 pr-4">
+                    <Button
+                      onClick={handleDownload}
+                      className="w-full h-9 justify-start px-3 text-sm font-normal bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-600 dark:border-emerald-700 hover:bg-emerald-100 dark:hover:bg-emerald-800/30 text-emerald-700 dark:text-emerald-300"
+                      variant="outline"
+                    >
+                      <Download className="mr-3 h-4 w-4 flex-shrink-0" />
+                      Download Desktop App
+                    </Button>
+                  </div>
                 </div>
-              </div>
-              <Separator className="bg-zinc-300/40 dark:bg-zinc-700/40" />
+              )}
+              {isBrowser === true && <Separator className="bg-zinc-300/40 dark:bg-zinc-700/40" />}
               
               {/* SUBSCRIPTION STATUS (for non-subscribers) */}
               {effectiveSubscription === false && (
                 <>
-                  <div className="px-3 py-2 mx-2 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-md">
-                    <p className="text-xs font-medium text-amber-800 dark:text-amber-200 mb-1">
-                      Limited Access
-                    </p>
-                    <p className="text-xs text-amber-700 dark:text-amber-300">
-                      Subscribe for full features including the desktop app.
-                    </p>
+                <div>
+                  <p className="px-1 pl-3 pr-2 p-2 mb-0 text-[10px] font-medium uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+                    Access
+                  </p>
+                    <div className="px-3 py-2 ml-2 mr-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-md">
+                      <p className="text-xs font-medium text-amber-800 dark:text-amber-200 mb-1">
+                        Limited Access
+                      </p>
+                      <p className="text-xs text-amber-700 dark:text-amber-300">
+                        Subscribe for full features including the desktop app and Playground.
+                      </p>
+                    </div>
                   </div>
                   <Separator className="bg-zinc-300/40 dark:bg-zinc-700/40" />
                 </>
@@ -267,14 +292,23 @@ export function Sidebar({ className }: SidebarProps) {
                   <Button
                     key={item.id}
                     variant="ghost"
-                    onClick={item.action}
+                    onClick={item.disabled ? undefined : item.action}
+                    disabled={item.disabled}
                     className={cn(
                       "w-[90%] h-9 justify-start px-3 text-sm font-normal hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50 rounded-lg ml-2 mb-1",
-                      item.active && "bg-zinc-200/80 dark:bg-zinc-800/80"
+                      item.active && !item.disabled && "bg-zinc-200/80 dark:bg-zinc-800/80",
+                      item.disabled && "opacity-50 cursor-not-allowed hover:bg-transparent dark:hover:bg-transparent"
                     )}
                   >
-                    <item.icon className="mr-3 h-4 w-4 text-zinc-600 dark:text-zinc-400 flex-shrink-0" />
-                    {item.label}
+                    <item.icon className={cn(
+                      "mr-3 h-4 w-4 flex-shrink-0",
+                      item.disabled 
+                        ? "text-zinc-400 dark:text-zinc-600" 
+                        : "text-zinc-600 dark:text-zinc-400"
+                    )} />
+                    <span className={item.disabled ? "text-zinc-400 dark:text-zinc-600" : ""}>
+                      {item.label}
+                    </span>
                   </Button>
                 ))}
               </div>
@@ -289,6 +323,9 @@ export function Sidebar({ className }: SidebarProps) {
       </div>
       {/* Our SettingsDialog component, controlled by local state */}
       <SettingsDialog open={isSettingsOpen} onOpenChange={setIsSettingsOpen} />
+      
+      {/* Our HelpModal component, controlled by local state */}
+      <HelpModal open={isHelpOpen} onOpenChange={setIsHelpOpen} />
     </div>
   );
 }

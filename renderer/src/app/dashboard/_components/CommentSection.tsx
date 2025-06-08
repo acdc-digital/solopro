@@ -94,7 +94,7 @@ export function CommentSection({ onAddComment }: CommentSectionProps) {
       />
       <button
         type="submit"
-        className="absolute right-2 bottom-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-sm p-1 transition"
+        className="absolute right-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-sm p-2 transition"
         disabled={!newComment.trim() || isSubmitting}
         tabIndex={0}
         aria-label="Post comment"

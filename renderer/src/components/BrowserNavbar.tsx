@@ -80,13 +80,6 @@ export function BrowserNavbar() {
       action: () => setView("testing"),
       active: currentView === "testing"
     }] : []),
-    { 
-      id: "help", 
-      label: "Help", 
-      icon: HelpCircle, 
-      action: () => setView("help"),
-      active: currentView === "help"
-    },
   ];
 
   const handleDownloadApp = () => {
@@ -99,7 +92,7 @@ export function BrowserNavbar() {
   }
 
   return (
-    <nav className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 px-12 py-3">
+    <nav className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 pl-5 pr-12 py-3">
       <div className="flex items-center justify-between w-full">
         {/* Logo/Brand */}
         <div className="flex items-center gap-3">
@@ -114,7 +107,7 @@ export function BrowserNavbar() {
               height={32}
               className="w-8 h-8"
             />
-            <div className="text-xl font-bold text-zinc-900 dark:text-zinc-100">
+            <div className="flex flex-row text-xl font-bold text-zinc-900 dark:text-zinc-100">
               Soloist.
             </div>
           </button>

@@ -14,58 +14,135 @@
   </tr>
 </table>
 
-## Our Architecture
-[![React](https://img.shields.io/badge/React-%2320232A.svg?style=flat-round&logo=react&logoColor=%2361DAFB)](https://reactjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-%233178C6.svg?style=flat-round&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Next.js](https://img.shields.io/badge/Next.js-%23000000.svg?style=flat-round&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-%2306B6D4.svg?style=flat-round&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
-[![OpenAI](https://img.shields.io/badge/OpenAI-%23000000.svg?style=flat-round&logo=OpenAI&logoColor=white)](https://www.openai.com/)
-[![Vercel](https://img.shields.io/badge/Vercel-%23000000.svg?style=flat-round&logo=Vercel&logoColor=white)](https://vercel.com/)
-[![ShadCN/ui](https://img.shields.io/badge/shadcn--ui-%2327272A.svg?style=flat-round&logoColor=white)](https://ui.shadcn.com/)
-[![Convex DB](https://img.shields.io/badge/Convex_DB-%23450AFF.svg?style=flat-round&logo=convex&logoColor=white)](https://convex.dev/)
+Soloist
 
-# Soloist.
-Soloist can be a lot of things, and thats kind of why it's a dynamic app. Behind its simplicity, at its core Soloist aims to help identify self-patterns which allows users to make data-enabled decisions about their personal life. At its heart is the Daily Log- a customizable template for each day. When a day is submitted, Soloist will automatically generate a summary of your day. After 4 cumulative days (in accordance with the latest predictive reseasrch), the User can begin to generate a forecast for the following 3 days. The Feed can be edited any time. To alter or enhance each day, the user can also submit Notes, Media, or Tags to include in the daily feed - a scrollable waterfall of things as they are happening or happened. In the Playground, you can choose to forecast against any 4-consecutive days in the past and compare against the real-time data to see how accurate it actually is. Gain key insights as to how your behaviour is changing before it happens. Visualize your Daily Score in the 365 Heatmap. And add details to your Profile to allow for Automated generation - you don't even have to fill out the log each day, just enable auto-generation and Soloist will use all of your historical information to 'guess' what kind of day you had on any given day.   
+A dynamic wellness platform powered by Solomon AI.
 
-Soloist is owned and developped by ACDC.digital. This is a For-Profit Open Source repository and contributions are welcome. This is a wellness platform where we believe in allowing others to contribute, and take from the work.   
+<p align="center">
+  <a href="https://reactjs.org/"><img src="https://img.shields.io/badge/React-%2320232A.svg?style=flat-round&logo=react&logoColor=%2361DAFB" alt="React" /></a>
+  <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-%233178C6.svg?style=flat-round&logo=typescript&logoColor=white" alt="TypeScript" /></a>
+  <a href="https://nextjs.org/"><img src="https://img.shields.io/badge/Next.js-%23000000.svg?style=flat-round&logo=nextdotjs&logoColor=white" alt="Next.js" /></a>
+  <a href="https://tailwindcss.com/"><img src="https://img.shields.io/badge/Tailwind_CSS-%2306B6D4.svg?style=flat-round&logo=tailwindcss&logoColor=white" alt="Tailwind CSS" /></a>
+  <a href="https://openai.com/"><img src="https://img.shields.io/badge/OpenAI-%23000000.svg?style=flat-round&logo=OpenAI&logoColor=white" alt="OpenAI" /></a>
+  <a href="https://vercel.com/"><img src="https://img.shields.io/badge/Vercel-%23000000.svg?style=flat-round&logo=Vercel&logoColor=white" alt="Vercel" /></a>
+  <a href="https://ui.shadcn.com/"><img src="https://img.shields.io/badge/shadcn--ui-%2327272A.svg?style=flat-round&logoColor=white" alt="ShadCN UI" /></a>
+  <a href="https://convex.dev/"><img src="https://img.shields.io/badge/Convex_DB-%23450AFF.svg?style=flat-round&logo=convex&logoColor=white" alt="Convex DB" /></a>
+</p>
 
-Thank you for stopping by.   
-This repo is maintained by: msimon@acdc.digital
 
-**Latest Version:** 1.4.2   
-**Lates Release Notes:** https://github.com/acdc-digital/solopro/releases   
-**Github Wiki:** https://github.com/acdc-digital/solopro/wiki   
-**Github Project:** https://github.com/users/acdc-digital/projects/10   
+Table of Contents
+	•	Overview
+	•	Features
+	•	Architecture
+	•	Getting Started
+	•	Development Commands
+	•	Deployment
+	•	Versioning
+	•	Contributing
+	•	Resources
+	•	License & Maintainers
 
-### Get Started with Development Commands
-#### **Start everything (recommended)**
+⸻
+
+Overview
+
+Soloist is a personalized daily-log and mood-tracking application that helps you identify patterns, forecast future well-being, and make data-enabled decisions about your life. Each entry is scored (0–100) by Solomon AI and visualized on a 365-day heatmap.
+
+Features
+	•	Customizable Daily Log: Tailor entries with objectives, notes, media, and tags.
+	•	Automated Summaries: AI-generated summaries on submission.
+	•	Predictive Forecasts: After 4 days of data, generate 3-day emotional forecasts.
+	•	Interactive Playground: Test forecasts against any 4-day window.
+	•	Heatmap Visualization: See daily scores in a color-coded calendar.
+	•	Auto-Generation: Optionally auto-populate logs using historical data.
+
+Architecture
+
+Soloist is built with a modern serverless and Next.js stack:
+
+Component	Technology
+Frontend	Next.js, React, TypeScript, Tailwind CSS
+UI Library	ShadCN/ui, Lucide-React icons
+State Management	Zustand
+Backend	Convex (serverless DB & auth)
+AI Services	OpenAI APIs
+Deployment	Vercel
+
+
+⸻
+
+Getting Started
+
+Clone the repo and install dependencies:
+
+git clone https://github.com/acdc-digital/solopro.git
+cd solopro
+pnpm install
+
+Development Commands
+	•	Start all services (recommended)
+
 pnpm dev
 
-#### **Individual services:**
-pnpm dev:renderer    # Just the Electron content (port 3002)   
-pnpm dev:website      # Just the website (port 3004)    
-pnpm dev:electron    # Just the Electron window
 
-### Git Update Version Commands
-1. git add .
-2. git commit -m "Updated version to x.x.x"
-3. git tag vx.x.x
-4. git push origin main vx.x.x
-5. (optional) git reset --hard vx.x.x
+	•	Individual Services
 
-**Version History**
-v1.1.0 - Workspace Init is complete - all directories firing with new Authentication security.
+pnpm dev:renderer   # Electron (port 3002)
+pnpm dev:website    # Web (port 3004)
+pnpm dev:electron   # Electron window only
 
-### Feature Development Instructions:
-1. git checkout -b new-branch
-2. git add .
-3. git commit -m "Updated Feature version to x.x.x"
-4. push origin main
 
-### Get Started with Deployment Commands
-#### **Start everything (recommended)**
+
+⸻
+
+Deployment
+
+Use the provided scripts for deploying to production:
+
+# Deploy all services
 pnpm run deploy:all
 
-#### **Individual services:**
+# Deploy individual services
 pnpm run deploy:renderer
 pnpm run deploy:website
+
+
+⸻
+
+Versioning
+
+Follow these steps to bump version:
+	1.	git add .
+	2.	git commit -m "Updated version to x.x.x"
+	3.	git tag vx.x.x
+	4.	git push origin main vx.x.x
+	5.	(Optional) git reset --hard vx.x.x
+
+Latest Version: v1.4.2
+Release Notes: https://github.com/acdc-digital/solopro/releases
+
+⸻
+
+Contributing
+
+We welcome contributions! Please fork the repo and follow the feature workflow:
+	1.	git checkout -b feature/your-feature
+	2.	pnpm dev (or appropriate command)
+	3.	Implement and commit changes
+	4.	Open a Pull Request
+
+⸻
+
+Resources
+	•	GitHub Wiki: https://github.com/acdc-digital/solopro/wiki
+	•	Project Board: https://github.com/users/acdc-digital/projects/10
+
+⸻
+
+License & Maintainers
+
+License: MIT (For-Profit Open Source)
+
+Maintained by: msimon@acdc.digital
+
+Thank you for stopping by!

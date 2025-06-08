@@ -4,7 +4,7 @@
 "use client";
 
 import * as React from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "next-themes";
 import Attributes from "./_components/Attributes";
@@ -12,7 +12,7 @@ import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useConvexUser } from "@/hooks/useConvexUser";
-import { Loader2, CheckCircle2 } from "lucide-react";
+import { Loader2, CheckCircle2, X, Palette, User, Zap, Settings } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
@@ -21,6 +21,7 @@ import { Label } from "@/components/ui/label";
 import { SignOutWithGitHub } from "@/auth/oauth/SignOutWithGitHub";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface SettingsDialogProps {
   open: boolean;
@@ -82,85 +83,132 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md md:max-w-2xl max-h-[85vh]">
-        <DialogHeader className="pb-2">
-          <DialogTitle>User Preferences</DialogTitle>
-          <DialogDescription>Update your appearance or other settings here.</DialogDescription>
-        </DialogHeader>
-
-        <ScrollArea className="pr-4 max-h-[65vh]">
-          {/* Theme toggle */}
-          <div className="flex items-center justify-between py-2">
-            <div className="text-sm">
-              Theme: <strong>{theme}</strong>
-            </div>
-            <Button 
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              size="sm"
-              variant="outline"
-            >
-              Switch to {theme === "dark" ? "light" : "dark"}
-            </Button>
+      <DialogContent className="max-w-2xl max-h-[90vh] p-0 gap-0">
+        {/* Header with close button */}
+        <div className="flex items-center justify-between p-6 pb-4 border-b border-zinc-200 dark:border-zinc-700">
+          <div className="space-y-1">
+            <DialogTitle className="flex items-center gap-2 text-xl font-semibold">
+              <Settings className="h-5 w-5 text-zinc-700 dark:text-zinc-300" />
+              User Preferences
+            </DialogTitle>
+            <DialogDescription className="text-sm text-zinc-600 dark:text-zinc-400">
+              Customize your appearance and personalize your experience
+            </DialogDescription>
           </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleClose}
+            className="h-8 w-8 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800"
+          >
+            <X className="h-4 w-4" />
+            <span className="sr-only">Close</span>
+          </Button>
+        </div>
 
-          {/* Attributes Section */}
-          <div className="border-t border-zinc-200 dark:border-zinc-700 pt-3 mt-2">
-            <Attributes />
-          </div>
+        <ScrollArea className="flex-1 max-h-[70vh] p-6">
+          <div className="space-y-6">
+            {/* Theme Section */}
+            <Card className="border-zinc-200 dark:border-zinc-700">
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center gap-2 text-base">
+                  <Palette className="h-4 w-4 text-blue-600 dark:text-blue-500" />
+                  Theme
+                </CardTitle>
+                <CardDescription className="text-sm">
+                  Choose your preferred appearance
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-zinc-700 dark:text-zinc-300">Current theme:</span>
+                    <Badge variant="outline" className="text-xs">
+                      {theme === "dark" ? "Dark" : "Light"}
+                    </Badge>
+                  </div>
+                  <Button 
+                    onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                    size="sm"
+                    variant="outline"
+                    className="h-8"
+                  >
+                    Switch to {theme === "dark" ? "light" : "dark"}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
 
-          {/* Randomizer Settings Section */}
-          <div className="border-t border-zinc-200 dark:border-zinc-700 pt-3 mt-3">
-            <h3 className="text-sm font-medium mb-1">Random Log Generation</h3>
-            <p className="text-xs text-muted-foreground mb-2">
-              Customize how random daily logs are generated with personalized instructions.
-            </p>
-            
-            <div className="space-y-1 mb-3">
-              <label className="text-xs font-medium" htmlFor="instructions">
-                Custom Instructions
-              </label>
-              <Textarea
-                id="instructions"
-                placeholder="Example: I'm a software developer working on a mobile app. I usually have standups at 10am, and I try to exercise 3 times a week. I'm learning Spanish in my free time."
-                value={instructions}
-                onChange={(e) => setInstructions(e.target.value)}
-                rows={3}
-                className="resize-y text-sm"
-              />
-              <p className="text-xs text-muted-foreground">
-                Provide context about yourself, schedule, activities, or interests for more personalized random logs.
-              </p>
-            </div>
-            
-            <Button 
-              onClick={handleSaveInstructions} 
-              disabled={isSaving}
-              size="sm"
-              variant="outline"
-              className="flex gap-1 items-center h-7 text-xs"
-            >
-              {isSaving ? (
-                <>
-                  <Loader2 className="h-3 w-3 animate-spin" />
-                  Saving...
-                </>
-              ) : saveSuccess ? (
-                <>
-                  <CheckCircle2 className="h-3 w-3 text-green-500" />
-                  Saved!
-                </>
-              ) : (
-                "Save Instructions"
-              )}
-            </Button>
+            {/* Personal Attributes Section */}
+            <Card className="border-zinc-200 dark:border-zinc-700">
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center gap-2 text-base">
+                  <User className="h-4 w-4 text-emerald-600 dark:text-emerald-500" />
+                  Personal Information
+                </CardTitle>
+                <CardDescription className="text-sm">
+                  Help personalize your experience with AI-generated content
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <Attributes />
+              </CardContent>
+            </Card>
+
+            {/* AI Generator Settings Section */}
+            <Card className="border-zinc-200 dark:border-zinc-700">
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center gap-2 text-base">
+                  <Zap className="h-4 w-4 text-purple-600 dark:text-purple-500" />
+                  Generator Settings
+                </CardTitle>
+                <CardDescription className="text-sm">
+                  Customize how random daily logs are generated with personalized instructions
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="pt-0 space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="instructions" className="text-sm font-medium">
+                    Custom Instructions
+                  </Label>
+                  <Textarea
+                    id="instructions"
+                    placeholder="Example: I'm a software developer working on a mobile app. I usually have standups at 10am, and I try to exercise 3 times a week. I'm learning Spanish in my free time."
+                    value={instructions}
+                    onChange={(e) => setInstructions(e.target.value)}
+                    rows={4}
+                    className="resize-none text-sm leading-relaxed"
+                  />
+                  <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                    Provide context about yourself, schedule, activities, or interests for more personalized random logs.
+                  </p>
+                </div>
+                
+                <Button 
+                  onClick={handleSaveInstructions} 
+                  disabled={isSaving}
+                  size="sm"
+                  variant="outline"
+                  className="w-full h-9"
+                >
+                  {isSaving ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                      Saving Instructions...
+                    </>
+                  ) : saveSuccess ? (
+                    <>
+                      <CheckCircle2 className="h-4 w-4 text-green-600 mr-2" />
+                      Instructions Saved!
+                    </>
+                  ) : (
+                    "Save Instructions"
+                  )}
+                </Button>
+              </CardContent>
+            </Card>
           </div>
         </ScrollArea>
-
-        <DialogFooter className="pt-3 border-t border-zinc-200 dark:border-zinc-700 mt-2">
-          <Button variant="secondary" onClick={handleClose} size="sm">
-            Close
-          </Button>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
