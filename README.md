@@ -1,148 +1,149 @@
-![ACDC Logo](public/logo-ACDC.svg)
+# <img src="public/logo-ACDC.svg" alt="ACDC Logo" height="60" align="center"/> Soloist
 
-<table>
-  <tr>
-    <td>
-      <pre>
-  ____        _       _     _             ____            
- / ___|  ___ | | ___ (_)___| |_          |  _ \ _ __ ___  
- \___ \ / _ \| |/ _ \| / __| __|  _____  | |_) | '__/ _ \ 
-  ___) | (_) | | (_) | \__ \ |_  |_____| |  __/| | | (_) |
- |____/ \___/|_|\___/|_|___/\__|         |_|   |_|  \___/
-      </pre>
-    </td>
-  </tr>
-</table>
+<div align="center">
 
-Soloist
+[![React](https://img.shields.io/badge/React-%2320232A.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-%233178C6.svg?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-%23000000.svg?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-%2306B6D4.svg?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![OpenAI](https://img.shields.io/badge/OpenAI-%23000000.svg?style=for-the-badge&logo=OpenAI&logoColor=white)](https://www.openai.com/)
+[![Vercel](https://img.shields.io/badge/Vercel-%23000000.svg?style=for-the-badge&logo=Vercel&logoColor=white)](https://vercel.com/)
+[![ShadCN/ui](https://img.shields.io/badge/shadcn/ui-%2327272A.svg?style=for-the-badge&logoColor=white)](https://ui.shadcn.com/)
+[![Convex DB](https://img.shields.io/badge/Convex_DB-%23450AFF.svg?style=for-the-badge&logo=convex&logoColor=white)](https://convex.dev/)
 
-A dynamic wellness platform powered by Solomon AI.
+**📊 Version:** `1.4.2` | **📝 License:** For-Profit Open Source | **🚀 Status:** Active Development
 
-<p align="center">
-  <a href="https://reactjs.org/"><img src="https://img.shields.io/badge/React-%2320232A.svg?style=flat-round&logo=react&logoColor=%2361DAFB" alt="React" /></a>
-  <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-%233178C6.svg?style=flat-round&logo=typescript&logoColor=white" alt="TypeScript" /></a>
-  <a href="https://nextjs.org/"><img src="https://img.shields.io/badge/Next.js-%23000000.svg?style=flat-round&logo=nextdotjs&logoColor=white" alt="Next.js" /></a>
-  <a href="https://tailwindcss.com/"><img src="https://img.shields.io/badge/Tailwind_CSS-%2306B6D4.svg?style=flat-round&logo=tailwindcss&logoColor=white" alt="Tailwind CSS" /></a>
-  <a href="https://openai.com/"><img src="https://img.shields.io/badge/OpenAI-%23000000.svg?style=flat-round&logo=OpenAI&logoColor=white" alt="OpenAI" /></a>
-  <a href="https://vercel.com/"><img src="https://img.shields.io/badge/Vercel-%23000000.svg?style=flat-round&logo=Vercel&logoColor=white" alt="Vercel" /></a>
-  <a href="https://ui.shadcn.com/"><img src="https://img.shields.io/badge/shadcn--ui-%2327272A.svg?style=flat-round&logoColor=white" alt="ShadCN UI" /></a>
-  <a href="https://convex.dev/"><img src="https://img.shields.io/badge/Convex_DB-%23450AFF.svg?style=flat-round&logo=convex&logoColor=white" alt="Convex DB" /></a>
-</p>
+[**📖 Documentation**](https://github.com/acdc-digital/solopro/wiki) • [**📋 Project Board**](https://github.com/users/acdc-digital/projects/10) • [**🔖 Release Notes**](https://github.com/acdc-digital/solopro/releases)
 
+</div>
 
-Table of Contents
-	•	Overview
-	•	Features
-	•	Architecture
-	•	Getting Started
-	•	Development Commands
-	•	Deployment
-	•	Versioning
-	•	Contributing
-	•	Resources
-	•	License & Maintainers
+---
 
-⸻
+## 🎯 What is Soloist?
 
-Overview
+**Soloist** is a dynamic personal analytics platform that helps you identify self-patterns and make data-driven decisions about your life. Through intelligent tracking and predictive analysis, Soloist transforms your daily experiences into actionable insights.
 
-Soloist is a personalized daily-log and mood-tracking application that helps you identify patterns, forecast future well-being, and make data-enabled decisions about your life. Each entry is scored (0–100) by Solomon AI and visualized on a 365-day heatmap.
+### ✨ Key Features
 
-Features
-	•	Customizable Daily Log: Tailor entries with objectives, notes, media, and tags.
-	•	Automated Summaries: AI-generated summaries on submission.
-	•	Predictive Forecasts: After 4 days of data, generate 3-day emotional forecasts.
-	•	Interactive Playground: Test forecasts against any 4-day window.
-	•	Heatmap Visualization: See daily scores in a color-coded calendar.
-	•	Auto-Generation: Optionally auto-populate logs using historical data.
+- **📝 Daily Log** - Customizable templates for tracking your daily activities
+- **🤖 Auto-Summaries** - AI-generated summaries of your day
+- **📈 Predictive Forecasting** - Get 3-day forecasts based on your 4-day patterns
+- **📱 Dynamic Feed** - Real-time waterfall view of your notes, media, and tags
+- **🎮 Playground Mode** - Test forecasts against historical data
+- **📊 365 Heatmap** - Visualize your entire year at a glance
+- **👤 Smart Profiles** - Enable auto-generation for effortless tracking
 
-Architecture
+---
 
-Soloist is built with a modern serverless and Next.js stack:
+## 🚀 Quick Start
 
-Component	Technology
-Frontend	Next.js, React, TypeScript, Tailwind CSS
-UI Library	ShadCN/ui, Lucide-React icons
-State Management	Zustand
-Backend	Convex (serverless DB & auth)
-AI Services	OpenAI APIs
-Deployment	Vercel
+### Prerequisites
 
+- Node.js 18+
+- pnpm 8+
+- Git
 
-⸻
+### Installation
 
-Getting Started
-
-Clone the repo and install dependencies:
-
+```bash
+# Clone the repository
 git clone https://github.com/acdc-digital/solopro.git
+
+# Navigate to project directory
 cd solopro
+
+# Install dependencies
 pnpm install
 
-Development Commands
-	•	Start all services (recommended)
-
+# Start development environment
 pnpm dev
+```
 
+### Development Commands
 
-	•	Individual Services
+| Command | Description |
+|---------|-------------|
+| `pnpm dev` | Start all services (recommended) |
+| `pnpm dev:renderer` | Start Electron content only (port 3002) |
+| `pnpm dev:website` | Start website only (port 3004) |
+| `pnpm dev:electron` | Start Electron window only |
 
-pnpm dev:renderer   # Electron (port 3002)
-pnpm dev:website    # Web (port 3004)
-pnpm dev:electron   # Electron window only
+### Deployment
 
+| Command | Description |
+|---------|-------------|
+| `pnpm run deploy:all` | Deploy all services |
+| `pnpm run deploy:renderer` | Deploy renderer only |
+| `pnpm run deploy:website` | Deploy website only |
 
+---
 
-⸻
+## 🔧 Development Workflow
 
-Deployment
+### Feature Development
 
-Use the provided scripts for deploying to production:
+```bash
+# Create feature branch
+git checkout -b feature/your-feature-name
 
-# Deploy all services
-pnpm run deploy:all
+# Make changes and commit
+git add .
+git commit -m "feat: add your feature description"
 
-# Deploy individual services
-pnpm run deploy:renderer
-pnpm run deploy:website
+# Push to origin
+git push origin feature/your-feature-name
+```
 
+### Version Management
 
-⸻
+```bash
+# Update version
+git add .
+git commit -m "chore: bump version to x.x.x"
+git tag vx.x.x
+git push origin main vx.x.x
 
-Versioning
+# (Optional) Reset to specific version
+git reset --hard vx.x.x
+```
 
-Follow these steps to bump version:
-	1.	git add .
-	2.	git commit -m "Updated version to x.x.x"
-	3.	git tag vx.x.x
-	4.	git push origin main vx.x.x
-	5.	(Optional) git reset --hard vx.x.x
+---
 
-Latest Version: v1.4.2
-Release Notes: https://github.com/acdc-digital/solopro/releases
+## 📚 Version History
 
-⸻
+| Version | Description |
+|---------|-------------|
+| **v1.4.2** | Latest stable release |
+| **v1.1.0** | Workspace initialization complete with enhanced authentication |
 
-Contributing
+---
 
-We welcome contributions! Please fork the repo and follow the feature workflow:
-	1.	git checkout -b feature/your-feature
-	2.	pnpm dev (or appropriate command)
-	3.	Implement and commit changes
-	4.	Open a Pull Request
+## 🤝 Contributing
 
-⸻
+We believe in the power of community! Soloist is a **For-Profit Open Source** project, and we welcome contributions from developers worldwide.
 
-Resources
-	•	GitHub Wiki: https://github.com/acdc-digital/solopro/wiki
-	•	Project Board: https://github.com/users/acdc-digital/projects/10
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-⸻
+---
 
-License & Maintainers
+## 📬 Contact & Support
 
-License: MIT (For-Profit Open Source)
+- **Maintainer:** msimon@acdc.digital
+- **Company:** [ACDC.digital](https://acdc.digital)
+- **Issues:** [GitHub Issues](https://github.com/acdc-digital/solopro/issues)
 
-Maintained by: msimon@acdc.digital
+---
 
-Thank you for stopping by!
+<div align="center">
+
+### 🌟 Star us on GitHub!
+
+If you find Soloist helpful, please consider giving us a star. It helps us reach more developers and improve the project!
+
+**Built with ❤️ by ACDC.digital**
+
+</div>
