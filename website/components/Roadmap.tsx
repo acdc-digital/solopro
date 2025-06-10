@@ -4,7 +4,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { MapPin, CheckCircle2, Circle, Sparkles, Brain, Shield, Smartphone, Globe, Zap, LineChart, Users, Calendar } from "lucide-react";
+import { MapPin, CheckCircle2, Circle, Brain, Smartphone, Globe, Zap, LineChart, Users } from "lucide-react";
 
 type RoadmapPhase = "shipped" | "in-progress" | "planned";
 
@@ -155,7 +155,7 @@ export function Roadmap() {
                 onClick={() => setActivePhase(phase)}
                 className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
                   activePhase === phase
-                    ? "bg-primary text-primary-foreground"
+                    ? "bg-white border border-black text-black"
                     : "bg-card text-card-foreground border border-border hover:bg-accent hover:text-accent-foreground"
                 }`}
               >

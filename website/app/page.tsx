@@ -5,8 +5,6 @@
 
 import React, { useEffect, useState } from "react";
 import {
-  Download,
-  ChevronRight,
   CheckCircle,
   XCircle,
   X,
@@ -27,29 +25,7 @@ import { CTABanner } from "@/components/CTABanner";
 import { Footer } from "@/components/Footer";
 import { getCheckoutSession } from "@/lib/services/PaymentService";
 
-type ButtonProps = {
-  children: React.ReactNode;
-  className?: string;
-  variant?: "default" | "outline";
-};
 
-// Button component with styling
-const Button = ({ children, className, variant = "default" }: ButtonProps) => {
-  const baseStyles = "font-medium rounded-full transition-colors px-4 py-2";
-  const variantStyles = {
-    default: "bg-primary text-primary-foreground hover:bg-primary/90",
-    outline:
-      "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
-  };
-
-  return (
-    <button
-      className={`${baseStyles} ${variantStyles[variant]} ${className || ""}`}
-    >
-      {children}
-    </button>
-  );
-};
 
 export default function LandingPage() {
   const [paymentStatus, setPaymentStatus] = useState<{
@@ -213,8 +189,8 @@ export default function LandingPage() {
       )}
 
       <main className="flex-1">
-        {/* Download Buttons */}
-        <div className="bg-stone-50">
+        {/* Download Buttons - Hidden on mobile */}
+        <div className="bg-stone-50 hidden md:block">
           <div className="container mx-auto px-4 py-2 mt-4">
             <div className="flex justify-left gap-4">
               <button 

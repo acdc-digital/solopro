@@ -43,21 +43,21 @@ export function CTABanner() {
           <div className="mt-8 flex flex-wrap justify-center gap-4">
             <button
               onClick={() => window.location.href = '/#pricing'}
-              className="inline-flex h-12 items-center justify-center rounded-full bg-white border border-border px-12 py-3 text-lg font-bold text-[#323232] hover:text-foreground hover:border-foreground transition-all duration-200"
+              className="inline-flex h-10 items-center justify-center rounded-full bg-white border border-border px-10 py-3 text-lg font-bold text-[#323232] hover:text-foreground hover:border-foreground transition-all duration-200"
             >
               Get Started
             </button>
             
             <button
               onClick={() => window.location.href = '/#faq'}
-              className="inline-flex h-12 items-center justify-center rounded-full bg-white border border-border px-12 py-3 text-lg font-bold text-[#323232] hover:text-foreground hover:border-foreground transition-all duration-200"
+              className="inline-flex h-10 items-center justify-center rounded-full bg-white border border-border px-10 py-3 text-lg font-bold text-[#323232] hover:text-foreground hover:border-foreground transition-all duration-200"
             >
               Questions?
             </button>
             
             <button
               onClick={() => window.open('https://github.com/acdc-digital/solopro', '_blank')}
-              className="inline-flex h-12 items-center gap-2 justify-center rounded-full bg-white border border-border px-12 py-3 text-lg font-bold text-[#323232] hover:text-foreground hover:border-foreground transition-all duration-200"
+              className="inline-flex h-10 items-center gap-2 justify-center rounded-full bg-white border border-border px-10 py-3 text-lg font-bold text-[#323232] hover:text-foreground hover:border-foreground transition-all duration-200"
             >
               <Github className="h-5 w-5" />
               Contribute
