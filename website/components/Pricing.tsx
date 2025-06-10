@@ -92,7 +92,28 @@ export default function Pricing() {
     console.log(`Subscription state - hasActiveSubscription: ${hasActiveSubscription}`);
     
     if (tier.name === "Free") {
-      // Route directly to the dashboard
+      // Check if on mobile (viewport width < 640px which is Tailwind's 'sm' breakpoint)
+      if (window.innerWidth < 640) {
+        return; // Don't do anything on mobile for Free tier
+      }
+      
+      // Check if user is authenticated for desktop
+      if (isLoading) {
+        console.log("Auth state is still loading, waiting...");
+        setTimeout(() => handlePriceSelection(tier), 500);
+        return;
+      }
+
+      if (!isAuthenticated) {
+        // If not authenticated, show sign in modal
+        console.log("User not authenticated, showing sign-in modal for Free tier");
+        setSelectedTier(tier);
+        setSignInFlow("signIn");
+        setIsSignInModalOpen(true);
+        return;
+      }
+      
+      // User is authenticated, route to dashboard
       window.location.href = process.env.NEXT_PUBLIC_APP_URL || "https://app.acdc.digital" + "/dashboard";
       return;
     }
@@ -168,6 +189,13 @@ export default function Pricing() {
     // Hide sign-in modal
     setIsSignInModalOpen(false);
 
+    // Check if user selected Free tier
+    if (selectedTier && selectedTier.name === "Free") {
+      console.log("User authenticated for Free tier, redirecting to dashboard");
+      window.location.href = process.env.NEXT_PUBLIC_APP_URL || "https://app.acdc.digital" + "/dashboard";
+      return;
+    }
+
     // After successful authentication, immediately show the checkout modal
     // if we have a selected tier with a price ID
     if (selectedTier && selectedTier.priceId) {
@@ -184,33 +212,33 @@ export default function Pricing() {
   };
 
   return (
-    <section id="pricing" className="py-12 md:py-18">
+    <section id="pricing" className="py-10 sm:py-12 md:py-18">
       <div className="container mx-auto px-4 md:px-6">
         {showInstructions && <StripeSetupInstructions />}
-        <div className="mx-auto flex max-w-[58rem] flex-col items-center space-y-4 text-center">
-          <div className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-sm font-medium text-black mb-0 border border-black">
-            <Sparkles className="h-4 w-4" />
+        <div className="mx-auto flex max-w-[58rem] flex-col items-center space-y-3 sm:space-y-4 text-center">
+          <div className="inline-flex items-center gap-2 rounded-full bg-white px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-medium text-black mb-0 border border-black">
+            <Sparkles className="h-3 w-3 sm:h-4 sm:w-4" />
             Pricing
           </div>
-          <h2 className="text-3xl font-bold tracking-tighter md:text-4xl">
+          <h2 className="text-2xl sm:text-3xl font-bold tracking-tighter md:text-4xl px-2">
             Simple, Transparent Pricing
           </h2>
-          <p className="max-w-[85%] text-muted-foreground md:text-xl">
+          <p className="max-w-[90%] sm:max-w-[85%] text-sm sm:text-base text-muted-foreground md:text-xl px-2">
             Start with our free browser app or try Pro with a 14-day free trial. Cancel anytime.
           </p>
         </div>
-        <div className="mx-auto mt-16 grid max-w-5xl gap-6 md:grid-cols-2 lg:grid-cols-3 lg:items-center">
+        <div className="mx-auto mt-8 sm:mt-12 md:mt-16 grid max-w-5xl gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 lg:items-center">
           {tiers.map((tier) => {
             // Determine card styling based on tier type
             let cardClass =
               "relative flex flex-col rounded-lg border bg-background ";
             if (tier.highlighted) {
-              cardClass += "border-emerald-600 shadow-md p-6 md:p-8 scale-105 z-10";
+              cardClass += "border-emerald-600 shadow-md p-5 sm:p-6 md:p-8 sm:scale-105 z-10";
             } else if (tier.name === "Coming Soon") {
               cardClass +=
-                "border-dashed border-muted-foreground/50 p-6 shadow-sm my-auto";
+                "border-dashed border-muted-foreground/50 p-5 sm:p-6 shadow-sm my-auto";
             } else {
-              cardClass += "p-6 shadow-sm my-auto";
+              cardClass += "p-5 sm:p-6 shadow-sm my-auto";
             }
             return (
               <div key={tier.name} className={cardClass}>
@@ -224,47 +252,47 @@ export default function Pricing() {
                     Roadmap
                   </div>
                 )}
-                <div className="mb-4 space-y-2">
+                <div className="mb-3 sm:mb-4 space-y-2">
                   <h3
-                    className={`font-bold ${tier.highlighted ? "text-2xl" : "text-xl"}`}
+                    className={`font-bold ${tier.highlighted ? "text-xl sm:text-2xl" : "text-lg sm:text-xl"}`}
                   >
                     {tier.name}
                   </h3>
                   {tier.name === "Pro" ? (
-                    <div className="inline-flex items-center px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs border border-emerald-600 font-medium">
+                    <div className="inline-flex items-center px-2 sm:px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs border border-emerald-600 font-medium">
                       Full experience with 14-day Free trial
                     </div>
                   ) : (
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-xs sm:text-sm text-muted-foreground">
                       {tier.description}
                     </p>
                   )}
                 </div>
-                <div className="mb-6">
+                <div className="mb-4 sm:mb-6">
                   {tier.name === "Pro" && (
                     <div className="mb-2">
-                      <span className="text-3xl font-semibold text-emerald-600 decoration-2">$12</span>
-                      <div className="text-sm text-muted-foreground">Free for 14 days, then $12/month</div>
+                      <span className="text-2xl sm:text-3xl font-semibold text-emerald-600 decoration-2">$12</span>
+                      <div className="text-xs sm:text-sm text-muted-foreground">Free for 14 days, then $12/month</div>
                     </div>
                   )}
                   {tier.name !== "Pro" && (
                     <>
                       <span
-                        className={`font-bold ${tier.highlighted ? "text-4xl" : "text-3xl"}`}
+                        className={`font-bold ${tier.highlighted ? "text-3xl sm:text-4xl" : "text-2xl sm:text-3xl"}`}
                       >
                         {tier.price}
                       </span>
                       {tier.name !== "Coming Soon" && tier.price !== "Custom" && (
-                        <span className="ml-1 text-muted-foreground">/month</span>
+                        <span className="ml-1 text-sm sm:text-base text-muted-foreground">/month</span>
                       )}
                     </>
                   )}
                 </div>
-                <ul className="mb-6 space-y-2 text-xs">
+                <ul className="mb-4 sm:mb-6 space-y-2 text-xs">
                   {tier.features.map((feature) => (
-                    <li key={feature} className="flex items-center">
+                    <li key={feature} className="flex items-start">
                       <Check
-                        className={`mr-2 ${tier.highlighted ? "h-4 w-4" : "h-3 w-3"} ${tier.highlighted ? "text-emerald-700" : "text-primary"}`}
+                        className={`mr-2 mt-0.5 flex-shrink-0 ${tier.highlighted ? "h-3 w-3 sm:h-4 sm:w-4" : "h-3 w-3"} ${tier.highlighted ? "text-emerald-700" : "text-primary"}`}
                       />
                       <span>{feature}</span>
                     </li>
@@ -274,17 +302,27 @@ export default function Pricing() {
                   <button
                     onClick={() => handlePriceSelection(tier)}
                     disabled={tier.name === "Coming Soon" || (hasActiveSubscription === true && !!tier.priceId)}
-                    className={`inline-flex h-10 w-full items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring ${
+                    className={`inline-flex h-10 sm:h-10 w-full items-center justify-center rounded-md px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring ${
+                      tier.name === "Free" 
+                        ? "bg-muted text-muted-foreground cursor-not-allowed sm:cursor-pointer sm:border sm:border-input sm:bg-background sm:hover:bg-accent sm:hover:text-accent-foreground sm:active:scale-95"
+                        : "active:scale-95"
+                    } ${
                       hasActiveSubscription === true && tier.priceId
                         ? "bg-green-200 dark:bg-green-900/20 text-green-800 dark:text-green-300 border border-green-300 dark:border-green-600 cursor-default"
                         : tier.highlighted
                         ? "bg-emerald-600 text-white shadow hover:bg-emerald-800 font-bold"
                         : tier.name === "Coming Soon"
                           ? "bg-muted text-muted-foreground cursor-default"
-                          : "border border-input bg-background hover:bg-accent hover:text-accent-foreground"
+                          : tier.name !== "Free" && "border border-input bg-background hover:bg-accent hover:text-accent-foreground"
                     }`}
                   >
-                    {hasActiveSubscription === true && tier.priceId ? "✓ Active" : tier.cta}
+                    {hasActiveSubscription === true && tier.priceId ? "✓ Active" : 
+                     tier.name === "Free" ? (
+                       <>
+                         <span className="sm:hidden">Desktop Only</span>
+                         <span className="hidden sm:inline">{tier.cta}</span>
+                       </>
+                     ) : tier.cta}
                   </button>
                 </div>
               </div>

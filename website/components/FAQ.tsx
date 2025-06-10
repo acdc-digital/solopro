@@ -62,7 +62,7 @@ export function FAQ() {
       featured: true,
       answer: (
         <div className="space-y-3">
-          <p>Our AI-powered forecasting achieves <strong>85-92% accuracy</strong> after just 7 days of consistent logging. The more you use SoloPro, the more personalized and accurate your predictions become.</p>
+          <p>Our AI-powered forecasting achieves <strong>85-92% accuracy</strong> after just 7 days of consistent logging. The more you use Soloist, the more personalized and accurate your predictions become.</p>
           <div className="bg-muted p-4 rounded-lg border border-border">
             <p className="text-card-foreground text-sm">💡 <strong>Pro tip:</strong> Users who log daily for their first week see the most dramatic improvements in forecast accuracy.</p>
           </div>
@@ -142,18 +142,18 @@ export function FAQ() {
       )
     },
     {
-      question: "What makes SoloPro different from other mood trackers?",
+      question: "What makes Soloist different from other mood trackers?",
       category: "features",
       answer: (
         <div className="space-y-3">
-          <p>Unlike basic mood trackers, SoloPro uses <strong>predictive AI</strong> to forecast your emotional patterns and provides actionable insights.</p>
+          <p>Unlike basic mood trackers, Soloist uses <strong>predictive AI</strong> to forecast your emotional patterns and provides actionable insights.</p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
             <div className="bg-muted p-3 rounded-lg border border-border">
               <p className="font-medium text-card-foreground">❌ Other apps</p>
               <p className="text-muted-foreground">Basic logging and simple charts</p>
             </div>
             <div className="bg-card p-3 rounded-lg border border-primary/20">
-              <p className="font-medium text-card-foreground">✅ SoloPro</p>
+              <p className="font-medium text-card-foreground">✅ Soloist</p>
               <p className="text-primary">AI forecasting + pattern recognition</p>
             </div>
           </div>
@@ -179,7 +179,7 @@ export function FAQ() {
       category: "getting-started",
       answer: (
         <div className="space-y-3">
-          <p>No worries! SoloPro works with <strong>imperfect data</strong>. Even logging 4-5 days per week provides valuable insights.</p>
+          <p>No worries! Soloist works with <strong>imperfect data</strong>. Even logging 4-5 days per week provides valuable insights.</p>
           <p>We'll send gentle reminders (if you want them) and our AI can interpolate missing days to maintain your forecast accuracy.</p>
           <p className="text-sm text-muted-foreground">💡 Most successful users set a daily phone reminder for their preferred logging time.</p>
         </div>
@@ -251,7 +251,7 @@ export function FAQ() {
             Everything you need to know
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Get answers to common questions about mood tracking, privacy, and getting the most from SoloPro.
+            Get answers to common questions about mood tracking, privacy, and getting the most from Soloist.
           </p>
         </div>
 
@@ -279,7 +279,7 @@ export function FAQ() {
                 onClick={() => setActiveCategory(category.id)}
                 className={`inline-flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
                   activeCategory === category.id
-                    ? "bg-primary text-primary-foreground"
+                    ? "bg-white border border-black text-black"
                     : "bg-card text-card-foreground border border-border hover:bg-accent hover:text-accent-foreground"
                 }`}
               >

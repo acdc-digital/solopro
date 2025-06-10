@@ -1,3 +1,6 @@
+// FEATURES
+// /Users/matthewsimon/Documents/Github/solopro/website/components/Features.tsx
+
 "use client";
 
 import { ArrowRight, Sparkles, TrendingUp, BarChart3 } from "lucide-react";
@@ -77,10 +80,10 @@ export function Features() {
                 Review the Past, Ready the Future
               </h3>
               <p className="text-gray-600 mb-6 flex-grow leading-relaxed">
-                SoloPro's intelligent analysis helps you look back to learn and
+                Soloist's intelligent analysis helps you look back to learn and
                 gear up for what's coming next with predictive insights.
               </p>
-              <div className="mb-4 flex items-center justify-center">
+              <div className="mb-4 flex items-left justify-left">
                 <PlaygroundDemo />
               </div>
             </div>

@@ -56,7 +56,7 @@ export const Hero = () => {
   const downloadsEnabled = isAuthenticated && hasActiveSubscription === true;
 
   return (
-    <section className="py-12 md:py-8 container mx-auto px-4">
+    <section className="py-4 md:py-6 container mx-auto px-4">
       <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
         {/* Left Side - Text Content */}
         <div className="space-y-6 lg:w-1/2">

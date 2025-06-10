@@ -135,8 +135,8 @@ export function HeroFeature() {
             </div>
           </div>
 
-          {/* Right Side - Form or Feed */}
-          <div className="bg-card text-card-foreground p-6 border-l border-border h-[500px]">
+          {/* Right Side - Form or Feed (Hidden on mobile) */}
+          <div className="bg-card text-card-foreground p-6 border-l border-border h-[500px] hidden lg:block">
             {!showFeed ? (
               /* Daily Log Form - Match Left Structure */
               <div className="text-left mb-8">
