@@ -17,7 +17,7 @@ export function CTABanner() {
   return (
     <section 
       id="cta-banner"
-      className="pt-20 pb-20 bg-stone-50"
+      className="pt-20 pb-16 bg-stone-50"
     >
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto text-center">
@@ -40,26 +40,25 @@ export function CTABanner() {
           </p>
 
           {/* Action Buttons */}
-          <div className="mt-8 flex flex-wrap justify-center gap-4">
+          {/* hidden on mobile (<md), visible md+ */}
+          <div className="hidden md:flex justify-center space-x-4">
             <button
-              onClick={() => window.location.href = '/#pricing'}
+              onClick={() => (window.location.href = '/#pricing')}
               className="inline-flex h-10 items-center justify-center rounded-full bg-white border border-border px-10 py-3 text-lg font-bold text-[#323232] hover:text-foreground hover:border-foreground transition-all duration-200"
             >
               Get Started
             </button>
-            
             <button
-              onClick={() => window.location.href = '/#faq'}
+              onClick={() => (window.location.href = '/#faq')}
               className="inline-flex h-10 items-center justify-center rounded-full bg-white border border-border px-10 py-3 text-lg font-bold text-[#323232] hover:text-foreground hover:border-foreground transition-all duration-200"
             >
               Questions?
             </button>
-            
             <button
               onClick={() => window.open('https://github.com/acdc-digital/solopro', '_blank')}
               className="inline-flex h-10 items-center gap-2 justify-center rounded-full bg-white border border-border px-10 py-3 text-lg font-bold text-[#323232] hover:text-foreground hover:border-foreground transition-all duration-200"
             >
-              <Github className="h-5 w-5" />
+              <Github className="w-5 h-5" />
               Contribute
             </button>
           </div>
