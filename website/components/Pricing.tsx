@@ -54,7 +54,7 @@ export default function Pricing() {
     {
       name: "Pro",
       description: "Full experience with 14-day free trial",
-      price: "$12",
+      price: "$3",
       features: [
         "Desktop & mobile apps",
         "Unlimited mood tracking", 
@@ -271,7 +271,7 @@ export default function Pricing() {
                 <div className="mb-4 sm:mb-6">
                   {tier.name === "Pro" && (
                     <div className="mb-2">
-                      <span className="text-2xl sm:text-3xl font-semibold text-emerald-600 decoration-2">$12</span>
+                      <span className="text-2xl sm:text-3xl font-semibold text-emerald-600 decoration-2">$3</span>
                       <div className="text-xs sm:text-sm text-muted-foreground">Free for 14 days, then $12/month</div>
                     </div>
                   )}
