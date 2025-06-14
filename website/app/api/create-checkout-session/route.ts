@@ -1,6 +1,17 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 
+// CORS support
+const CORS_HEADERS = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type"
+};
+
+export async function OPTIONS() {
+  return NextResponse.json({}, { status: 204, headers: CORS_HEADERS });
+}
+
 // Initialize Stripe with your secret key
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 
@@ -26,7 +37,7 @@ export async function POST(request: Request) {
       console.error("API Error: Price ID is required but was not provided");
       return NextResponse.json(
         { error: "Price ID is required" },
-        { status: 400 }
+        { status: 400, headers: CORS_HEADERS }
       );
     }
 
@@ -34,7 +45,7 @@ export async function POST(request: Request) {
       console.error("API Error: Stripe secret key is not configured");
       return NextResponse.json(
         { error: "Payment service is not properly configured" },
-        { status: 500 }
+        { status: 500, headers: CORS_HEADERS }
       );
     }
 
@@ -42,15 +53,34 @@ export async function POST(request: Request) {
       console.error("API Error: User ID is required but was not provided");
       return NextResponse.json(
         { error: "Authentication required" },
-        { status: 401 }
+        { status: 401, headers: CORS_HEADERS }
       );
     }
 
     console.log(`Creating Stripe checkout session for price ID: ${priceId} and user ID: ${userId}`);
     
-    // Get the origin for redirect URLs
-    const origin = process.env.NEXT_PUBLIC_BASE_URL || "https://www.acdc.digital";
-    console.log("Using origin for redirects:", origin);
+    // Get the origin for redirect URLs and ensure proper formatting
+    const rawOrigin = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.acdc.digital';
+    console.log("Raw origin from env:", rawOrigin);
+    
+    // Clean up the URL and ensure proper scheme
+    let cleanUrl = rawOrigin.trim();
+    
+    // Remove trailing slash if present
+    cleanUrl = cleanUrl.replace(/\/$/, '');
+    
+    // Ensure https:// scheme is present
+    if (!cleanUrl.startsWith('http://') && !cleanUrl.startsWith('https://')) {
+      cleanUrl = `https://${cleanUrl}`;
+    }
+    
+    // For production, force https
+    if (cleanUrl.startsWith('http://') && !cleanUrl.includes('localhost')) {
+      cleanUrl = cleanUrl.replace('http://', 'https://');
+    }
+    
+    const fullUrl = cleanUrl;
+    console.log("Final processed URL for redirects:", fullUrl);
 
     // Common session parameters
     const sessionParams: Stripe.Checkout.SessionCreateParams = {
@@ -78,13 +108,13 @@ export async function POST(request: Request) {
     if (embeddedCheckout) {
       // For embedded checkout, we use ui_mode: 'embedded' and return_url
       sessionParams.ui_mode = 'embedded';
-      sessionParams.return_url = `${origin}/dashboard?session_id={CHECKOUT_SESSION_ID}`;
+      sessionParams.return_url = `${fullUrl}/dashboard?session_id={CHECKOUT_SESSION_ID}`;
       // Set redirect_on_completion to 'if_required' to allow onComplete callback to be called
       sessionParams.redirect_on_completion = 'if_required';
     } else {
       // For redirect checkout, we use success_url and cancel_url
-      sessionParams.success_url = `${origin}/dashboard?success=true&session_id={CHECKOUT_SESSION_ID}`;
-      sessionParams.cancel_url = `${origin}/?canceled=true`;
+      sessionParams.success_url = `${fullUrl}/dashboard?success=true&session_id={CHECKOUT_SESSION_ID}`;
+      sessionParams.cancel_url = `${fullUrl}/?canceled=true`;
     }
 
     const session = await stripe.checkout.sessions.create(sessionParams);
@@ -96,7 +126,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ 
         clientSecret: session.client_secret,
         sessionId: session.id
-      });
+      }, { headers: CORS_HEADERS });
     } else {
       // Return the URL for redirect
       if (!session.url) {
@@ -104,7 +134,7 @@ export async function POST(request: Request) {
       }
       
       console.log("Checkout URL created:", session.url);
-      return NextResponse.json({ url: session.url });
+      return NextResponse.json({ url: session.url }, { headers: CORS_HEADERS });
     }
   } catch (error) {
     console.error("Error creating checkout session:", error);
@@ -125,7 +155,7 @@ export async function POST(request: Request) {
     
     return NextResponse.json(
       { error: errorMessage },
-      { status: 500 }
+      { status: 500, headers: CORS_HEADERS }
     );
   }
 } 

@@ -106,10 +106,13 @@ export const processStripeWebhook = mutation({
               }
 
               // For one-time payments, set a far future expiry (e.g., 10 years from now)
-              // For actual subscriptions, use the provided period end
+              // For actual subscriptions, we'll get the period end from the subscription webhook
               if (mode === "subscription" && subscription) {
-                // This is a real subscription - Stripe will manage the period
-                console.log("Creating subscription record for Stripe subscription");
+                // This is a real subscription - set a temporary period end
+                // The actual period end will be updated when we receive the subscription.created webhook
+                const oneMonthFromNow = Math.floor(Date.now() / 1000) + (30 * 24 * 60 * 60);
+                subscriptionData.currentPeriodEnd = oneMonthFromNow;
+                console.log("Creating subscription record with temporary period end, will be updated by subscription webhook");
               } else {
                 // This is a one-time payment - give them long-term access
                 const tenYearsFromNow = Math.floor(Date.now() / 1000) + (10 * 365 * 24 * 60 * 60);

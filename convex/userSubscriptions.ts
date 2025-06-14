@@ -62,25 +62,27 @@ export const createOrUpdateFromStripe = internalMutation({
   handler: async (ctx, args) => {
     let userId: Id<"users"> | null = null;
     
-    // First try to use the userIdOrEmail as a direct user ID
-    try {
-      const user = await ctx.db.get(args.userIdOrEmail as Id<"users">);
-      if (user) {
-        userId = user._id;
-      }
-    } catch (e) {
-      // Not a valid ID, try email lookup
+    // First try to find user by auth ID
+    const userByAuthId = await ctx.db
+      .query("users")
+      .withIndex("byAuthId", q => q.eq("authId", args.userIdOrEmail))
+      .first();
+    
+    if (userByAuthId) {
+      userId = userByAuthId._id;
+      console.log("Found user by auth ID:", userId);
     }
     
-    // If not found by ID, try to find by email
+    // If not found by auth ID, try to find by email
     if (!userId && args.customerEmail) {
       const userByEmail = await ctx.db
         .query("users")
-        .filter(q => q.eq(q.field("email"), args.customerEmail))
+        .withIndex("email", q => q.eq("email", args.customerEmail))
         .first();
       
       if (userByEmail) {
         userId = userByEmail._id;
+        console.log("Found user by customer email:", userId);
       }
     }
     
@@ -88,11 +90,25 @@ export const createOrUpdateFromStripe = internalMutation({
     if (!userId) {
       const userByEmail = await ctx.db
         .query("users")
-        .filter(q => q.eq(q.field("email"), args.userIdOrEmail))
+        .withIndex("email", q => q.eq("email", args.userIdOrEmail))
         .first();
       
       if (userByEmail) {
         userId = userByEmail._id;
+        console.log("Found user by userIdOrEmail as email:", userId);
+      }
+    }
+    
+    // Fallback: try interpreting userIdOrEmail as a Convex document ID
+    if (!userId) {
+      try {
+        const userById = await ctx.db.get(args.userIdOrEmail as Id<"users">);
+        if (userById) {
+          userId = userById._id;
+          console.log("Found user by Convex document ID:", userId);
+        }
+      } catch (e) {
+        // Ignore invalid ID format errors (means string wasn't a valid Id)
       }
     }
     
@@ -116,10 +132,11 @@ export const createOrUpdateFromStripe = internalMutation({
         currentPeriodEnd: args.currentPeriodEnd,
         updatedAt: now
       });
+      console.log("Updated existing subscription:", existing._id);
       return existing._id;
     } else {
       // Create new subscription record
-      return await ctx.db.insert("userSubscriptions", {
+      const newId = await ctx.db.insert("userSubscriptions", {
         userId,
         subscriptionId: args.subscriptionId,
         status: args.status,
@@ -127,6 +144,8 @@ export const createOrUpdateFromStripe = internalMutation({
         createdAt: now,
         updatedAt: now
       });
+      console.log("Created new subscription:", newId);
+      return newId;
     }
   }
 });

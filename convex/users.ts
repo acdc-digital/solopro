@@ -248,3 +248,113 @@ export const upsertUser = mutation({
     return authUserId;
   },
 });
+
+/**
+ * Create a user from auth data
+ */
+export const createUserFromAuth = internalMutation({
+  args: {
+    email: v.optional(v.string()),
+    name: v.optional(v.string()),
+    authId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    // Create the user
+    const userId = await ctx.db.insert("users", {
+      email: args.email,
+      name: args.name,
+      authId: args.authId,
+      isAnonymous: false,
+    });
+    return userId;
+  },
+});
+
+/**
+ * Ensure a user exists from auth data
+ */
+export const ensureUserFromAuth = internalMutation({
+  args: {
+    email: v.optional(v.string()),
+    authId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    // First try to find by authId
+    const existingUser = await ctx.db
+      .query("users")
+      .withIndex("byAuthId", q => q.eq("authId", args.authId))
+      .first();
+
+    if (existingUser) {
+      // Update email if it changed
+      if (args.email && existingUser.email !== args.email) {
+        await ctx.db.patch(existingUser._id, { email: args.email });
+      }
+      return existingUser._id;
+    }
+
+    // If not found by authId, try by email
+    if (args.email) {
+      const userByEmail = await ctx.db
+        .query("users")
+        .withIndex("email", q => q.eq("email", args.email))
+        .first();
+
+      if (userByEmail) {
+        // Update authId if found by email
+        await ctx.db.patch(userByEmail._id, { authId: args.authId });
+        return userByEmail._id;
+      }
+    }
+
+    // If no user found, create a new one
+    return await ctx.db.insert("users", {
+      email: args.email,
+      authId: args.authId,
+      isAnonymous: false,
+    });
+  },
+});
+
+/**
+ * Fix user auth ID
+ */
+export const fixUserAuthId = internalMutation({
+  args: {
+    email: v.string(),
+    provider: v.string(),
+  },
+  handler: async (ctx, args) => {
+    // Find the user by email
+    const user = await ctx.db
+      .query("users")
+      .withIndex("email", q => q.eq("email", args.email))
+      .first();
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Update the user with the correct authId
+    await ctx.db.patch(user._id, {
+      authId: `${args.provider}:${args.email}`
+    });
+
+    return user._id;
+  },
+});
+
+/**
+ * Update user's auth ID
+ */
+export const updateUserAuthId = internalMutation({
+  args: {
+    userId: v.id("users"),
+    authId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.userId, {
+      authId: args.authId
+    });
+  },
+});

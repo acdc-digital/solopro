@@ -65,8 +65,8 @@ export default function Pricing() {
       ],
       cta: "Start Free Trial",
       highlighted: true,
-      productId: "prod_SM2sXHSNLlJMj5",
-      priceId: "price_1RRKmcD6Nyv2PKYjyVj96QH8",
+      productId: "prod_STXc0xIWjnn1R6",
+      priceId: "price_1RYaXeD4wGLfhDePZlRBINbJ",
       paymentMode: "subscription",
     },
     {

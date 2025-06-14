@@ -94,7 +94,7 @@ export function NewsletterSignup({
             disabled:opacity-50 disabled:cursor-not-allowed
             ${status === "success" 
               ? "bg-green-600 text-white" 
-              : "bg-primary text-primary-foreground hover:bg-primary/90"
+              : "bg-white text-black border border-black hover:bg-black hover:text-white"
             }
           `}
         >
