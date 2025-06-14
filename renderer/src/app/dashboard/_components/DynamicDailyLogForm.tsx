@@ -324,8 +324,8 @@ export default function DynamicDailyLogForm({
           </p>
         )}
 
-        {/* Generator button (same as original) */}
-        {isBrowser !== true && hasActiveSubscription && (
+        {/* Generator button - Show for subscribers (both browser and desktop) */}
+        {hasActiveSubscription && (
           <Button
             type="button"
             variant="outline"

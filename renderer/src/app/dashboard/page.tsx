@@ -52,10 +52,10 @@ export default function Dashboard() {
   const { setCollapsed, currentView, setView } = useSidebarStore();
   const isBrowser = useBrowserEnvironment();
 
-  // Check subscription status (skip for browser mode users)
+  // Check subscription status (now works for both browser and desktop mode)
   const hasActiveSubscription = useQuery(
     api.userSubscriptions.hasActiveSubscription,
-    isBrowser === false && isAuthenticated && convexUserId ? {} : "skip"
+    isAuthenticated && convexUserId ? {} : "skip"
   );
 
   // Redirect unauthenticated users to landing page (Electron mode only)

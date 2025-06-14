@@ -414,8 +414,8 @@ export default function DailyLogForm({ onClose, date, hasActiveSubscription }: D
   /* ────────────────────────────────────────── */
   return (
     <div className="flex flex-col h-full bg-white dark:bg-zinc-900 text-zinc-800 dark:text-zinc-100 overflow-x-hidden">
-        {/* Generator Button - Show for Electron subscribers OR authenticated browser users */}
-        {((isBrowser !== true && hasActiveSubscription) || (isBrowser === true && isAuthenticated)) && (
+        {/* Generator Button - Show for subscribers (both browser and desktop) */}
+        {hasActiveSubscription && (
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>

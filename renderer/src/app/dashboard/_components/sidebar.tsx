@@ -52,10 +52,10 @@ export function Sidebar({ className }: SidebarProps) {
     isBrowser === false && isAuthenticated && userId ? {} : "skip"
   );
   
-  // Check subscription status (skip for browser mode)
+  // Check subscription status (now works for both browser and desktop mode)
   const hasActiveSubscription = useQuery(
     api.userSubscriptions.hasActiveSubscription,
-    isBrowser === false && isAuthenticated && userId ? {} : "skip"
+    isAuthenticated && userId ? {} : "skip"
   );
   
   // For browser mode, provide default user data
@@ -65,8 +65,8 @@ export function Sidebar({ className }: SidebarProps) {
     image: null
   } : user;
   
-  // For browser mode, assume no subscription (limited access)
-  const effectiveSubscription = isBrowser === true ? false : hasActiveSubscription;
+  // Use actual subscription status for both browser and desktop mode
+  const effectiveSubscription = hasActiveSubscription;
   
   // State for accordion
   const [accountMenuOpen, setAccountMenuOpen] = React.useState(false);
