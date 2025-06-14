@@ -52,7 +52,7 @@ interface DailyLogFormProps {
  * Now supports customizable templates (managed from main page)!
  */
 export default function DailyLogForm({ onClose, date, hasActiveSubscription }: DailyLogFormProps) {
-  console.log("DailyLogForm mounted");
+  console.log("DailyLogForm mounted", { date, hasActiveSubscription });
   const { isAuthenticated, isLoading: userLoading, userId } = useConvexUser();
   const isBrowser = useBrowserEnvironment();
 
@@ -61,6 +61,9 @@ export default function DailyLogForm({ onClose, date, hasActiveSubscription }: D
     currentFormFields,
     isLoading: templatesLoading,
   } = useTemplates({ userId: userId || undefined });
+
+  // Simple field filtering without memoization to avoid React errors
+  const stableFormFields = currentFormFields?.filter(field => field && field.id && field.type) || [];
 
   // Check user settings for generator prerequisites
   const userAttributes = useQuery(
@@ -73,36 +76,27 @@ export default function DailyLogForm({ onClose, date, hasActiveSubscription }: D
     userId ? { userId } : "skip"
   );
 
-  // Check if user has completed required settings
-  const settingsComplete = useMemo(() => {
-    if (!userAttributes?.attributes || userInstructions === undefined) {
-      return false;
-    }
-    
-    const { name, goals, objectives } = userAttributes.attributes;
-    const hasInstructions = userInstructions && userInstructions.trim().length > 0;
-    
-    return !!(name?.trim() && goals?.trim() && objectives?.trim() && hasInstructions);
-  }, [userAttributes, userInstructions]);
+  // Check if user has completed required settings (simplified)
+  const settingsComplete = !!(
+    userAttributes?.attributes?.name?.trim() &&
+    userAttributes?.attributes?.goals?.trim() &&
+    userAttributes?.attributes?.objectives?.trim() &&
+    userInstructions?.trim()
+  );
 
-  const missingSettings = useMemo(() => {
-    const missing = [];
-    
-    if (!userAttributes?.attributes?.name?.trim()) {
-      missing.push("Name");
-    }
-    if (!userAttributes?.attributes?.goals?.trim()) {
-      missing.push("Goals");
-    }
-    if (!userAttributes?.attributes?.objectives?.trim()) {
-      missing.push("Objectives");
-    }
-    if (!userInstructions?.trim()) {
-      missing.push("Custom Instructions");
-    }
-    
-    return missing;
-  }, [userAttributes, userInstructions]);
+  const missingSettings = [];
+  if (!userAttributes?.attributes?.name?.trim()) {
+    missingSettings.push("Name");
+  }
+  if (!userAttributes?.attributes?.goals?.trim()) {
+    missingSettings.push("Goals");
+  }
+  if (!userAttributes?.attributes?.objectives?.trim()) {
+    missingSettings.push("Objectives");
+  }
+  if (!userInstructions?.trim()) {
+    missingSettings.push("Custom Instructions");
+  }
 
   /* ────────────────────────────────────────── */
   /* Feed store hooks                           */
@@ -126,14 +120,16 @@ export default function DailyLogForm({ onClose, date, hasActiveSubscription }: D
   const generateRandomLog = useAction(api.randomizer.generateRandomLog);
   const convex = useConvex();
 
-  // Create dynamic form data based on current template fields
-  const createFormDefaults = useMemo(() => {
+  // Create dynamic form data based on current template fields (simplified)
+  const createFormDefaults = () => {
     const defaults: Record<string, any> = {};
-    currentFormFields.forEach(field => {
-      defaults[field.id] = field.defaultValue;
+    stableFormFields.forEach(field => {
+      if (field && field.id) {
+        defaults[field.id] = field.defaultValue;
+      }
     });
     return defaults;
-  }, [currentFormFields]);
+  };
 
   const {
     register,
@@ -142,21 +138,23 @@ export default function DailyLogForm({ onClose, date, hasActiveSubscription }: D
     reset,
     formState: { errors },
   } = useForm<DailyLogFormData>({
-    defaultValues: createFormDefaults,
+    defaultValues: createFormDefaults(),
   });
 
   /* ────────────────────────────────────────── */
   /* Populate defaults when a log already exists */
   /* ────────────────────────────────────────── */
   useEffect(() => {
-    if (existingLog?.answers) {
+    if (existingLog?.answers && stableFormFields.length > 0) {
       const resetData: Record<string, any> = {};
-      currentFormFields.forEach(field => {
-        resetData[field.id] = existingLog.answers[field.id] ?? field.defaultValue;
+      stableFormFields.forEach(field => {
+        if (field && field.id) {
+          resetData[field.id] = existingLog.answers[field.id] ?? field.defaultValue;
+        }
       });
       reset(resetData);
     }
-  }, [existingLog, currentFormFields, reset]);
+  }, [existingLog, reset]);
 
   /* ────────────────────────────────────────── */
   /* Local state                               */
@@ -241,9 +239,9 @@ export default function DailyLogForm({ onClose, date, hasActiveSubscription }: D
         const validatedData: Partial<DailyLogFormData> = {};
         
         // Validate generated data against current form fields
-        currentFormFields.forEach(field => {
+        stableFormFields.forEach(field => {
+          if (!field || !field.id) return;
           const value = generatedData[field.id];
-          
           switch (field.type) {
             case "slider":
             case "number":
@@ -286,6 +284,12 @@ export default function DailyLogForm({ onClose, date, hasActiveSubscription }: D
 
   // Render field based on template field type
   const renderTemplateField = (field: TemplateField) => {
+    // Safety check to prevent undefined field errors
+    if (!field || !field.id || !field.type) {
+      console.warn("Invalid field passed to renderTemplateField:", field);
+      return null;
+    }
+
     const watchValue = watch(field.id);
 
     switch (field.type) {
@@ -393,9 +397,9 @@ export default function DailyLogForm({ onClose, date, hasActiveSubscription }: D
     }
   };
 
-  // Group template fields by category
-  const groupedFields = currentFormFields.reduce((acc, field) => {
-    const category = field.category || "other";
+  // Group template fields by category (simplified)
+  const groupedFields = stableFormFields.reduce((acc, field) => {
+    const category = field?.category || "other";
     if (!acc[category]) acc[category] = [];
     acc[category].push(field);
     return acc;
