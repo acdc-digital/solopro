@@ -1,3 +1,6 @@
+// STRIPE WEBHOOK
+// /Users/matthewsimon/Documents/Github/soloist_pro/website/app/api/webhook/stripe/route.ts
+
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { ConvexHttpClient } from "convex/browser";

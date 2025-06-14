@@ -41,17 +41,18 @@ export const recordStripePayment = internalMutation({
   handler: async (ctx, args) => {
     let userId: Id<"users"> | null = null;
     
-    // First try to use the userIdOrEmail as a direct user ID
-    try {
-      const user = await ctx.db.get(args.userIdOrEmail as Id<"users">);
-      if (user) {
-        userId = user._id;
-      }
-    } catch (e) {
-      // Not a valid ID, try email lookup
+    // First try to find user by the userIdOrEmail string in the users table
+    const userByAuthId = await ctx.db
+      .query("users")
+      .withIndex("byAuthId", q => q.eq("authId", args.userIdOrEmail))
+      .first();
+    
+    if (userByAuthId) {
+      userId = userByAuthId._id;
+      console.log(`Found user by auth ID: ${userId}`);
     }
     
-    // If not found by ID, try to find by email
+    // If not found by auth ID, try to find by email
     if (!userId && args.customerEmail) {
       const userByEmail = await ctx.db
         .query("users")
@@ -60,6 +61,7 @@ export const recordStripePayment = internalMutation({
       
       if (userByEmail) {
         userId = userByEmail._id;
+        console.log(`Found user by email: ${userId}`);
       }
     }
     
@@ -72,21 +74,25 @@ export const recordStripePayment = internalMutation({
       
       if (userByEmail) {
         userId = userByEmail._id;
+        console.log(`Found user by userIdOrEmail as email: ${userId}`);
+      }
+    }
+    
+    // Fallback: try interpreting userIdOrEmail as a Convex document ID
+    if (!userId) {
+      try {
+        const userById = await ctx.db.get(args.userIdOrEmail as Id<"users">);
+        if (userById) {
+          userId = userById._id;
+          console.log(`Found user by Convex document ID: ${userId}`);
+        }
+      } catch (e) {
+        // Ignore invalid ID format errors
       }
     }
     
     if (!userId) {
-      // For development/testing: if we can't find the user, try to use the first existing user
-      // In production, you might want to create the user or handle this differently
-      console.log(`User not found for identifier: ${args.userIdOrEmail}, trying fallback user`);
-      
-      const fallbackUser = await ctx.db.query("users").first();
-      if (fallbackUser) {
-        userId = fallbackUser._id;
-        console.log(`Using fallback user: ${userId}`);
-      } else {
-        throw new Error(`No users found in database. User identifier was: ${args.userIdOrEmail}`);
-      }
+      throw new Error(`Could not find user for identifier: ${args.userIdOrEmail}`);
     }
     
     // Check if payment already exists (idempotency)

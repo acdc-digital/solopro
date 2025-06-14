@@ -13,7 +13,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@convex-dev/auth": "^0.0.86",
+    "@convex-dev/auth": "^0.0.87",
     "@nodelib/fs.walk": "^3.0.1",
     "@radix-ui/react-dialog": "^1.1.14",
     "@radix-ui/react-scroll-area": "^1.2.9",
@@ -22,7 +22,7 @@
     "@stripe/stripe-js": "7.3.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "convex": "^1.23.0",
+    "convex": "^1.24.8",
     "fastq": "^1.19.1",
     "lucide-react": "^0.511.0",
     "next": "15.2.3",

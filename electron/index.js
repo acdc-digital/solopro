@@ -83,11 +83,30 @@ function isRendererServerRunning(port, callback) {
 }
 
 async function createWindow() {
+  // Determine the correct icon path based on platform
+  let iconPath;
+  if (process.platform === 'darwin') {
+    // macOS - use ICNS format for window icon
+    iconPath = path.join(__dirname, "build", "icon.icns");
+  } else if (process.platform === 'win32') {
+    // Windows uses ICO format
+    iconPath = path.join(__dirname, "build", "icon.ico");
+  } else {
+    // Linux uses PNG format
+    iconPath = path.join(__dirname, "build", "icon.png");
+  }
+
+  // Debug: Log the icon path and check if file exists
+  console.log('🖼️ Icon path:', iconPath);
+  console.log('🖼️ Icon exists:', fs.existsSync(iconPath));
+  console.log('🖼️ Platform:', process.platform);
+  console.log('🖼️ __dirname:', __dirname);
+
   const win = new BrowserWindow({
     width: 1024,
     height: 768,
-    frame: false, // Remove the title bar
-    icon: path.join(__dirname, "..", "renderer", "src", "app", "favicon.ico"),
+    frame: false, // Remove the title bar (back to original design)
+    icon: iconPath,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       nodeIntegration: false,
@@ -185,7 +204,20 @@ function loadFallbackHTML(win) {
   console.log("⚠️ Loaded fallback HTML - renderer not found on any port");
 }
 
-app.whenReady().then(createWindow);
+app.whenReady().then(() => {
+  // Set dock icon explicitly for macOS
+  if (process.platform === 'darwin') {
+    const dockIconPath = path.join(__dirname, "dock-icon-48.png");
+    if (fs.existsSync(dockIconPath)) {
+      app.dock.setIcon(dockIconPath);
+      console.log('🖼️ Dock icon set to:', dockIconPath);
+    } else {
+      console.log('❌ Dock icon file not found:', dockIconPath);
+    }
+  }
+
+  createWindow();
+});
 
 app.on("window-all-closed", () => {
   // Stop the Next.js server when closing
