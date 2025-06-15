@@ -85,7 +85,7 @@ export function SplitScreen() {
           </div>
 
           {/* Right Side - Feed */}
-          <div className="bg-gray-900 text-white flex flex-col">
+          <div className="bg-black text-white flex flex-col">
             {/* Header */}
             <div className="p-3 border-b border-gray-700">
               <div className="flex items-center justify-between text-sm">
@@ -121,7 +121,7 @@ export function SplitScreen() {
 
             {/* AI Message */}
             <div className="flex-1 p-3">
-              <div className="bg-gray-800 rounded-lg p-3 mb-3">
+              <div className="bg-[#323232] rounded-lg p-3 mb-3">
                 <p className="text-sm leading-relaxed mb-2">
                   Hello there! It sounds like you had a day filled with both challenges and achievements. 
                   Consider setting boundaries around work hours to prioritize family time.
