@@ -9,6 +9,7 @@
   },
   "scripts": {
     "dev": "NODE_ENV=development npx electron@latest .",
+    "start": "NODE_ENV=development npx electron@latest .",
     "build": "electron-builder",
     "dist": "electron-builder",
     "pack": "electron-builder --dir",
