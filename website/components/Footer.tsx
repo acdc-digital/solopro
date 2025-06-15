@@ -22,12 +22,12 @@ export function Footer() {
 
   return (
     <footer className="bg-white border-t border-border">
-      <div className="container mx-auto px-8">
+      <div className="container mx-auto px-4 lg:px-6">
         {/* Main Footer Content */}
         <div className="py-12">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            {/* Company Info - stays on far left */}
-            <div>
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8">
+            {/* Company Info - 4 columns */}
+            <div className="md:col-span-3 lg:col-span-4">
               <div className="mb-8">
                 <div className="flex items-center gap-3 mb-4">
                   <Image
@@ -39,7 +39,7 @@ export function Footer() {
                   />
                   <h3 className="text-2xl font-bold text-black">Soloist.</h3>
                 </div>
-                <p className="text-sm text-black leading-relaxed max-w-xs">
+                <p className="text-sm text-black leading-relaxed">
                 Soloist is a for-profit, open-source wellness platform by ACDC.digital. Contributions are welcome—take what you need.
                 </p>
               </div>
@@ -70,8 +70,8 @@ export function Footer() {
               </div>
             </div>
 
-            {/* Quick Links - middle left */}
-            <div className="md:justify-self-center">
+            {/* Quick Links - 2 columns */}
+            <div className="md:col-span-2">
               <h4 className="font-semibold text-black mb-6 text-base">Quick Links</h4>
               <ul className="space-y-3">
                 <li>
@@ -111,8 +111,8 @@ export function Footer() {
               </ul>
             </div>
 
-            {/* Feedback - middle right */}
-            <div className="md:justify-self-center md:-ml-32">
+            {/* Feedback - 2 columns */}
+            <div className="md:col-span-2">
               <h4 className="font-semibold text-black mb-6 text-base">Feedback</h4>
               <ul className="space-y-3">
                 <li>
@@ -125,8 +125,8 @@ export function Footer() {
               </ul>
             </div>
 
-            {/* Newsletter Signup - stays on far right */}
-            <div>
+            {/* Newsletter Signup - 4 columns */}
+            <div className="md:col-span-3 lg:col-span-4">
               <h4 className="font-semibold text-black mb-6 text-base">Stay Updated</h4>
               <p className="text-sm text-black mb-6">
                 Get notified about new features and updates.
@@ -140,7 +140,7 @@ export function Footer() {
               </div>
               
               {/* Company Details */}
-              <div className="pt-6 border-t border-border/30">
+              <div className="pt-6">
                 <div className="space-y-2 text-sm text-black">
                   <p className="font-medium text-black">ACDC.digital</p>
                   <div className="flex items-center gap-2">
