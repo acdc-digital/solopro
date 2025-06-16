@@ -3,7 +3,7 @@
 
 'use client'
 
-import { useConvexAuth } from "convex/react";
+import { useConvexAuth, useQuery } from "convex/react";
 import Link from "next/link";
 import { useAuthActions } from "@convex-dev/auth/react";
 import { useRouter, usePathname } from "next/navigation";
@@ -13,6 +13,7 @@ import { DocsModal } from "./Docs";
 import { DownloadModal } from "./DownloadModal";
 import { Loader2, Menu, X } from "lucide-react";
 import Image from "next/image";
+import { api } from "../convex/_generated/api";
 
 export function Navbar() {
   const { isAuthenticated, isLoading } = useConvexAuth();
@@ -22,6 +23,9 @@ export function Navbar() {
   const [isSignInModalOpen, setIsSignInModalOpen] = useState(false);
   const [signInFlow, setSignInFlow] = useState<"signIn" | "signUp">("signIn");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Check if current user is admin
+  const isAdmin = useQuery(api.admin.isCurrentUserAdmin);
 
   // Close mobile menu when route changes
   useEffect(() => {
@@ -155,6 +159,14 @@ export function Navbar() {
               </button>
             ) : isAuthenticated ? (
               <>
+                {isAdmin && (
+                  <Link
+                    href="/admin"
+                    className="inline-flex items-center justify-center rounded-xl border border-red-600 bg-red-50 px-5 py-2.5 text-base font-medium text-red-600 hover:bg-red-100 hover:border-red-700 transition-all duration-200"
+                  >
+                    Admin
+                  </Link>
+                )}
                 <Link
                   href={process.env.NEXT_PUBLIC_APP_URL || "https://app.acdc.digital"}
                   className="inline-flex items-center justify-center rounded-full bg-blue-600 border border-blue-600 px-5 py-2.5 text-base font-bold text-white hover:bg-blue-700 hover:border-blue-700 transition-all duration-200"
@@ -262,6 +274,15 @@ export function Navbar() {
                 </button>
               ) : isAuthenticated ? (
                 <>
+                  {isAdmin && (
+                    <Link
+                      href="/admin"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="w-full inline-flex items-center justify-center rounded-3xl border border-red-600 bg-red-50 px-5 py-2.5 text-base font-medium text-red-600 hover:bg-red-100 hover:border-red-700 transition-all duration-200"
+                    >
+                      Admin Dashboard
+                    </Link>
+                  )}
                   <Link
                     href={process.env.NEXT_PUBLIC_APP_URL || "https://app.acdc.digital"}
                     onClick={() => setIsMobileMenuOpen(false)}

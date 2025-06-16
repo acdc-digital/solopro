@@ -1,3 +1,6 @@
+// CONVEX SCHEMA
+// /Users/matthewsimon/Documents/Github/solopro/convex/schema.ts
+
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 import { authTables } from "@convex-dev/auth/server";
@@ -59,9 +62,11 @@ export default defineSchema({
     phoneVerificationTime: v.optional(v.float64()),
     isAnonymous: v.optional(v.boolean()),
     githubId: v.optional(v.number()),
+    role: v.optional(v.union(v.literal("user"), v.literal("admin"))),
   })
   .index("email", ["email"])
-  .index("byAuthId", ["authId"]),
+  .index("byAuthId", ["authId"])
+  .index("byRole", ["role"]),
 
   userSubscriptions: defineTable({
     userId: v.id("users"),
