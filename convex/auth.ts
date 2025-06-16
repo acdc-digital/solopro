@@ -2,12 +2,21 @@ import { Password } from "@convex-dev/auth/providers/Password";
 import { convexAuth } from "@convex-dev/auth/server";
 import { query } from "./_generated/server";
 import { getAuthUserId } from "@convex-dev/auth/server";
+import { internal } from "./_generated/api";
 
 // Configure auth with only Password provider
 export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
   providers: [
     Password
-  ]
+  ],
+  callbacks: {
+    async afterUserCreatedOrUpdated(ctx, { existingUserId, userId }) {
+      if (!existingUserId) {
+        // Set default role to "user" for new users only
+        await ctx.runMutation(internal.admin.setDefaultRole, { userId });
+      }
+    },
+  },
 });
 
 /**
