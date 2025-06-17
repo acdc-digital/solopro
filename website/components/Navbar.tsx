@@ -34,6 +34,7 @@ export function Navbar() {
   const [isSignInModalOpen, setIsSignInModalOpen] = useState(false);
   const [signInFlow, setSignInFlow] = useState<"signIn" | "signUp">("signIn");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [detectedOS, setDetectedOS] = useState<'Windows' | 'macOS' | 'Other'>('Other');
 
   // Check if current user is admin
   const isAdmin = useQuery(api.admin.isCurrentUserAdmin);
@@ -51,6 +52,18 @@ export function Navbar() {
     if (names.length === 1) return names[0].substring(0, 1).toUpperCase();
     return (names[0][0] + names[names.length - 1][0]).toUpperCase();
   }, [user?.name]);
+
+  // Detect user's operating system
+  useEffect(() => {
+    const userAgent = window.navigator.userAgent.toLowerCase();
+    if (userAgent.includes('win')) {
+      setDetectedOS('Windows');
+    } else if (userAgent.includes('mac')) {
+      setDetectedOS('macOS');
+    } else {
+      setDetectedOS('Other');
+    }
+  }, []);
 
   // Close mobile menu when route changes
   useEffect(() => {
@@ -106,6 +119,28 @@ export function Navbar() {
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const handleDirectDownload = () => {
+    let downloadUrl = '';
+
+    // Default to the user's OS, but fallback to macOS if unknown
+    if (detectedOS === 'Windows') {
+      downloadUrl = 'https://github.com/acdc-digital/solopro/releases/download/v1.6.0/Soloist.Pro-Setup-1.6.0.exe';
+    } else if (detectedOS === 'macOS') {
+      downloadUrl = 'https://github.com/acdc-digital/solopro/releases/download/v1.6.0/Soloist.Pro-1.6.0-x64.dmg';
+    } else {
+      // Default to macOS x64 for other OS
+      downloadUrl = 'https://github.com/acdc-digital/solopro/releases/download/v1.6.0/Soloist.Pro-1.6.0-x64.dmg';
+    }
+
+    // Create a temporary link and trigger download
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.download = '';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (
@@ -210,7 +245,7 @@ export function Navbar() {
                       </p>
                     </div>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => window.open("/downloads", "_blank")}>
+                    <DropdownMenuItem onClick={handleDirectDownload}>
                       <Download className="mr-2 h-4 w-4" />
                       Download Desktop App
                     </DropdownMenuItem>
