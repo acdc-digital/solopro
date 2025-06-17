@@ -11,7 +11,7 @@
 [![ShadCN/ui](https://img.shields.io/badge/shadcn/ui-%2327272A.svg?style=for-the-badge&logoColor=white)](https://ui.shadcn.com/)
 [![Convex DB](https://img.shields.io/badge/Convex_DB-%23450AFF.svg?style=for-the-badge&logo=convex&logoColor=white)](https://convex.dev/)
 
-**📊 Version:** `1.4.2` | **📝 License:** For-Profit Open Source | **🚀 Status:** Active Development
+**📊 Version:** `1.6.0` | **📝 License:** For-Profit Open Source | **🚀 Status:** Active Development
 
 [**📖 Documentation**](https://github.com/acdc-digital/solopro/wiki) • [**📋 Project Board**](https://github.com/users/acdc-digital/projects/10) • [**🔖 Release Notes**](https://github.com/acdc-digital/solopro/releases)
 
@@ -111,10 +111,12 @@ git reset --hard vx.x.x
 
 ## 📚 Version History
 
-| Version | Description |
-|---------|-------------|
-| **v1.4.2** | Latest stable release |
-| **v1.1.0** | Workspace initialization complete with enhanced authentication |
+| Version | Date | Description |
+|---------|------|-------------|
+| **v1.6.0** | 2024-12-31 | 🎨 **UI/UX Enhancements** - Enhanced draggable window controls for Electron app with macOS-style traffic lights, improved website navbar with clickable user avatars and dropdown menus, removed floating action button for cleaner interface, added comprehensive user profile management |
+| **v1.5.0** | 2024-12-30 | 🔧 **Infrastructure & Components** - Major UI component library updates, enhanced authentication flow, improved Convex integration, added avatar support across platform |
+| **v1.4.2** | 2024-12-29 | 🐛 **Bug Fixes & Stability** - Critical bug fixes and performance improvements |
+| **v1.1.0** | 2024-12-28 | 🚀 **Foundation Release** - Workspace initialization complete with enhanced authentication, core platform architecture established |
 
 ---
 
