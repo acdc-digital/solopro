@@ -49,8 +49,8 @@ const additionalDownloads = [
   },
   {
     os: 'Linux (Debian/Ubuntu)',
-    fileName: `soloist-pro-${FILE_VERSION}.deb`,
-    url: `https://github.com/${GITHUB_REPO}/releases/download/v${LATEST_VERSION}/soloist-pro-${FILE_VERSION}.deb`,
+    fileName: `solopro-electron-${FILE_VERSION}.deb`,
+    url: `https://github.com/${GITHUB_REPO}/releases/download/v${LATEST_VERSION}/solopro-electron-${FILE_VERSION}.deb`,
   },
 ];
 
