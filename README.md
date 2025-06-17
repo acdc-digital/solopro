@@ -1,6 +1,6 @@
-# <img src="public/logo-ACDC.svg" alt="ACDC Logo" height="60" align="center"/> Soloist
+# <img src="public/logo-ACDC.svg" alt="ACDC Logo" height="40" align="center"/>
+Soloist.
 
-<div align="center">
 
 [![React](https://img.shields.io/badge/React-%2320232A.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-%233178C6.svg?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
@@ -11,7 +11,7 @@
 [![ShadCN/ui](https://img.shields.io/badge/shadcn/ui-%2327272A.svg?style=for-the-badge&logoColor=white)](https://ui.shadcn.com/)
 [![Convex DB](https://img.shields.io/badge/Convex_DB-%23450AFF.svg?style=for-the-badge&logo=convex&logoColor=white)](https://convex.dev/)
 
-**📊 Version:** `1.6.0` | **📝 License:** For-Profit Open Source | **🚀 Status:** Active Development
+**📊 Version:** `1.6.1` | **📝 License:** For-Profit Open Source | **🚀 Status:** Active Development
 
 [**📖 Documentation**](https://github.com/acdc-digital/solopro/wiki) • [**📋 Project Board**](https://github.com/users/acdc-digital/projects/10) • [**🔖 Release Notes**](https://github.com/acdc-digital/solopro/releases)
 
@@ -19,19 +19,19 @@
 
 ---
 
-## 🎯 What is Soloist?
+## What is Soloist?
 
 **Soloist** is a dynamic personal analytics platform that helps you identify self-patterns and make data-driven decisions about your life. Through intelligent tracking and predictive analysis, Soloist transforms your daily experiences into actionable insights.
 
-### ✨ Key Features
+### Key Features
 
-- **📝 Daily Log** - Customizable templates for tracking your daily activities
-- **🤖 Auto-Summaries** - AI-generated summaries of your day
-- **📈 Predictive Forecasting** - Get 3-day forecasts based on your 4-day patterns
-- **📱 Dynamic Feed** - Real-time waterfall view of your notes, media, and tags
-- **🎮 Playground Mode** - Test forecasts against historical data
-- **📊 365 Heatmap** - Visualize your entire year at a glance
-- **👤 Smart Profiles** - Enable auto-generation for effortless tracking
+- ** Daily Log** - Customizable templates for tracking your daily activities
+- ** Auto-Summaries** - AI-generated summaries of your day
+- ** Predictive Forecasting** - Get 3-day forecasts based on your 4-day patterns
+- ** Dynamic Feed** - Real-time waterfall view of your notes, media, and tags
+- ** Playground Mode** - Test forecasts against historical data
+- ** 365 Heatmap** - Visualize your entire year at a glance
+- ** Smart Profiles** - Enable auto-generation for effortless tracking
 
 ---
 
@@ -113,6 +113,7 @@ git reset --hard vx.x.x
 
 | Version | Date | Description |
 |---------|------|-------------|
+| **v1.6.1** | 2025-01-17 | 🚀 **Build & Notarization** - Complete Apple notarization setup, automated build scripts for macOS, enhanced code signing configuration, universal binary support (Intel + Apple Silicon), streamlined development workflow |
 | **v1.6.0** | 2024-12-31 | 🎨 **UI/UX Enhancements** - Enhanced draggable window controls for Electron app with macOS-style traffic lights, improved website navbar with clickable user avatars and dropdown menus, removed floating action button for cleaner interface, added comprehensive user profile management |
 | **v1.5.0** | 2024-12-30 | 🔧 **Infrastructure & Components** - Major UI component library updates, enhanced authentication flow, improved Convex integration, added avatar support across platform |
 | **v1.4.2** | 2024-12-29 | 🐛 **Bug Fixes & Stability** - Critical bug fixes and performance improvements |
