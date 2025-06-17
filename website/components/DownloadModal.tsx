@@ -28,21 +28,21 @@ export function DownloadModal({ children }: DownloadModalProps) {
       icon: <Monitor className="w-6 h-6" />,
       description: 'Windows 10 or later (64-bit)',
       buttonText: 'Download for Windows',
-      url: '#',
+      url: 'https://github.com/acdc-digital/solopro/releases/download/v1.6.0/Soloist.Pro-Setup-1.6.0.exe',
     },
     {
       os: 'macOS',
       icon: <Apple className="w-6 h-6" />,
       description: 'macOS 10.15 or later',
       buttonText: 'Download for Mac',
-      url: '#',
+      url: 'https://github.com/acdc-digital/solopro/releases/download/v1.6.0/Soloist.Pro-1.6.0-x64.dmg',
     },
     {
       os: 'Linux',
       icon: <Package className="w-6 h-6" />,
       description: 'AppImage for most distributions',
       buttonText: 'Download for Linux',
-      url: '#',
+      url: 'https://github.com/acdc-digital/solopro/releases/download/v1.6.0/Soloist.Pro-1.6.0.AppImage',
     },
   ];
 
@@ -58,7 +58,7 @@ export function DownloadModal({ children }: DownloadModalProps) {
             <DialogTitle className="text-2xl font-bold">Download Soloist</DialogTitle>
           </div>
           <Badge variant="outline" className="w-fit mb-2 border-emerald-500 text-emerald-600 font-medium">
-            Version 1.4.2 • Desktop Application
+            Version 1.6.0 • Desktop Application
           </Badge>
         </DialogHeader>
         
