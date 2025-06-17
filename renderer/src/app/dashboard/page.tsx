@@ -428,28 +428,6 @@ export default function Dashboard() {
         {currentView === "dashboard" ? (
           <>
             <main className="flex-1 flex flex-col relative">
-              {/* Browser mode floating action button - Only show for confirmed Electron mode */}
-              {isBrowser === false && (
-                <div className="fixed bottom-6 right-6 z-50">
-                  <Button
-                    onClick={() => {
-                      const today = new Date();
-                      const yyyy = today.getFullYear();
-                      const mm = String(today.getMonth() + 1).padStart(2, "0");
-                      const dd = String(today.getDate()).padStart(2, "0");
-                      const dateKey = `${yyyy}-${mm}-${dd}`;
-                      
-                      updateDatePreserveTab(dateKey);
-                      setActiveTab("log");
-                      setSidebarOpen(true);
-                    }}
-                    className="h-14 w-14 rounded-full shadow-lg hover:shadow-xl transition-shadow"
-                    size="lg"
-                  >
-                    <Plus className="h-6 w-6" />
-                  </Button>
-                </div>
-              )}
 
               {/* Year controls */}
               <div className="sticky top-0 z-10 px-4 mt-2">

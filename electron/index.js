@@ -1,6 +1,6 @@
 // electron/index.js
 
-const { app, BrowserWindow, net } = require("electron");
+const { app, BrowserWindow, net, ipcMain } = require("electron");
 const path = require("path");
 const fs = require("fs");
 const { spawn } = require("child_process");
@@ -203,6 +203,32 @@ function loadFallbackHTML(win) {
   win.loadFile(htmlPath);
   console.log("⚠️ Loaded fallback HTML - renderer not found on any port");
 }
+
+// IPC handlers for window controls
+ipcMain.on('window-minimize', (event) => {
+  const win = BrowserWindow.fromWebContents(event.sender);
+  if (win) {
+    win.minimize();
+  }
+});
+
+ipcMain.on('window-maximize', (event) => {
+  const win = BrowserWindow.fromWebContents(event.sender);
+  if (win) {
+    if (win.isMaximized()) {
+      win.unmaximize();
+    } else {
+      win.maximize();
+    }
+  }
+});
+
+ipcMain.on('window-close', (event) => {
+  const win = BrowserWindow.fromWebContents(event.sender);
+  if (win) {
+    win.close();
+  }
+});
 
 app.whenReady().then(() => {
   // Set dock icon explicitly for macOS
