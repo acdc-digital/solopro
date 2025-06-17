@@ -7,16 +7,27 @@ import { useConvexAuth, useQuery } from "convex/react";
 import Link from "next/link";
 import { useAuthActions } from "@convex-dev/auth/react";
 import { useRouter, usePathname } from "next/navigation";
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import { SignInModal } from "../modals/SignInModal";
 import { DocsModal } from "./Docs";
 import { DownloadModal } from "./DownloadModal";
 import { Loader2, Menu, X } from "lucide-react";
 import Image from "next/image";
 import { api } from "../convex/_generated/api";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { useConvexUser } from "../lib/hooks/useConvexUser";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
+import { Button } from "./ui/button";
+import { Download } from "lucide-react";
 
 export function Navbar() {
-  const { isAuthenticated, isLoading } = useConvexAuth();
+  const { isAuthenticated, isLoading, userId } = useConvexUser();
   const { signOut } = useAuthActions();
   const router = useRouter();
   const pathname = usePathname();
@@ -26,6 +37,20 @@ export function Navbar() {
 
   // Check if current user is admin
   const isAdmin = useQuery(api.admin.isCurrentUserAdmin);
+
+  // Get user details
+  const user = useQuery(
+    api.users.viewer,
+    isAuthenticated && userId ? {} : "skip"
+  );
+
+  // Get user initials for avatar fallback
+  const userInitials = useMemo(() => {
+    if (!user?.name) return "U";
+    const names = user.name.split(' ');
+    if (names.length === 1) return names[0].substring(0, 1).toUpperCase();
+    return (names[0][0] + names[names.length - 1][0]).toUpperCase();
+  }, [user?.name]);
 
   // Close mobile menu when route changes
   useEffect(() => {
@@ -162,20 +187,47 @@ export function Navbar() {
                 {isAdmin && (
                   <Link
                     href="/admin"
-                    className="inline-flex items-center justify-center rounded-xl border border-red-600 bg-red-50 px-5 py-2.5 text-base font-medium text-red-600 hover:bg-red-100 hover:border-red-700 transition-all duration-200"
+                    className="inline-flex items-center justify-center rounded-xl border border-red-600 bg-red-50 px-5 py-1.5 text-base font-medium text-red-600 hover:bg-red-100 hover:border-red-700 transition-all duration-200"
                   >
                     Admin
                   </Link>
                 )}
+                {/* User Avatar Dropdown */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="relative h-8 w-8 rounded-full p-0">
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src={user?.image || undefined} alt={user?.name || "User"} />
+                        <AvatarFallback className="text-xs bg-white border border-black hover:bg-zinc-200 text-zinc-700">{userInitials}</AvatarFallback>
+                      </Avatar>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-56" align="end" forceMount>
+                    <div className="flex flex-col space-y-1 p-2">
+                      <p className="text-sm font-medium leading-none">{user?.name || "User"}</p>
+                      <p className="text-xs leading-none text-muted-foreground">
+                        {user?.email || "user@example.com"}
+                      </p>
+                    </div>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => window.open("/downloads", "_blank")}>
+                      <Download className="mr-2 h-4 w-4" />
+                      Download Desktop App
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleSignOut}>
+                      Sign out
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
                 <Link
                   href={process.env.NEXT_PUBLIC_APP_URL || "https://app.acdc.digital"}
-                  className="inline-flex items-center justify-center rounded-full bg-blue-600 border border-blue-600 px-5 py-2.5 text-base font-bold text-white hover:bg-blue-700 hover:border-blue-700 transition-all duration-200"
+                  className="inline-flex items-center justify-center rounded-full bg-blue-600 border border-blue-700 px-5 py-1.5 text-base font-bold text-white hover:bg-blue-700 hover:border-blue-700 transition-all duration-200"
                 >
                   Soloist.
                 </Link>
                 <button
                   onClick={handleSignOut}
-                  className="inline-flex items-center justify-center rounded-3xl border border-black bg-white px-5 py-2.5 text-base font-medium text-foreground hover:bg-accent hover:text-accent-foreground hover:border-foreground transition-all duration-200"
+                  className="inline-flex items-center justify-center rounded-3xl border border-black bg-white px-5 py-1.5 text-base font-medium text-foreground hover:bg-accent hover:text-accent-foreground hover:border-foreground transition-all duration-200"
                 >
                   Sign out
                 </button>
@@ -274,6 +326,17 @@ export function Navbar() {
                 </button>
               ) : isAuthenticated ? (
                 <>
+                  {/* User info in mobile */}
+                  <div className="flex items-center gap-3 p-3 bg-zinc-50 rounded-lg mb-3">
+                    <Avatar className="h-10 w-10">
+                      <AvatarImage src={user?.image || undefined} alt={user?.name || "User"} />
+                      <AvatarFallback className="text-sm bg-zinc-200 text-zinc-700">{userInitials}</AvatarFallback>
+                    </Avatar>
+                    <div className="flex flex-col">
+                      <span className="text-sm font-medium">{user?.name || "User"}</span>
+                      <span className="text-xs text-muted-foreground">{user?.email || ""}</span>
+                    </div>
+                  </div>
                   {isAdmin && (
                     <Link
                       href="/admin"

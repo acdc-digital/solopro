@@ -25,5 +25,23 @@ contextBridge.exposeInMainWorld('electron', {
     if (typeof url === 'string' && (url.startsWith('https:') || url.startsWith('http:'))) {
       shell.openExternal(url);
     }
+  },
+  // Window control methods
+  ipcRenderer: {
+    send: (channel, ...args) => {
+      // Whitelist window control channels
+      const validChannels = ['window-minimize', 'window-maximize', 'window-close'];
+      if (validChannels.includes(channel)) {
+        ipcRenderer.send(channel, ...args);
+      }
+    }
+  },
+  // Expose shell methods
+  shell: {
+    openExternal: (url) => {
+      if (typeof url === 'string' && (url.startsWith('https:') || url.startsWith('http:'))) {
+        shell.openExternal(url);
+      }
+    }
   }
 }); 
