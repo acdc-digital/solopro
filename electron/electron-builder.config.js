@@ -112,9 +112,12 @@ module.exports = {
     artifactName: "Soloist.Pro-${version}.${ext}"
   },
   afterPack: async context => {
-    if (process.platform === 'darwin') {
+    const { electronPlatformName, appOutDir } = context;
+    
+    // Only run macOS-specific cleanup on macOS builds
+    if (electronPlatformName === 'darwin') {
       const { execSync } = require('child_process');
-      const appPath = `${context.appOutDir}/Soloist Pro.app`;
+      const appPath = `${appOutDir}/Soloist Pro.app`;
       
       console.log('Cleaning extended attributes and dot-underscore files...');
       
@@ -132,6 +135,8 @@ module.exports = {
         console.error('❌ Failed to clean app bundle:', error.message);
         throw error;
       }
+    } else {
+      console.log(`✅ Skipping macOS cleanup for ${electronPlatformName} build`);
     }
   },
   afterSign: async (context) => {

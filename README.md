@@ -1,5 +1,6 @@
-# <img src="public/logo-ACDC.svg" alt="ACDC Logo" height="40" align="center"/>
-Soloist.
+## <img src="public/logo-ACDC.svg" alt="ACDC Logo" height="30" align="center"/>
+
+# Soloist.
 
 
 [![React](https://img.shields.io/badge/React-%2320232A.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)](https://reactjs.org/)
@@ -113,11 +114,11 @@ git reset --hard vx.x.x
 
 | Version | Date | Description |
 |---------|------|-------------|
-| **v1.6.1** | 2025-01-17 | 🚀 **Build & Notarization** - Complete Apple notarization setup, automated build scripts for macOS, enhanced code signing configuration, universal binary support (Intel + Apple Silicon), streamlined development workflow |
-| **v1.6.0** | 2024-12-31 | 🎨 **UI/UX Enhancements** - Enhanced draggable window controls for Electron app with macOS-style traffic lights, improved website navbar with clickable user avatars and dropdown menus, removed floating action button for cleaner interface, added comprehensive user profile management |
-| **v1.5.0** | 2024-12-30 | 🔧 **Infrastructure & Components** - Major UI component library updates, enhanced authentication flow, improved Convex integration, added avatar support across platform |
-| **v1.4.2** | 2024-12-29 | 🐛 **Bug Fixes & Stability** - Critical bug fixes and performance improvements |
-| **v1.1.0** | 2024-12-28 | 🚀 **Foundation Release** - Workspace initialization complete with enhanced authentication, core platform architecture established |
+| **v1.6.1** | 2025-01-17 | **Build & Notarization** - Complete Apple notarization setup, automated build scripts for macOS, enhanced code signing configuration, universal binary support (Intel + Apple Silicon), streamlined development workflow |
+| **v1.6.0** | 2024-12-31 | **UI/UX Enhancements** - Enhanced draggable window controls for Electron app with macOS-style traffic lights, improved website navbar with clickable user avatars and dropdown menus, removed floating action button for cleaner interface, added comprehensive user profile management |
+| **v1.5.0** | 2024-12-30 | **Infrastructure & Components** - Major UI component library updates, enhanced authentication flow, improved Convex integration, added avatar support across platform |
+| **v1.4.2** | 2024-12-29 | **Bug Fixes & Stability** - Critical bug fixes and performance improvements |
+| **v1.1.0** | 2024-12-28 | **Foundation Release** - Workspace initialization complete with enhanced authentication, core platform architecture established |
 
 ---
 
@@ -140,10 +141,6 @@ We believe in the power of community! Soloist is a **For-Profit Open Source** pr
 - **Issues:** [GitHub Issues](https://github.com/acdc-digital/solopro/issues)
 
 ---
-
-<div align="center">
-
-### 🌟 Star us on GitHub!
 
 If you find Soloist helpful, please consider giving us a star. It helps us reach more developers and improve the project!
 
