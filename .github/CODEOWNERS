@@ -1,0 +1,64 @@
+# CODEOWNERS for Soloist Pro
+# This file defines who is responsible for reviewing changes to specific parts of the codebase.
+# When a PR is opened, GitHub will automatically request reviews from the appropriate owners.
+
+# Global fallback - repository maintainer
+* @acdc-digital
+
+# Core application code - Frontend/Full-stack team
+/renderer/** @acdc-digital
+/website/** @acdc-digital
+/electron/** @acdc-digital
+
+# Backend/Database - Backend team  
+/convex/** @acdc-digital
+
+# Infrastructure & CI/CD - DevOps team
+/.github/workflows/** @acdc-digital
+/scripts/** @acdc-digital
+/test/** @acdc-digital
+docker* @acdc-digital
+*.config.js @acdc-digital
+*.config.ts @acdc-digital
+*.config.mjs @acdc-digital
+
+# Documentation - Documentation team
+/docs/** @acdc-digital
+README.md @acdc-digital
+CONTRIBUTING.md @acdc-digital
+CHANGELOG.md @acdc-digital
+
+# Package management - Core team
+package.json @acdc-digital
+package-lock.json @acdc-digital
+pnpm-lock.yaml @acdc-digital
+pnpm-workspace.yaml @acdc-digital
+
+# Environment & Configuration - DevOps/Security team
+.env* @acdc-digital
+.gitignore @acdc-digital
+
+# TypeScript/JavaScript source files - Frontend team
+**/*.ts @acdc-digital
+**/*.tsx @acdc-digital
+**/*.js @acdc-digital
+**/*.jsx @acdc-digital
+
+# Styling - Frontend/Design team
+**/*.css @acdc-digital
+**/*.scss @acdc-digital
+tailwind.config.* @acdc-digital
+postcss.config.* @acdc-digital
+
+# Build configurations - DevOps team
+electron-builder.config.js @acdc-digital
+next.config.* @acdc-digital
+vercel.json @acdc-digital
+tsconfig.json @acdc-digital
+eslint.config.* @acdc-digital
+
+# Security-sensitive files - Security/Core team
+/convex/auth.* @acdc-digital
+/convex/payments.* @acdc-digital
+/convex/stripe.* @acdc-digital
+/convex/webhooks.* @acdc-digital 

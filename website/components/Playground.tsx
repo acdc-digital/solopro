@@ -39,7 +39,7 @@ export function PlaygroundDemo() {
   };
 
   return (
-    <div className="w-full max-w-xl mx-left">
+    <div className="w-full">
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
         {/* Header */}
         <div className="p-4 border-b border-gray-100 bg-gray-50">
@@ -96,7 +96,7 @@ export function PlaygroundDemo() {
               {/* Highlight */}
               <div>
                 <label className="text-sm font-medium text-gray-700 block mb-1">
-                  Today's highlight
+                  Today&apos;s highlight
                 </label>
                 <textarea
                   value={highlight}

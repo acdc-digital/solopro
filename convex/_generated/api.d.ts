@@ -25,6 +25,7 @@ import type * as http from "../http.js";
 import type * as myFunctions from "../myFunctions.js";
 import type * as newsletter from "../newsletter.js";
 import type * as payments from "../payments.js";
+import type * as prompts from "../prompts.js";
 import type * as randomizer from "../randomizer.js";
 import type * as score from "../score.js";
 import type * as stripe from "../stripe.js";
@@ -56,6 +57,7 @@ declare const fullApi: ApiFromModules<{
   myFunctions: typeof myFunctions;
   newsletter: typeof newsletter;
   payments: typeof payments;
+  prompts: typeof prompts;
   randomizer: typeof randomizer;
   score: typeof score;
   stripe: typeof stripe;

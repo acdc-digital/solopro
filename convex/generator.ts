@@ -3,6 +3,7 @@ import { v } from "convex/values";
 import { internalAction, action } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { Id } from "./_generated/dataModel";
+import { FORECASTING_PROMPT, DAILY_CONSULTATION_PROMPT, WEEKLY_INSIGHTS_PROMPT, AI_CONFIG, getColorCategory } from "./prompts";
 
 // Define the expected structure from OpenAI response choices
 interface OpenAIChatCompletion {
@@ -54,38 +55,106 @@ export const generateForecastWithAI = internalAction({
     console.log(`[Action generateForecastWithAI] Generating forecasts for user ${userId} for dates:`, targetDates);
     console.log(`[Action generateForecastWithAI] Using ${pastLogs.length} past logs as training data`);
 
-    // In a real implementation, this would call OpenAI or another AI service
-    // For now, we'll generate mock forecasts as a placeholder
+    // Get OpenAI API key
+    const openAiApiKey = process.env.OPENAI_API_KEY;
+    if (!openAiApiKey) {
+      throw new Error("Missing OPENAI_API_KEY in environment!");
+    }
     
     try {
-      // Simulate AI processing time (only in development)
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Prepare the context data for the AI
+      const pastLogsContext = pastLogs.map(log =>
+        `Date: ${log.date}, Score: ${log.score}, Activities: ${log.activities?.join(', ') || 'None'}, Notes: ${log.notes || 'None'}`
+      ).join('\n');
+
+      const userContent = `Recent Logs (Last ${pastLogs.length} days):
+${pastLogsContext}
+
+Target forecast dates: ${targetDates.join(', ')}`;
+
+      // Use optimized AI configuration for forecasting
+      const config = AI_CONFIG.FORECASTING;
+      const body = {
+        model: config.model,
+        messages: [
+          { role: "system", content: FORECASTING_PROMPT },
+          { role: "user", content: userContent },
+        ],
+        temperature: config.temperature,
+        max_tokens: config.max_tokens,
+        response_format: config.response_format,
+      };
+
+      const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${openAiApiKey}`,
+        },
+        body: JSON.stringify(body),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`OpenAI API error: ${errorText}`);
+      }
+
+      const completion = await response.json();
+      const content = completion.choices?.[0]?.message?.content?.trim();
       
-      // Generate a forecast for each target date
-      const forecasts: GeneratedForecast[] = targetDates.map((date, index) => {
-        // Get the last log's score as reference
+      if (!content) {
+        throw new Error("Empty response from OpenAI");
+      }
+
+      // Parse the JSON response
+      let forecasts: GeneratedForecast[];
+      try {
+        forecasts = JSON.parse(content);
+      } catch (parseError) {
+        console.error("Failed to parse AI response:", content);
+        throw new Error("Invalid JSON response from AI");
+      }
+
+      // Validate and enhance the forecasts
+      const validatedForecasts = forecasts.map((forecast, index) => {
+        const category = getColorCategory(forecast.emotionScore);
+        return {
+          ...forecast,
+          description: category?.name || getDescriptionFromScore(forecast.emotionScore),
+          // Ensure all required fields are present
+          trend: forecast.trend || "stable",
+          confidence: forecast.confidence || Math.max(50, 85 - (index * 15)),
+        };
+      });
+
+      console.log(`[Action generateForecastWithAI] Successfully generated ${validatedForecasts.length} AI forecasts`);
+      return validatedForecasts;
+
+    } catch (error: any) {
+      console.error("[Action generateForecastWithAI] Error generating forecasts:", error);
+
+      // Fallback to simple forecast generation if AI fails
+      console.log("[Action generateForecastWithAI] Falling back to simple forecast generation");
+      const fallbackForecasts: GeneratedForecast[] = targetDates.map((date, index) => {
         const sortedLogs = [...pastLogs].sort((a, b) => a.date.localeCompare(b.date));
         const lastLog = sortedLogs[sortedLogs.length - 1];
         const lastScore = lastLog?.score || 50;
         
-        // Generate a score with some variation
-        // First day slight change, second day more change, third day even more
-        const variation = (Math.random() * 20 - 10) * (index + 1) * 0.5;
+        const variation = (Math.random() * 10 - 5) * (index + 1) * 0.3;
         let predictedScore = Math.round(Math.max(0, Math.min(100, lastScore + variation)));
         
-        // Determine trend
         let trend: "up" | "down" | "stable"; 
-        if (predictedScore > lastScore + 5) trend = "up";
-        else if (predictedScore < lastScore - 5) trend = "down";
+        if (predictedScore > lastScore + 3) trend = "up";
+        else if (predictedScore < lastScore - 3) trend = "down";
         else trend = "stable";
         
-        // Calculate confidence (decreases with distance)
-        const confidence = Math.round(90 - (index * 15));
+        const confidence = Math.round(85 - (index * 15));
+        const category = getColorCategory(predictedScore);
         
         return {
           date,
           emotionScore: predictedScore,
-          description: getDescriptionFromScore(predictedScore),
+          description: category?.name || getDescriptionFromScore(predictedScore),
           trend,
           details: generateDetails(predictedScore, trend, index),
           recommendation: generateRecommendation(predictedScore),
@@ -93,12 +162,7 @@ export const generateForecastWithAI = internalAction({
         };
       });
       
-      console.log(`[Action generateForecastWithAI] Successfully generated ${forecasts.length} forecasts`);
-      return forecasts;
-      
-    } catch (error: any) {
-      console.error("[Action generateForecastWithAI] Error generating forecasts:", error);
-      throw new Error(`AI forecast generation failed: ${error.message}`);
+      return fallbackForecasts;
     }
   }
 });
@@ -182,41 +246,34 @@ export const generateDailyConsultation = action({
         return { success: false, error: "AI service configuration error. Please contact support."};
     }
 
-    // --- Construct the Prompt ---
+    // --- Construct the Context ---
     const contextString = sevenDayContextData
       .map(day =>
-        `  - Date: ${day.date}, Score: ${day.score ?? 'N/A'}, ${day.isFuture ? 'Type: Forecast' : 'Type: Log'}, Notes: ${day.notes ?? 'None'}`
+        `Date: ${day.date}, Score: ${day.score ?? 'N/A'}, Type: ${day.isFuture ? 'Forecast' : 'Log'}, Notes: ${day.notes ?? 'None'}`
       )
       .join('\n');
-      
-    const prompt = `
-You are an empathetic AI emotional wellness assistant providing a brief daily details summary.
-The user is looking at their data for: ${selectedDayData.dayName}, ${selectedDayData.date}.
-This day ${selectedDayData.isFuture ? 'is a future forecast' : 'has passed or is today'}.
-Emotion score for this day: ${selectedDayData.emotionScore ?? 'Not recorded'}.
-Specific notes/details logged for this day: ${selectedDayData.notesForSelectedDay ?? 'None'}.
 
-Here is the context for the surrounding 7-day period:
-${contextString}
+    const userContent = `Selected Day: ${selectedDayData.dayName}, ${selectedDayData.date}
+Status: ${selectedDayData.isFuture ? 'Future forecast' : 'Past/Current log'}
+Score: ${selectedDayData.emotionScore ?? 'Not recorded'}
+Notes: ${selectedDayData.notesForSelectedDay ?? 'None'}
 
-Please provide a personalized daily details summary in a SINGLE, concise paragraph (around 2-4 sentences).
-Focus on the selected day (${selectedDayData.dayName}), acknowledging its score and any notes.
-Briefly connect it to the weekly context if relevant (e.g., how it compares to the average, or if it aligns with/diverges from a forecast).
-Keep the tone supportive and insightful. Directly output the paragraph text only, without any greetings, closings, markdown formatting, or extra conversational text.
-`;
+7-Day Context:
+${contextString}`;
 
     console.log("[Action generateDailyConsultation] Sending prompt to OpenAI via fetch.");
 
-    // --- Call OpenAI API using fetch ---
+    // --- Call OpenAI API using optimized config ---
     try {
+      const config = AI_CONFIG.CONSULTATION;
       const requestBody = {
-        model: "gpt-3.5-turbo", // Or your preferred model
+        model: config.model,
         messages: [
-          { role: "system", content: "You are an empathetic AI emotional wellness assistant providing a brief daily summary." },
-          { role: "user", content: prompt }
+          { role: "system", content: DAILY_CONSULTATION_PROMPT },
+          { role: "user", content: userContent }
         ],
-        max_tokens: 150, 
-        temperature: 0.6, 
+        max_tokens: config.max_tokens,
+        temperature: config.temperature,
       };
 
       const response = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -297,41 +354,23 @@ export const generateWeeklyInsights = action({
       })
       .join('\n');
 
-    const prompt = `
-You are an insightful and empathetic AI emotional wellness assistant.
-Based on the following 7-day emotional data, please provide 3-4 concise bullet-point key insights about observed patterns, notable trends, or significant emotional shifts.
-Focus on actionable or reflective takeaways for the user.
-The data includes past logged emotion scores and future forecasted scores.
-
-7-Day Emotional Data:
-\`\`\`
-${formattedSevenDayData}
-\`\`\`
-
-Please return your response STRICTLY as a JSON object with a single key "insights" which holds an array of strings. Each string in the array should be a distinct insight.
-For example:
-{
-  "insights": [
-    "Emotional scores tend to be higher on weekends based on the provided data.",
-    "There was a notable dip in emotion mid-week, followed by a recovery.",
-    "The forecast suggests a stable emotional outlook for the next few days."
-  ]
-}
-`;
+    const userContent = `7-Day Emotional Data:
+${formattedSevenDayData}`;
 
     console.log("[Action generateWeeklyInsights] Sending prompt to OpenAI via fetch.");
 
-    // --- Call OpenAI API using fetch ---
+    // --- Call OpenAI API using optimized config ---
     try {
+      const config = AI_CONFIG.INSIGHTS;
       const requestBody = {
-        model: "gpt-3.5-turbo-1106", // Or your preferred model that supports JSON mode
+        model: config.model,
         messages: [
-          { role: "system", content: "You are an AI assistant that provides emotional wellness insights based on 7-day data. You always respond in the specified JSON format." },
-          { role: "user", content: prompt }
+          { role: "system", content: WEEKLY_INSIGHTS_PROMPT },
+          { role: "user", content: userContent }
         ],
-        temperature: 0.5, // Adjust for creativity vs. predictability
-        max_tokens: 250,  // Generous enough for 3-4 insights
-        response_format: { type: "json_object" }, // Enable JSON mode
+        temperature: config.temperature,
+        max_tokens: config.max_tokens,
+        response_format: config.response_format,
       };
 
       const response = await fetch("https://api.openai.com/v1/chat/completions", {
