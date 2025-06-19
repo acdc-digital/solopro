@@ -3,6 +3,7 @@ import { v } from "convex/values";
 
 // Import your generated API so we can call runQuery(api.dailyLogs.getDailyLog,...)
 import { api } from "./_generated/api";
+import { SCORING_PROMPT, AI_CONFIG } from "./prompts";
 
 /**
  * Action: scoreDailyLog
@@ -26,26 +27,7 @@ export const scoreDailyLog = action({
       throw new Error(`No daily log found for userId=${userId}, date=${date}`);
     }
 
-    // 2) Build your system prompt for the LLM
-    const systemPrompt = `
-      You are Solomon, an empathetic AI that evaluates a person's daily logs.
-      Your task is to assess their overall day and assign a score from 0 to 100.
-      
-      The score maps to one of ten color categories:
-      
-      1. INDIGO (90-100): Exceptional day with strong positive emotions, high energy, and significant achievements.
-      2. BLUE (80-89): Very good day, predominantly positive experiences and successful coping.
-      3. SKY (70-79): Good day, more positive than negative, manageable challenges.
-      4. TEAL (60-69): Fairly positive, some moderate challenges with adequate coping.
-      5. GREEN (50-59): Balanced day, mix of ups and downs but generally steady.
-      6. LIME (40-49): Slightly below average, more challenges than successes.
-      7. YELLOW (30-39): Difficult day with noticeable setbacks and stress.
-      8. AMBER (20-29): Very challenging day with significant negative emotions.
-      9. ORANGE (10-19): Extremely tough day, overwhelming stress or sadness.
-      10. ROSE (0-9): Crisis level, severe distress and inability to function.
-      
-      Based solely on the content of the user's daily log JSON, respond with the integer score (0–100) only, without any additional text.
-    `.trim();
+    // 2) Use the standardized scoring prompt
 
     // JSONify the daily log's answers
     const userContent = JSON.stringify(dailyLog.answers, null, 2);
@@ -57,18 +39,19 @@ export const scoreDailyLog = action({
       throw new Error("Missing OPENAI_API_KEY in environment!");
     }
 
-    // Prepare the request body for OpenAI
+    // Prepare the request body for OpenAI using optimized config
+    const config = AI_CONFIG.SCORING;
     const body = {
-      model: "gpt-3.5-turbo",
+      model: config.model,
       messages: [
-        { role: "system", content: systemPrompt },
+        { role: "system", content: SCORING_PROMPT },
         {
           role: "user",
           content: `Here is the user's daily log in JSON:\n${userContent}`,
         },
       ],
-      temperature: 0.0,
-      max_tokens: 3,
+      temperature: config.temperature,
+      max_tokens: config.max_tokens,
     };
 
     // 4) Make the external HTTP request (only allowed in an action)

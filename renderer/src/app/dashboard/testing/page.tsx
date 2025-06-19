@@ -483,7 +483,7 @@ export default function TestingPage() {
   return (
     <div className="flex-1 h-full flex flex-col overflow-hidden bg-zinc-50 dark:bg-zinc-900">
       <div className="flex-1 overflow-auto">
-        <div className="container mx-auto py-4 px-4 flex flex-col h-full max-w-5xl">
+        <div className="w-full py-4 px-4 flex flex-col h-full">
           <div className="flex flex-col gap-4 pb-4">
             <Navigation
               onGenerateForecast={handleGenerateForecast}

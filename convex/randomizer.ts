@@ -1,6 +1,7 @@
 import { action, mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { api } from "./_generated/api";
+import { RANDOM_LOG_PROMPT, AI_CONFIG } from "./prompts";
 
 // Define the expected structure of the LLM's output for type safety
 interface GeneratedLogData {
@@ -97,50 +98,20 @@ export const generateRandomLog = action({
       console.log("Using custom instructions:", !!userInstructions);
     }
 
-    // Build the system prompt, incorporating user instructions if available
-    const userInstructionsBlock = userInstructions 
-      ? `\nUser Context: ${userInstructions}\nUse the above context to personalize the generated log while still maintaining variety and realism.`
-      : "";
+    // Use the standardized random log prompt
+    const systemPrompt = RANDOM_LOG_PROMPT(date, userInstructions || undefined);
 
-    const systemPrompt = `
-You are an AI assistant tasked with generating a fictional daily log entry.
-The user wants to fill out a form for the date: ${date}.
-Please provide a realistic and varied set of answers for their daily reflection.${userInstructionsBlock}
-
-Your response MUST be a valid JSON object containing the following keys:
-- "overallMood": A number (integer between 1 and 10, inclusive).
-- "workSatisfaction": A number (integer between 1 and 10, inclusive).
-- "personalLifeSatisfaction": A number (integer between 1 and 10, inclusive).
-- "balanceRating": A number (integer between 1 and 10, inclusive).
-- "sleep": A number (e.g., 7, 7.5, 8, between 0 and 24 inclusive, can have .5 increments).
-- "exercise": A boolean value (true or false).
-- "highlights": A short string (1-2 sentences) describing a positive event or highlight of the day.
-- "challenges": A short string (1-2 sentences) describing a challenge faced during the day.
-- "tomorrowGoal": A short string (1-2 sentences) describing a main goal or focus for the next day.
-
-Example JSON structure:
-{
-  "overallMood": 7,
-  "workSatisfaction": 8,
-  "personalLifeSatisfaction": 6,
-  "balanceRating": 5,
-  "sleep": 7.5,
-  "exercise": true,
-  "highlights": "Had a very productive meeting with the team and cleared a major blocker.",
-  "challenges": "Felt a bit overwhelmed by emails in the morning.",
-  "tomorrowGoal": "Prepare the presentation for Friday's review."
-}
-Ensure the output is ONLY the JSON object itself, with no other surrounding text or explanations.
-`;
-
+    // Use optimized AI configuration
+    const config = AI_CONFIG.RANDOM_LOG;
     const requestBody = {
-      model: "gpt-3.5-turbo-1106", // This model is good with JSON mode
-      response_format: { type: "json_object" },
+      model: config.model,
+      response_format: config.response_format,
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: `Generate a daily log for ${date}.` },
       ],
-      temperature: 0.7, // Add some creativity
+      temperature: config.temperature,
+      max_tokens: config.max_tokens,
     };
 
     try {

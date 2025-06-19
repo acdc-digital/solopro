@@ -3,9 +3,8 @@
 
 "use client";
 
-import { ArrowRight, Sparkles, TrendingUp, BarChart3 } from "lucide-react";
+import { Sparkles, TrendingUp, BarChart3 } from "lucide-react";
 import React from "react";
-import Image from "next/image";
 import { LandingHeatmap } from "./LandingHeatmap";
 import { PlaygroundDemo } from "./Playground";
 import { SplitScreen } from "./SplitScreen";
@@ -80,10 +79,10 @@ export function Features() {
                 Review the Past, Ready the Future
               </h3>
               <p className="text-gray-600 mb-6 flex-grow leading-relaxed">
-                Soloist's intelligent analysis helps you look back to learn and
-                gear up for what's coming next with predictive insights.
+                Soloist&apos;s intelligent analysis helps you look back to learn and
+                gear up for what&apos;s coming next with predictive insights.
               </p>
-              <div className="mb-4 flex items-left justify-left">
+              <div className="mb-4">
                 <PlaygroundDemo />
               </div>
             </div>
