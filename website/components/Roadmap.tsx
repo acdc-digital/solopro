@@ -4,7 +4,10 @@
 "use client";
 
 import React, { useState } from "react";
-import { MapPin, CheckCircle2, Circle, Brain, Smartphone, Globe, Zap, LineChart, Users } from "lucide-react";
+import { MapPin, CheckCircle2, Circle, Brain, Smartphone, Globe, Zap, LineChart, Users, Shield } from "lucide-react";
+import { useAuthActions } from "@convex-dev/auth/react";
+import { useMutation } from "convex/react";
+import { api } from "../convex/_generated/api";
 
 type RoadmapPhase = "shipped" | "in-progress" | "planned";
 
@@ -15,43 +18,73 @@ type RoadmapItem = {
   quarter: string;
   features: string[];
   icon: React.ElementType;
+  waitlist?: boolean;
 };
 
 export function Roadmap() {
   const [activePhase, setActivePhase] = useState<RoadmapPhase>("planned");
+  const [waitlistStates, setWaitlistStates] = useState<Record<string, boolean>>({});
+  const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>({});
+  
+  const { signIn } = useAuthActions();
+  const joinWaitlist = useMutation(api.waitlist.joinWaitlist);
+
+  const handleWaitlistJoin = async (feature: string) => {
+    try {
+      setLoadingStates(prev => ({ ...prev, [feature]: true }));
+      
+      // Check if user is authenticated, if not, sign them in first
+      const result = await joinWaitlist({ feature });
+      
+      if (result.success) {
+        setWaitlistStates(prev => ({ ...prev, [feature]: true }));
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error && error.message?.includes("authentication")) {
+        // User needs to sign in first
+        signIn("github");
+      } else {
+        alert("Failed to join waitlist. Please try again.");
+      }
+    } finally {
+      setLoadingStates(prev => ({ ...prev, [feature]: false }));
+    }
+  };
 
   const roadmapData: RoadmapItem[] = [
     {
       title: "Core Foundation",
-      description: "Essential mood tracking with AI insights",
+      description: "Complete mood tracking platform with intelligent insights",
       phase: "shipped",
       quarter: "Q4 2024",
       icon: Zap,
       features: [
         "Daily mood logging",
-        "Interactive heatmap",
-        "AI scoring (0-100)",
-        "Desktop app"
+        "Interactive heatmap visualization",
+        "Intelligent scoring (0-100)",
+        "Native desktop application",
+        "Auto-generate feature"
       ]
     },
     {
       title: "Predictive Intelligence",
-      description: "Solomon AI learns and forecasts patterns",
+      description: "Advanced pattern recognition and mood forecasting",
       phase: "shipped",
       quarter: "Q1 2025",
       icon: Brain,
       features: [
-        "Mood forecasting",
-        "Weekly insights",
+        "7-day mood forecasting",
+        "Weekly pattern insights",
         "Trigger identification",
-        "Data export"
+        "Comprehensive data export",
+        "Personal trend analysis"
       ]
     },
     {
       title: "Advanced Analytics",
       description: "Deeper insights and custom metrics",
       phase: "in-progress",
-      quarter: "Q2 2025",
+      quarter: "Q3 2025",
       icon: LineChart,
       features: [
         "Multi-factor analysis",
@@ -64,13 +97,13 @@ export function Roadmap() {
       title: "Mobile Experience",
       description: "Native iOS and Android apps",
       phase: "planned",
-      quarter: "Q3 2025",
+      quarter: "Q2 2026",
       icon: Smartphone,
       features: [
         "Native apps",
-        "Offline mode",
         "Push notifications",
-        "Widget support"
+        "Widget support",
+        "Cross-platform sync"
       ]
     },
     {
@@ -87,17 +120,31 @@ export function Roadmap() {
       ]
     },
     {
+      title: "Offline Mode",
+      description: "Fully local application with private predictive models",
+      phase: "planned",
+      quarter: "Q3 2026",
+      icon: Shield,
+      features: [
+        "100% local processing",
+        "No internet required",
+        "Private predictive models",
+        "Complete data security"
+      ]
+    },
+    {
       title: "Enterprise & API",
       description: "Integrate into wellness ecosystems",
       phase: "planned",
-      quarter: "Q1 2026",
+      quarter: "TBD",
       icon: Globe,
       features: [
         "Public API",
         "Team plans",
         "HIPAA compliance",
         "White-label"
-      ]
+      ],
+      waitlist: true
     }
   ];
 
@@ -202,7 +249,7 @@ export function Roadmap() {
                       </p>
 
                       {/* Compact Features */}
-                      <div className="flex flex-wrap gap-1.5">
+                      <div className="flex flex-wrap gap-1.5 mb-3">
                         {item.features.map((feature, featureIndex) => (
                           <span
                             key={featureIndex}
@@ -218,6 +265,26 @@ export function Roadmap() {
                           </span>
                         ))}
                       </div>
+
+                      {/* Waitlist Button */}
+                      {item.waitlist && (
+                        <button
+                          onClick={() => handleWaitlistJoin("enterprise-api")}
+                          disabled={loadingStates["enterprise-api"]}
+                          className={`inline-flex items-center justify-center px-3 py-1.5 text-xs font-medium rounded-md border transition-all duration-200 ${
+                            waitlistStates["enterprise-api"]
+                              ? "bg-green-50 text-green-700 border-green-200"
+                              : "bg-white text-black border-black hover:bg-gray-50 disabled:opacity-50"
+                          }`}
+                        >
+                          {loadingStates["enterprise-api"] 
+                            ? "Joining..." 
+                            : waitlistStates["enterprise-api"] 
+                            ? "✓ On Waitlist" 
+                            : "Join Waitlist"
+                          }
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>

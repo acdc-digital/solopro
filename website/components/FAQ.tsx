@@ -4,7 +4,10 @@
 "use client";
 
 import React, { useState } from "react";
-import { ChevronRight, Search, MessageCircle, Sparkles, Shield, Clock, Zap } from "lucide-react";
+import { ChevronRight, MessageCircle, Sparkles, Shield, Clock, Zap } from "lucide-react";
+import { PrivacyPolicyModal } from "./privacyPolicy";
+import { ExportDataModal } from "./ExportDataModal";
+import { DocsModal } from "./Docs";
 
 type AccordionItemProps = {
   question: string;
@@ -62,13 +65,10 @@ export function FAQ() {
       featured: true,
       answer: (
         <div className="space-y-3">
-          <p>Our AI-powered forecasting achieves <strong>85-92% accuracy</strong> after just 7 days of consistent logging. The more you use Soloist, the more personalized and accurate your predictions become.</p>
+          <p>Our data-driven forecasting achieves <strong>85-92% accuracy</strong> after just 7 days of consistent logging. The more you use Soloist, the more personalized and accurate your predictions become.</p>
           <div className="bg-muted p-4 rounded-lg border border-border">
-            <p className="text-card-foreground text-sm">💡 <strong>Pro tip:</strong> Users who log daily for their first week see the most dramatic improvements in forecast accuracy.</p>
+            <p className="text-card-foreground text-sm">💡 <strong>Pro tip:</strong> Users who log daily for their first week see the most dramatic improvements in forecast accuracy. After 4 consecutive days, our system can identify strong patterns that suggest likely future moods and behaviours.</p>
           </div>
-          <button className="text-primary font-medium hover:text-primary/80 transition-colors">
-            Start your 7-day accuracy challenge →
-          </button>
         </div>
       )
     },
@@ -78,7 +78,7 @@ export function FAQ() {
       featured: true,
       answer: (
         <div className="space-y-3">
-          <p><strong>Absolutely.</strong> Your emotional data is encrypted end-to-end and never shared or sold. We're GDPR compliant and store data on secure, audited servers.</p>
+          <p><strong>Absolutely.</strong> Your emotional data is encrypted end-to-end and never shared or sold. We use Convex DB, a trusted database solution with enterprise-grade security.</p>
           <ul className="space-y-2 text-sm">
             <li className="flex items-center gap-2">
               <Shield className="h-4 w-4 text-green-500" />
@@ -86,14 +86,29 @@ export function FAQ() {
             </li>
             <li className="flex items-center gap-2">
               <Shield className="h-4 w-4 text-green-500" />
-              <span>GDPR & CCPA compliant</span>
+              <span>SOC 2 Type 1 Compliant</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Shield className="h-4 w-4 text-green-500" />
+              <span>HIPAA Compliant</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Shield className="h-4 w-4 text-green-500" />
+              <span>GDPR Verified</span>
             </li>
             <li className="flex items-center gap-2">
               <Shield className="h-4 w-4 text-green-500" />
               <span>You own your data - export or delete anytime</span>
             </li>
           </ul>
-          <p className="text-sm text-muted-foreground">Read our full <a href="#" className="text-primary hover:underline">Privacy Policy</a></p>
+          <p className="text-sm text-muted-foreground">
+            Read our full{" "}
+            <PrivacyPolicyModal>
+              <button className="text-primary hover:underline font-medium">
+                Privacy Policy
+              </button>
+            </PrivacyPolicyModal>
+          </p>
         </div>
       )
     },
@@ -103,11 +118,14 @@ export function FAQ() {
       featured: true,
       answer: (
         <div className="space-y-3">
-          <p><strong>Yes!</strong> Start with our completely free plan - no credit card required. Track your mood for 30 days and see the patterns emerge.</p>
+          <p><strong>Yes!</strong> Start with our completely free plan - no credit card required. Track your mood weekly and see the patterns emerge. Auto-Generate logs based on your personality details. Get feedback on your Day and tips for the future.</p>
           <div className="bg-muted p-4 rounded-lg border border-border">
             <p className="text-card-foreground text-sm"><strong>Free forever includes:</strong> Daily mood tracking, basic heatmap view, and 7-day trends.</p>
           </div>
-          <button className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium hover:bg-primary/90 transition-colors">
+          <button
+            className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium hover:bg-primary/90 transition-colors"
+            onClick={() => window.location.href = 'https://app.acdc.digital/'}
+          >
             Start free tracking
             <ChevronRight className="h-4 w-4" />
           </button>
@@ -127,15 +145,15 @@ export function FAQ() {
             </div>
             <div className="flex items-center gap-3">
               <Clock className="h-4 w-4 text-primary" />
-              <span><strong>Week 1:</strong> See your first weekly patterns and triggers</span>
+              <span><strong>Day 2:</strong> See your first weekly patterns and triggers</span>
             </div>
             <div className="flex items-center gap-3">
               <Clock className="h-4 w-4 text-primary" />
-              <span><strong>Week 2:</strong> Get your first mood forecasts</span>
+              <span><strong>Day 4:</strong> Begin generating forecasts based on your daily history</span>
             </div>
             <div className="flex items-center gap-3">
               <Clock className="h-4 w-4 text-primary" />
-              <span><strong>Month 1:</strong> Discover deeper emotional rhythms</span>
+              <span><strong>Month 1:</strong> Discover deeper emotional rhythms and key insights about yourself</span>
             </div>
           </div>
         </div>
@@ -146,7 +164,7 @@ export function FAQ() {
       category: "features",
       answer: (
         <div className="space-y-3">
-          <p>Unlike basic mood trackers, Soloist uses <strong>predictive AI</strong> to forecast your emotional patterns and provides actionable insights.</p>
+          <p>Unlike basic mood trackers, Soloist uses <strong>advanced pattern analysis</strong> to forecast your emotional patterns and provides actionable insights.</p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
             <div className="bg-muted p-3 rounded-lg border border-border">
               <p className="font-medium text-card-foreground">❌ Other apps</p>
@@ -154,10 +172,10 @@ export function FAQ() {
             </div>
             <div className="bg-card p-3 rounded-lg border border-primary/20">
               <p className="font-medium text-card-foreground">✅ Soloist</p>
-              <p className="text-primary">AI forecasting + pattern recognition</p>
+              <p className="text-primary">Data enabled forecasting & pattern recognition</p>
             </div>
           </div>
-          <p className="text-sm">Plus: Beautiful visualizations, desktop app, and deep weekly insights that actually help you plan better days.</p>
+          <p className="text-sm">Plus: Beautiful visualizations, desktop app, and deep weekly insights that actually help you plan for better days.</p>
         </div>
       )
     },
@@ -166,11 +184,11 @@ export function FAQ() {
       category: "getting-started",
       answer: (
         <div className="space-y-3">
-          <p><strong>Currently desktop-focused</strong> for the best experience, but our responsive web app works great on tablets and mobile browsers.</p>
+          <p><strong>No, Soloist is designed for desktop use only.</strong> We don't support mobile devices as the app requires a full desktop experience for optimal mood tracking and analysis.</p>
           <div className="bg-muted p-4 rounded-lg border border-border">
-            <p className="text-card-foreground text-sm">📱 <strong>Mobile app coming 2025:</strong> Native iOS & Android apps are in development with offline sync!</p>
+            <p className="text-card-foreground text-sm">💻 <strong>Desktop Options:</strong> Download our native desktop app for the best experience, or use the web browser version on your computer.</p>
           </div>
-          <p className="text-sm">For now, bookmark our web app on your phone's home screen for quick access.</p>
+          <p className="text-sm">The desktop-focused design allows for better data visualization, detailed insights, and a more comprehensive mood tracking experience. A mobile app is currently in development with no date for release at this time.</p>
         </div>
       )
     },
@@ -179,9 +197,12 @@ export function FAQ() {
       category: "getting-started",
       answer: (
         <div className="space-y-3">
-          <p>No worries! Soloist works with <strong>imperfect data</strong>. Even logging 4-5 days per week provides valuable insights.</p>
-          <p>We'll send gentle reminders (if you want them) and our AI can interpolate missing days to maintain your forecast accuracy.</p>
-          <p className="text-sm text-muted-foreground">💡 Most successful users set a daily phone reminder for their preferred logging time.</p>
+          <p>No problem! <strong>Key insights and patterns</strong> will still be generated based on whatever information you have available.</p>
+          <div className="bg-muted p-4 rounded-lg border border-border">
+            <p className="text-card-foreground text-sm">📊 <strong>Forecast Requirements:</strong> You need 4 consecutive days logged to generate mood forecasts. Without this, you'll still get valuable insights and pattern analysis but without future predictions.</p>
+          </div>
+          <p>If you forget to log some days, you can quickly catch up using the <strong>'Generate' feature</strong> which fills in the blanks based on your history and personal information from your settings.</p>
+          <p className="text-sm text-muted-foreground">💡 The Generate feature uses your past patterns and profile details to create realistic entries for missed days or quickly generate a log for the current day.</p>
         </div>
       )
     },
@@ -190,11 +211,13 @@ export function FAQ() {
       category: "privacy",
       answer: (
         <div className="space-y-3">
-          <p><strong>Yes, absolutely.</strong> Your data belongs to you. Export everything as CSV, JSON, or PDF reports anytime.</p>
+          <p><strong>Yes, absolutely.</strong> Your data belongs to you. Export now in JSON, with .CSV and PDF report capabilities coming soon. If you need a specific format now, simply reach out to support.</p>
           <p>This is perfect for sharing insights with therapists, coaches, or just keeping your own records.</p>
-          <button className="text-primary font-medium hover:text-primary/80 transition-colors text-sm">
-            Learn about data exports →
-          </button>
+          <ExportDataModal>
+            <button className="text-primary font-medium hover:text-primary/80 transition-colors text-sm">
+              Export Your Data →
+            </button>
+          </ExportDataModal>
         </div>
       )
     },
@@ -211,17 +234,35 @@ export function FAQ() {
             </div>
             <div className="flex items-center gap-3">
               <MessageCircle className="h-4 w-4 text-primary" />
-              <span>Community forum for tips and tricks</span>
+              <span>
+                <a 
+                  href="https://acdcdigital.slack.com/archives/C0919GRUWB0" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-primary hover:text-primary/80 hover:underline font-medium"
+                >
+                  Community forum for tips and tricks
+                </a>
+              </span>
             </div>
             <div className="flex items-center gap-3">
               <MessageCircle className="h-4 w-4 text-primary" />
-              <span>Comprehensive help documentation</span>
+              <span>
+                <DocsModal>
+                  <button className="text-primary hover:text-primary/80 hover:underline font-medium">
+                    Comprehensive help documentation
+                  </button>
+                </DocsModal>
+              </span>
             </div>
           </div>
-          <button className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium hover:bg-primary/90 transition-colors text-sm">
+          <a 
+            href="mailto:msimon@acdc.digital" 
+            className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium hover:bg-primary/90 transition-colors text-sm"
+          >
             Contact support
             <MessageCircle className="h-4 w-4" />
-          </button>
+          </a>
         </div>
       )
     }

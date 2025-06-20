@@ -22,8 +22,8 @@ export function Features() {
           <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">
             Everything you need to understand yourself
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Transform scattered thoughts into actionable insights with our intelligent mood tracking and forecasting system.
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Get to know yourself better. Stop letting bad days surprise you—see them coming and take control.
           </p>
         </div>
 
@@ -31,31 +31,29 @@ export function Features() {
         <div className="mb-12 md:mb-12">
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
             <div className="grid md:grid-cols-2 gap-0">
-              <div className="p-8 md:p-12 flex flex-col justify-center">
+              <div className="p-8 md:p-12 flex flex-col mt-4">
                 <div className="inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700 mb-4 w-fit">
                   <BarChart3 className="h-3 w-3" />
                   Interactive Heatmap
                 </div>
                 <h3 className="text-2xl md:text-3xl font-bold mb-4">
-                  Your Daily Well-Being at a Glance
+                  The Map to Your Best Self.
                 </h3>
-                <p className="text-gray-600 text-lg mb-6 leading-relaxed">
-                  The color-coded heatmap turns 365 scattered journal entries into one
-                  elegant, scrollable canvas. Instantly spot winning streaks, analyze
-                  emerging patterns, and understand your emotional rhythms.
+                <p className="text-muted-foreground mb-6 leading-relaxed">
+                  Your entire year of moods in one spot. Spot the signs, take control of the rhythm, and see the big picture in order to make the best decisions. 
                 </p>
                 <div className="space-y-3 text-sm text-gray-600">
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
-                    <span>Interactive hover details</span>
+                    <span>Daily Feed Summary</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                    <span>Real-time pattern recognition</span>
+                    <span>Customizable Log Templates</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                    <span>Progress tracking & trends</span>
+                    <span>Quick Log for 1-Click Entries</span>
                   </div>
                 </div>
               </div>
@@ -78,11 +76,10 @@ export function Features() {
               <h3 className="text-xl md:text-2xl font-bold mb-3">
                 Review the Past, Ready the Future
               </h3>
-              <p className="text-gray-600 mb-6 flex-grow leading-relaxed">
-                Soloist&apos;s intelligent analysis helps you look back to learn and
-                gear up for what&apos;s coming next with predictive insights.
+              <p className="text-gray-600 mb-0 flex-grow leading-relaxed">
+                Fast daily-logs with customizable Daily templates to help you get the most out of each day.
               </p>
-              <div className="mb-4">
+              <div className="mb-8">
                 <PlaygroundDemo />
               </div>
             </div>
@@ -102,7 +99,7 @@ export function Features() {
                 Pinpoint why today felt different, watch real-time charts reveal
                 emerging trends, and tag meaningful moments before they fade.
               </p>
-              <div className="mb-10 flex items-center justify-center">
+              <div className="mb-8 flex items-center justify-center">
                 <SplitScreen />
               </div>
             </div>

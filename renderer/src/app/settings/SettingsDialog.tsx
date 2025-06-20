@@ -12,7 +12,7 @@ import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useConvexUser } from "@/hooks/useConvexUser";
-import { Loader2, CheckCircle2, X, Palette, User, Zap, Settings } from "lucide-react";
+import { Loader2, CheckCircle2, X, Palette, User, Zap, Settings, Download, AlertCircle, RefreshCw, Smartphone } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
@@ -22,6 +22,7 @@ import { SignOutWithGitHub } from "@/auth/oauth/SignOutWithGitHub";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useAppVersion } from "@/hooks/useAppVersion";
 
 interface SettingsDialogProps {
   open: boolean;
@@ -34,6 +35,9 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
   const [instructions, setInstructions] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+
+  // App version checking
+  const versionInfo = useAppVersion();
 
   // Get user details from Convex when authenticated
   const user = useQuery(
@@ -95,15 +99,6 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
               Customize your appearance and personalize your experience
             </DialogDescription>
           </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleClose}
-            className="h-8 w-8 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800"
-          >
-            <X className="h-4 w-4" />
-            <span className="sr-only">Close</span>
-          </Button>
         </div>
 
         <ScrollArea className="flex-1 max-h-[70vh] p-6">
@@ -136,6 +131,97 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
                     Switch to {theme === "dark" ? "light" : "dark"}
                   </Button>
                 </div>
+              </CardContent>
+            </Card>
+
+            {/* App Version Section */}
+            <Card className="border-zinc-200 dark:border-zinc-700">
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center gap-2 text-base">
+                  <Smartphone className="h-4 w-4 text-indigo-600 dark:text-indigo-500" />
+                  App Version
+                </CardTitle>
+                <CardDescription className="text-sm">
+                  Keep your app up to date with the latest features and improvements
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="pt-0 space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-zinc-700 dark:text-zinc-300">Current version:</span>
+                    <Badge variant="outline" className="text-xs font-mono">
+                      v{versionInfo.current}
+                    </Badge>
+                  </div>
+                  <Button 
+                    onClick={versionInfo.refresh}
+                    size="sm"
+                    variant="ghost"
+                    disabled={versionInfo.isChecking}
+                    className="h-8"
+                  >
+                    {versionInfo.isChecking ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <RefreshCw className="h-4 w-4" />
+                    )}
+                  </Button>
+                </div>
+
+                {/* Update Status */}
+                {versionInfo.isChecking ? (
+                  <div className="flex items-center gap-2 p-3 bg-zinc-50 dark:bg-zinc-800 rounded-md">
+                    <Loader2 className="h-4 w-4 animate-spin text-zinc-500" />
+                    <span className="text-sm text-zinc-600 dark:text-zinc-400">Checking for updates...</span>
+                  </div>
+                ) : versionInfo.error ? (
+                  <div className="flex items-center gap-2 p-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-md">
+                    <AlertCircle className="h-4 w-4 text-red-600 dark:text-red-400" />
+                    <span className="text-sm text-red-700 dark:text-red-300">
+                      Error checking for updates: {versionInfo.error}
+                    </span>
+                  </div>
+                ) : versionInfo.updateAvailable ? (
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2 p-3 bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 rounded-md">
+                      <Download className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+                      <div className="flex-1">
+                        <span className="text-sm font-medium text-amber-800 dark:text-amber-200">
+                          Update available: v{versionInfo.latest}
+                        </span>
+                        <p className="text-xs text-amber-700 dark:text-amber-300">
+                          A new version is ready to install
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button 
+                        onClick={versionInfo.handleUpdate}
+                        size="sm"
+                        className="h-8 bg-blue-600 hover:bg-blue-700"
+                      >
+                        Update Now
+                      </Button>
+                      {versionInfo.releaseNotes && (
+                        <Button 
+                          onClick={() => window.open(versionInfo.releaseNotes, '_blank')}
+                          size="sm"
+                          variant="outline"
+                          className="h-8"
+                        >
+                          View Release Notes
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2 p-3 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 rounded-md">
+                    <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-400" />
+                    <span className="text-sm text-green-700 dark:text-green-300">
+                      You&apos;re running the latest version!
+                    </span>
+                  </div>
+                )}
               </CardContent>
             </Card>
 

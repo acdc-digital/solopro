@@ -3,15 +3,14 @@
 
 'use client'
 
-import { useConvexAuth, useQuery } from "convex/react";
+import { useQuery } from "convex/react";
 import Link from "next/link";
 import { useAuthActions } from "@convex-dev/auth/react";
 import { useRouter, usePathname } from "next/navigation";
 import { useState, useCallback, useEffect, useMemo } from "react";
 import { SignInModal } from "../modals/SignInModal";
 import { DocsModal } from "./Docs";
-import { DownloadModal } from "./DownloadModal";
-import { Loader2, Menu, X } from "lucide-react";
+import { Loader2, Menu, X, Shield, ShieldUserIcon, User, FileDown } from "lucide-react";
 import Image from "next/image";
 import { api } from "../convex/_generated/api";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
@@ -25,6 +24,8 @@ import {
 } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
 import { Download } from "lucide-react";
+import { ProfileModal } from "../modals/ProfileModal";
+import { ExportDataModal } from "./ExportDataModal";
 
 export function Navbar() {
   const { isAuthenticated, isLoading, userId } = useConvexUser();
@@ -35,6 +36,7 @@ export function Navbar() {
   const [signInFlow, setSignInFlow] = useState<"signIn" | "signUp">("signIn");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [detectedOS, setDetectedOS] = useState<'Windows' | 'macOS' | 'Other'>('Other');
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   // Check if current user is admin
   const isAdmin = useQuery(api.admin.isCurrentUserAdmin);
@@ -162,9 +164,14 @@ export function Navbar() {
                 className="w-8 h-8 sm:w-10 sm:h-10"
               />
             </Link>
-            <span className="text-2xl sm:text-3xl font-bold text-foreground">
-              Soloist.
-            </span>
+            <div className="flex items-start gap-1 relative">
+              <span className="text-2xl sm:text-3xl font-bold text-foreground">
+                Soloist.
+              </span>
+              <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-600 border border-slate-200 -mt-1 ml-0.5 shadow-sm">
+                v1.6.1
+              </span>
+            </div>
           </div>
 
           {/* Desktop Nav links */}
@@ -222,18 +229,19 @@ export function Navbar() {
                 {isAdmin && (
                   <Link
                     href="/admin"
-                    className="inline-flex items-center justify-center rounded-xl border border-red-600 bg-red-50 px-5 py-1.5 text-base font-medium text-red-600 hover:bg-red-100 hover:border-red-700 transition-all duration-200"
+                    className="inline-flex items-center justify-center rounded-full border border-red-600 bg-red-50 h-10 w-10 text-red-600 hover:bg-red-100 hover:border-red-700 transition-all duration-200"
+                    title="Admin Dashboard"
                   >
-                    Admin
+                    <ShieldUserIcon className="h- w-6" strokeWidth={1.5} />
                   </Link>
                 )}
                 {/* User Avatar Dropdown */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="relative h-8 w-8 rounded-full p-0">
-                      <Avatar className="h-8 w-8">
+                    <Button variant="ghost" className="relative h-9 w-9 rounded-full p-0">
+                      <Avatar className="h-10 w-10">
                         <AvatarImage src={user?.image || undefined} alt={user?.name || "User"} />
-                        <AvatarFallback className="text-xs bg-white border border-black hover:bg-zinc-200 text-zinc-700">{userInitials}</AvatarFallback>
+                        <AvatarFallback className="text-sm bg-white border border-black hover:bg-zinc-200 text-zinc-700">{userInitials}</AvatarFallback>
                       </Avatar>
                     </Button>
                   </DropdownMenuTrigger>
@@ -245,6 +253,16 @@ export function Navbar() {
                       </p>
                     </div>
                     <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => setIsProfileModalOpen(true)}>
+                      <User className="mr-2 h-4 w-4" />
+                      Profile
+                    </DropdownMenuItem>
+                    <ExportDataModal>
+                      <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                        <FileDown className="mr-2 h-4 w-4" />
+                        Export Data
+                      </DropdownMenuItem>
+                    </ExportDataModal>
                     <DropdownMenuItem onClick={handleDirectDownload}>
                       <Download className="mr-2 h-4 w-4" />
                       Download Desktop App
@@ -256,7 +274,7 @@ export function Navbar() {
                 </DropdownMenu>
                 <Link
                   href={process.env.NEXT_PUBLIC_APP_URL || "https://app.acdc.digital"}
-                  className="inline-flex items-center justify-center rounded-full bg-blue-600 border border-blue-700 px-5 py-1.5 text-base font-bold text-white hover:bg-blue-700 hover:border-blue-700 transition-all duration-200"
+                  className="inline-flex items-center justify-center rounded-full bg-blue-500 border border-blue-900 px-5 py-1.5 text-base font-bold text-white hover:bg-blue-700 hover:border-blue-700 transition-all duration-200"
                 >
                   Soloist.
                 </Link>
@@ -376,18 +394,21 @@ export function Navbar() {
                     <Link
                       href="/admin"
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="w-full inline-flex items-center justify-center rounded-3xl border border-red-600 bg-red-50 px-5 py-2.5 text-base font-medium text-red-600 hover:bg-red-100 hover:border-red-700 transition-all duration-200"
+                      className="w-full inline-flex items-center justify-center gap-2 rounded-3xl border border-red-600 bg-red-50 px-5 py-2.5 text-base font-medium text-red-600 hover:bg-red-100 hover:border-red-700 transition-all duration-200"
                     >
+                      <Shield className="h-5 w-5" />
                       Admin Dashboard
                     </Link>
                   )}
-                  <Link
-                    href={process.env.NEXT_PUBLIC_APP_URL || "https://app.acdc.digital"}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="w-full inline-flex items-center justify-center rounded-full bg-blue-600 border border-blue-600 px-5 py-2.5 text-base font-bold text-white hover:bg-blue-700 hover:border-blue-700 transition-all duration-200"
-                  >
-                    Go to Soloist
-                  </Link>
+                  <ExportDataModal>
+                    <button
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="w-full inline-flex items-center justify-center gap-2 rounded-3xl border border-input bg-background px-5 py-2.5 text-base font-medium text-foreground hover:bg-accent hover:text-accent-foreground transition-all duration-200"
+                    >
+                      <FileDown className="h-5 w-5" />
+                      Export Data
+                    </button>
+                  </ExportDataModal>
                   <button
                     onClick={handleSignOut}
                     className="w-full inline-flex items-center justify-center rounded-3xl border border-black bg-white px-5 py-2.5 text-base font-medium text-foreground hover:bg-accent hover:text-accent-foreground hover:border-foreground transition-all duration-200"
@@ -422,6 +443,12 @@ export function Navbar() {
         onClose={() => setIsSignInModalOpen(false)}
         initialFlow={signInFlow}
         onAuthSuccess={handleAuthSuccess}
+      />
+
+      {/* Profile Modal */}
+      <ProfileModal
+        open={isProfileModalOpen}
+        onOpenChange={setIsProfileModalOpen}
       />
     </>
   );

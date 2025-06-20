@@ -6,7 +6,7 @@
 import React from "react";
 import { 
   Github, 
-  Linkedin, 
+  Slack, 
   Mail,
   MapPin
 } from "lucide-react";
@@ -54,11 +54,13 @@ export function Footer() {
                   <Github className="h-4 w-4" />
                 </Link>
                 <Link 
-                  href="https://linkedin.com/company/acdc-digital" 
+                  href="https://acdcdigital.slack.com/archives/C0919GRUWB0" 
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="group p-2.5 rounded-full bg-white border border-border text-black hover:text-black hover:border-foreground transition-all duration-200"
-                  aria-label="LinkedIn"
+                  aria-label="Slack Community"
                 >
-                  <Linkedin className="h-4 w-4" />
+                  <Slack className="h-4 w-4" />
                 </Link>
                 <Link 
                   href="mailto:msimon@acdc.digital" 

@@ -4,7 +4,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Calendar, Sparkles, Heart, Zap } from "lucide-react";
+import { Calendar, Sparkles, Heart, Zap, PersonStandingIcon } from "lucide-react";
 
 
 
@@ -39,7 +39,7 @@ export function PlaygroundDemo() {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full mb-12">
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
         {/* Header */}
         <div className="p-4 border-b border-gray-100 bg-gray-50">
@@ -111,7 +111,7 @@ export function PlaygroundDemo() {
               <button
                 onClick={calculateScore}
                 disabled={isCalculating}
-                className="w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+                className="w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-700 opacity-95 text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
               >
                 {isCalculating ? (
                   <>
@@ -120,8 +120,8 @@ export function PlaygroundDemo() {
                   </>
                 ) : (
                   <>
-                    <Sparkles className="h-4 w-4" />
-                    Get AI Score
+                    <PersonStandingIcon className="h-5 w-5" />
+                    Get your wellness Score
                   </>
                 )}
               </button>
