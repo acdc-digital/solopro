@@ -169,7 +169,7 @@ export function Navbar() {
                 Soloist.
               </span>
               <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-600 border border-slate-200 -mt-1 ml-0.5 shadow-sm">
-                v1.6.1
+                v1.6.2
               </span>
             </div>
           </div>
