@@ -12,7 +12,7 @@
 [![ShadCN/ui](https://img.shields.io/badge/shadcn/ui-%2327272A.svg?style=for-the-badge&logoColor=white)](https://ui.shadcn.com/)
 [![Convex DB](https://img.shields.io/badge/Convex_DB-%23450AFF.svg?style=for-the-badge&logo=convex&logoColor=white)](https://convex.dev/)
 
-**📊 Version:** `1.6.1` | **📝 License:** For-Profit Open Source | **🚀 Status:** Active Development
+**📊 Version:** `1.6.2` | **📝 License:** For-Profit Open Source | **🚀 Status:** Active Development
 
 [**📖 Documentation**](https://github.com/acdc-digital/solopro/wiki) • [**📋 Project Board**](https://github.com/users/acdc-digital/projects/10) • [**🔖 Release Notes**](https://github.com/acdc-digital/solopro/releases)
 
