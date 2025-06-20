@@ -5,7 +5,7 @@
 
 import { Check, Sparkles } from "lucide-react";
 import { useState } from "react";
-import { useConvexAuth, useQuery } from "convex/react";
+import { useConvexAuth, useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { StripeCheckoutModal } from "@/modals/StripeCheckoutModal";
 import { StripeSetupInstructions } from "./StripeSetupInstructions";
@@ -26,11 +26,14 @@ interface PricingTier {
 export default function Pricing() {
   const { isAuthenticated, isLoading } = useConvexAuth();
   const hasActiveSubscription = useQuery(api.userSubscriptions.hasActiveSubscription);
+  const isOnTeamsWaitlist = useQuery(api.waitlist.isOnWaitlist, { feature: "teams" });
+  const joinWaitlist = useMutation(api.waitlist.joinWaitlist);
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
   const [isSignInModalOpen, setIsSignInModalOpen] = useState(false);
   const [signInFlow, setSignInFlow] = useState<"signIn" | "signUp">("signIn");
   const [selectedTier, setSelectedTier] = useState<PricingTier | null>(null);
   const [showInstructions, setShowInstructions] = useState(false);
+  const [waitlistLoading, setWaitlistLoading] = useState(false);
 
   // Debug the subscription state
   console.log("Pricing component - hasActiveSubscription:", hasActiveSubscription);
@@ -40,26 +43,29 @@ export default function Pricing() {
   const tiers: PricingTier[] = [
     {
       name: "Free",
-      description: "Limited browser-only experience",
+      description: "Start your mood tracking journey",
       price: "$0",
       features: [
-        "Browser-only access",
-        "Basic mood tracking",
-        "7-day data history",
-        "Limited insights",
+        "Full browser experience",
+        "Daily Feedback & Mood Forecasting",
+        "Auto-generate Daily entries",
+        "7-day History",
+        "Basic insights & patterns",
+        "Heatmap visualization",
       ],
-      cta: "Try Browser App",
+      cta: "Start Free Today",
       productId: "prod_SM2rv1Y1tRAaKo",
     },
     {
       name: "Pro",
-      description: "Full experience with 14-day free trial",
+      description: "Unlock your full emotional potential",
       price: "$3",
       features: [
-        "Desktop & mobile apps",
-        "Unlimited mood tracking", 
-        "AI-powered insights",
-        "Mood forecasting",
+        "Everything in Free, plus:",
+        "Native desktop application",
+        "Unlimited mood history & forecasting",
+        "Advanced analytics & trends",
+        "Interactive playground",
         "Data export & backup",
         "Priority support",
       ],
@@ -70,18 +76,19 @@ export default function Pricing() {
       paymentMode: "subscription",
     },
     {
-      name: "Coming Soon",
-      description: "Advanced features in development",
+      name: "Teams",
+      description: "Share insights and support each other's wellbeing",
       price: "2026",
       features: [
-        "Team collaboration",
-        "Advanced data visualization",
-        "Custom integrations",
-        "White-label options",
-        "Enterprise features",
-        "API access",
+        "Share mood insights with trusted friends",
+        "Group wellbeing challenges",
+        "Collaborative mood tracking",
+        "Team wellness dashboards",
+        "Supportive community features",
+        "Shared goal setting & progress",
+        "Privacy-first group insights",
       ],
-      cta: "Stay Updated",
+      cta: "Join Waitlist",
       productId: "prod_SM2stqz0a2vhGb",
     },
   ];
@@ -118,9 +125,25 @@ export default function Pricing() {
       return;
     }
 
-    if (tier.name === "Coming Soon") {
-      // Here you could redirect to a newsletter signup or feature request page
-      window.location.href = "/#features";
+    if (tier.name === "Teams") {
+      // Handle Teams waitlist signup
+      if (isLoading) {
+        console.log("Auth state is still loading, waiting...");
+        setTimeout(() => handlePriceSelection(tier), 500);
+        return;
+      }
+
+      if (!isAuthenticated) {
+        // If not authenticated, show sign in modal for waitlist signup
+        console.log("User not authenticated, showing sign-in modal for Teams waitlist");
+        setSelectedTier(tier);
+        setSignInFlow("signIn");
+        setIsSignInModalOpen(true);
+        return;
+      }
+
+      // User is authenticated, handle waitlist signup
+      handleTeamsWaitlist();
       return;
     }
 
@@ -196,6 +219,13 @@ export default function Pricing() {
       return;
     }
 
+    // Check if user selected Teams tier for waitlist
+    if (selectedTier && selectedTier.name === "Teams") {
+      console.log("User authenticated for Teams waitlist, joining waitlist");
+      handleTeamsWaitlist();
+      return;
+    }
+
     // After successful authentication, immediately show the checkout modal
     // if we have a selected tier with a price ID
     if (selectedTier && selectedTier.priceId) {
@@ -208,6 +238,22 @@ export default function Pricing() {
         console.log("Delayed opening of checkout modal");
         setIsCheckoutModalOpen(true);
       }, 100);
+    }
+  };
+
+  const handleTeamsWaitlist = async () => {
+    console.log("handleTeamsWaitlist called");
+    setWaitlistLoading(true);
+    try {
+      const result = await joinWaitlist({ feature: "teams" });
+      console.log("Teams waitlist signup successful", result);
+      alert("🎉 You've successfully joined the Teams waitlist! We'll notify you when it's available.");
+    } catch (error) {
+      console.error("Error joining teams waitlist:", error);
+      const errorMessage = error instanceof Error ? error.message : "Failed to join waitlist";
+      alert(`❌ ${errorMessage}`);
+    } finally {
+      setWaitlistLoading(false);
     }
   };
 
@@ -224,7 +270,7 @@ export default function Pricing() {
             Simple, Transparent Pricing
           </h2>
           <p className="max-w-[90%] sm:max-w-[85%] text-sm sm:text-base text-muted-foreground md:text-xl px-2">
-            Start with our free browser app or try Pro with a 14-day free trial. Cancel anytime.
+          Take control of tomorrow, today. Start with a 14-day free trial. Cancel anytime.
           </p>
         </div>
         <div className="mx-auto mt-8 sm:mt-12 md:mt-16 grid max-w-5xl gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 lg:items-center">
@@ -234,7 +280,7 @@ export default function Pricing() {
               "relative flex flex-col rounded-lg border bg-background ";
             if (tier.highlighted) {
               cardClass += "border-emerald-600 shadow-md p-5 sm:p-6 md:p-8 sm:scale-105 z-10";
-            } else if (tier.name === "Coming Soon") {
+            } else if (tier.name === "Teams") {
               cardClass +=
                 "border-dashed border-muted-foreground/50 p-5 sm:p-6 shadow-sm my-auto";
             } else {
@@ -247,9 +293,9 @@ export default function Pricing() {
                     Popular
                   </div>
                 )}
-                {tier.name === "Coming Soon" && (
-                  <div className="absolute -top-3 left-0 right-0 mx-auto w-fit rounded-full bg-muted px-3 py-1 text-xs font-medium">
-                    Roadmap
+                {tier.name === "Teams" && (
+                  <div className="absolute -top-3 left-0 right-0 mx-auto w-fit rounded-full bg-muted px-3 py-1 text-xs font-medium border border-muted-foreground">
+                    Coming Soon
                   </div>
                 )}
                 <div className="mb-3 sm:mb-4 space-y-2">
@@ -272,7 +318,7 @@ export default function Pricing() {
                   {tier.name === "Pro" && (
                     <div className="mb-2">
                       <span className="text-2xl sm:text-3xl font-semibold text-emerald-600 decoration-2">$3</span>
-                      <div className="text-xs sm:text-sm text-muted-foreground">Free for 14 days, then $12/month</div>
+                      <div className="text-xs sm:text-sm text-muted-foreground">Free for 14 days, then $3/month</div>
                     </div>
                   )}
                   {tier.name !== "Pro" && (
@@ -282,7 +328,7 @@ export default function Pricing() {
                       >
                         {tier.price}
                       </span>
-                      {tier.name !== "Coming Soon" && tier.price !== "Custom" && (
+                                             {tier.name !== "Teams" && tier.price !== "Custom" && (
                         <span className="ml-1 text-sm sm:text-base text-muted-foreground">/month</span>
                       )}
                     </>
@@ -301,7 +347,10 @@ export default function Pricing() {
                 <div className="mt-auto">
                   <button
                     onClick={() => handlePriceSelection(tier)}
-                    disabled={tier.name === "Coming Soon" || (hasActiveSubscription === true && !!tier.priceId)}
+                    disabled={
+                      (tier.name === "Teams" && (isOnTeamsWaitlist || waitlistLoading)) || 
+                      (hasActiveSubscription === true && !!tier.priceId)
+                    }
                     className={`inline-flex h-10 sm:h-10 w-full items-center justify-center rounded-md px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring ${
                       tier.name === "Free" 
                         ? "bg-muted text-muted-foreground cursor-not-allowed sm:cursor-pointer sm:border sm:border-input sm:bg-background sm:hover:bg-accent sm:hover:text-accent-foreground sm:active:scale-95"
@@ -311,8 +360,12 @@ export default function Pricing() {
                         ? "bg-green-200 dark:bg-green-900/20 text-green-800 dark:text-green-300 border border-green-300 dark:border-green-600 cursor-default"
                         : tier.highlighted
                         ? "bg-emerald-600 text-white shadow hover:bg-emerald-800 font-bold"
-                        : tier.name === "Coming Soon"
-                          ? "bg-muted text-muted-foreground cursor-default"
+                        : tier.name === "Teams"
+                          ? (isOnTeamsWaitlist 
+                            ? "bg-green-200 dark:bg-green-900/20 text-green-800 dark:text-green-300 border border-green-300 dark:border-green-600 cursor-default"
+                            : waitlistLoading
+                            ? "bg-muted text-muted-foreground cursor-not-allowed"
+                            : "bg-blue-600 text-white shadow hover:bg-blue-700 cursor-pointer")
                           : tier.name !== "Free" && "border border-input bg-background hover:bg-accent hover:text-accent-foreground"
                     }`}
                   >
@@ -322,6 +375,10 @@ export default function Pricing() {
                          <span className="sm:hidden">Desktop Only</span>
                          <span className="hidden sm:inline">{tier.cta}</span>
                        </>
+                     ) : tier.name === "Teams" ? (
+                       isOnTeamsWaitlist ? "✓ On Waitlist" :
+                       waitlistLoading ? "Joining..." :
+                       tier.cta
                      ) : tier.cta}
                   </button>
                 </div>

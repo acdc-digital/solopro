@@ -11,6 +11,32 @@ export function getColorClass(score: number | null | undefined) {
   return "bg-rose-700";                     // DEEP RED: Crisis Day
 }
 
+// NEW: 10-category color system matching the heatmap calendar
+export function getHeatmapColorClass(score: number | null | undefined) {
+  if (score == null) return "bg-zinc-800/60";
+  
+  // Using the same 10-category system as the heatmap
+  if (score >= 90) return "bg-indigo-400";   // 90-100
+  if (score >= 80) return "bg-blue-400";     // 80-89
+  if (score >= 70) return "bg-sky-400";      // 70-79
+  if (score >= 60) return "bg-teal-400";     // 60-69
+  if (score >= 50) return "bg-green-400";    // 50-59
+  if (score >= 40) return "bg-lime-400";     // 40-49
+  if (score >= 30) return "bg-yellow-400";   // 30-39
+  if (score >= 20) return "bg-amber-500";    // 20-29
+  if (score >= 10) return "bg-orange-500";   // 10-19
+  return "bg-rose-600";                      // 0-9
+}
+
+// NEW: Text color for heatmap colors
+export function getHeatmapTextColorClass(score: number | null | undefined) {
+  if (score == null) return "text-zinc-400";
+  
+  // Light text for darker backgrounds, dark text for lighter backgrounds
+  if (score >= 50) return "text-zinc-900"; // Lighter colors: green, lime, yellow
+  return "text-zinc-100"; // Darker colors: indigo, blue, sky, teal, amber, orange, rose
+}
+
 // Get border color class for consistency
 export function getBorderColorClass(score: number | null | undefined) {
   if (score == null) return "border-zinc-700/50";

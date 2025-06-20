@@ -61,19 +61,19 @@ export const Hero = () => {
         {/* Left Side - Text Content */}
         <div className="space-y-6 lg:w-1/2">
           <div>
-            <p className="text-sm font-medium text-gray-500 mb-2">
+            <p className="text-md font-medium text-gray-500 mb-2">
               #MoodForecasting
             </p>
             <h1 className="text-4xl md:text-6xl lg:text-[78px] font-bold tracking-tight mb-4">
               Track. Predict. Forecast.
             </h1>
-            <p className="text-lg text-gray-600 mb-8">
+            <p className="text-lg text-gray-900 mb-8">
             Turn everyday moments into powerful predictions. See patterns in your life before they happen and take control of your future.
             </p>
             
             <div className="flex flex-wrap gap-4">
               <DownloadModal>
-                <Button variant="emerald" className="h-12 flex items-center gap-2" disabled={!downloadsEnabled}>
+                <Button variant="emerald" className="h-12 flex items-center gap-2 opacity-95" disabled={!downloadsEnabled}>
                   <Download size={18} aria-hidden="true" />
                   Download App
                 </Button>
@@ -83,7 +83,7 @@ export const Hero = () => {
                   variant="light-emerald" 
                   className="h-12 flex items-center gap-2"
                 >
-                  Learn More <ChevronRight size={16} aria-hidden="true" />
+                  Learn More <ChevronRight size={18} aria-hidden="true" />
                 </Button>
               </DocsModal>
               {/* <DemoModal>
@@ -97,8 +97,11 @@ export const Hero = () => {
               </DemoModal> */}
             </div>
             
-            <p className="text-sm text-gray-500 pt-4">
-              Emotional heatmaps visualize your mood and predict tomorrow&apos;s.
+            <p className="text-sm text-gray-900 pt-4">
+              Emotional heatmaps that visualize your mood and predict tomorrow&apos;s.
+            </p>
+            <p className="text-xs text-gray-800 pt-1">
+              Powered by © ACDC.digital
             </p>
           </div>
         </div>

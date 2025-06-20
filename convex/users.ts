@@ -358,3 +358,82 @@ export const updateUserAuthId = internalMutation({
     });
   },
 });
+
+/**
+ * Update user profile (public mutation for authenticated users)
+ */
+export const updateUserProfile = mutation({
+  args: {
+    name: v.optional(v.string()),
+    phone: v.optional(v.string()),
+    image: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
+      throw new ConvexError("Not authenticated");
+    }
+
+    // Remove undefined values and empty strings
+    const updates = Object.fromEntries(
+      Object.entries(args).filter(([, value]) => value !== undefined && value !== "")
+    );
+
+    if (Object.keys(updates).length === 0) {
+      return;
+    }
+
+    await ctx.db.patch(userId, updates);
+
+    // Return updated user
+    return await getUserById(ctx, userId);
+  },
+});
+
+// Export user data function
+export const exportUserData = query({
+  args: {},
+  handler: async (ctx) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
+      throw new Error("Not authenticated");
+    }
+
+    // Get user profile using the userId directly (getAuthUserId returns the user document ID)
+    const user = await ctx.db.get(userId);
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Convert user._id to string for logs and userAttributes tables
+    const userIdString = user._id.toString();
+
+    // Get all daily logs using the user's ID as string
+    const dailyLogs = await ctx.db
+      .query("logs")
+      .withIndex("byUserDate", (q) => q.eq("userId", userIdString))
+      .collect();
+
+    // Get user attributes using string userId
+    const userAttributes = await ctx.db
+      .query("userAttributes")
+      .withIndex("byUserId", (q) => q.eq("userId", userIdString))
+      .first();
+
+    // Get user subscription info using Id<"users">
+    const subscription = await ctx.db
+      .query("userSubscriptions")
+      .withIndex("by_userId", (q) => q.eq("userId", user._id))
+      .first();
+
+    return {
+      profile: user,
+      dailyLogs,
+      userAttributes,
+      subscription,
+      exportedAt: new Date().toISOString(),
+      totalLogs: dailyLogs.length,
+    };
+  },
+});

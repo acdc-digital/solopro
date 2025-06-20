@@ -21,11 +21,11 @@ export function StripeSetupInstructions() {
         <pre className="p-3 bg-muted rounded text-sm overflow-x-auto">
           <code>
             {`# Stripe API Keys
-NEXT_PUBLIC_STRIPE_PUBLIC_KEY=pk_test_your_public_key_here
-STRIPE_SECRET_KEY=sk_test_your_secret_key_here
+            NEXT_PUBLIC_STRIPE_PUBLIC_KEY=pk_test_your_public_key_here
+            STRIPE_SECRET_KEY=sk_test_your_secret_key_here
 
-# App URL
-NEXT_PUBLIC_BASE_URL=https://your-domain.com`}
+            # App URL
+            NEXT_PUBLIC_BASE_URL=https://your-domain.com`}
           </code>
         </pre>
         

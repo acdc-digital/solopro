@@ -20,7 +20,7 @@ export function OpenSource() {
             <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground md:text-4xl px-2">
               Built Open Source
             </h2>
-            <p className="text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto px-2">
+            <p className="text-muted-foreground text-lg sm:text-lg max-w-2xl mx-auto px-2">
               Soloist is proudly open source, embracing transparency and collaboration.
               <span className="block sm:inline"> Your wellness journey, built with nothing to hide.</span>
             </p>
@@ -83,7 +83,7 @@ export function OpenSource() {
               href="https://github.com/acdc-digital/solopro"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 rounded-3xl bg-blue-500 px-5 md:px-6 py-2.5 md:py-3 text-sm font-semibold text-white shadow-sm hover:opacity-80 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring active:scale-95"
+              className="inline-flex items-center justify-center gap-2 rounded-3xl bg-blue-500 border border-blue-900 px-5 md:px-6 py-2.5 md:py-3 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 hover:border-blue-700 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring active:scale-95"
             >
               <Github className="h-4 w-4" />
               View on GitHub

@@ -39,6 +39,10 @@ import TemplateSelector from "./_components/TemplateSelector";
 import Templates, { Template } from "./_components/Templates";
 import { useTemplates } from "@/hooks/useTemplates";
 
+// Add scoreColors import
+import { getColorClass, getTextColorClass } from "@/lib/scoreColors";
+import { getHeatmapColorClass, getHeatmapTextColorClass } from "@/lib/scoreColors";
+
 // Responsive breakpoint for auto-collapse in pixels
 const SIDEBAR_AUTO_COLLAPSE_WIDTH = 1256;
 
@@ -156,6 +160,12 @@ export default function Dashboard() {
   // Tag filtering state (new)
   const [availableTags, setAvailableTags] = React.useState<Tag[]>([]);
   const [selectedTags, setSelectedTags] = React.useState<Tag[]>([]);
+
+  // Query for the daily log score (moved from renderSidebarTitle to fix Rules of Hooks)
+  const dailyLogForScore = useQuery(
+    api.dailyLogs.getDailyLog,
+    convexUserId && selectedDate ? { userId: convexUserId, date: selectedDate } : "skip"
+  );
 
   // Templates state
   const [showTemplates, setShowTemplates] = React.useState(false);
@@ -399,12 +409,24 @@ export default function Dashboard() {
       if (!selectedDate) return "Feed";
       const parsed = parseISO(selectedDate);
       const formatted = format(parsed, "MMM d, yyyy");
+
+      const score = dailyLogForScore?.score ?? null;
+
       return (
-        <div className="flex flex-col">
-          <span className="font-semibold">Feed</span>
-          <span className="text-xs text-zinc-500 dark:text-zinc-400">
-            {formatted}
-          </span>
+        <div className="flex items-center justify-between w-full">
+          <div className="flex flex-col">
+            <span className="font-semibold">Feed</span>
+            <span className="text-xs text-zinc-500 dark:text-zinc-400">
+              {formatted}
+            </span>
+          </div>
+          {score !== null && (
+            <Badge
+              className={`${getHeatmapColorClass(score)} ${getHeatmapTextColorClass(score)} border-0 font-semibold text-sm px-2 py-1`}
+            >
+              {score}
+            </Badge>
+          )}
         </div>
       );
     }

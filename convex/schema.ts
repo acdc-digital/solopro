@@ -211,4 +211,16 @@ export default defineSchema({
   })
   .index("byUserId", ["userId"])
   .index("byCreatedAt", ["createdAt"]),
+
+  waitlist: defineTable({
+    userId: v.id("users"),
+    userName: v.optional(v.string()),
+    userEmail: v.optional(v.string()),
+    feature: v.string(), // e.g., "teams", "enterprise", etc.
+    createdAt: v.number(),
+    notified: v.optional(v.boolean()), // Track if user has been notified when feature is available
+  })
+  .index("byUserId", ["userId"])
+  .index("byFeature", ["feature"])
+  .index("byUserIdAndFeature", ["userId", "feature"]),
 });

@@ -18,39 +18,28 @@ const generateMockData = (): MockDayData[] => {
   const data: MockDayData[] = [];
   const today = new Date();
   
+  // Predefined realistic score patterns to showcase all color ranges
+  const scorePatterns = [
+    // Week 1: Mixed week with some challenges
+    [32, 52, 67, 73, 81, 88, 92], // yellow, green, teal, sky, blue, blue, indigo
+    // Week 2: Tough week with recovery
+    [68, null, 35, 41, 58, 22, 79], // amber, orange, yellow, lime, green, teal, sky
+    // Week 3: Recent good streak with some setbacks
+    [88, 38, 76, 68, 55, 83, null], // amber, yellow, sky, teal, green, blue, no log
+  ];
+  
+  const flatScores = scorePatterns.flat();
+  
   for (let i = 20; i >= 0; i--) {
     const date = new Date(today);
     date.setDate(date.getDate() - i);
     
-    const dayOfWeek = date.getDay();
-    
-    // Base score with realistic patterns
-    let baseScore = 65; // Average around 65
-    
-    // Weekend boost
-    if (dayOfWeek === 0 || dayOfWeek === 6) {
-      baseScore += 10;
-    }
-    
-    // Monday blues
-    if (dayOfWeek === 1) {
-      baseScore -= 8;
-    }
-    
-    // Friday energy
-    if (dayOfWeek === 5) {
-      baseScore += 5;
-    }
-    
-    // Random variation
-    baseScore += (Math.random() - 0.5) * 30;
-    
-    // Some missing days (realistic) - about 10%
-    const hasMissingDay = Math.random() < 0.1;
+    const scoreIndex = 20 - i;
+    const score = flatScores[scoreIndex];
     
     data.push({
       date: date.toISOString().split('T')[0],
-      score: hasMissingDay ? null : Math.max(0, Math.min(100, Math.round(baseScore))),
+      score: score,
       dayName: date.toLocaleDateString('en-US', { weekday: 'short' }),
       formattedDate: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
     });
@@ -59,24 +48,26 @@ const generateMockData = (): MockDayData[] => {
   return data;
 };
 
-// Use consistent color scheme matching the main app
+// Use the exact 10-category color system matching the main app heatmap
 const getColorClass = (score: number | null): string => {
-  if (score === null) return "bg-muted border border-border";
-  if (score >= 90) return "bg-indigo-500 hover:bg-indigo-600 border border-indigo-600";
-  if (score >= 80) return "bg-blue-500 hover:bg-blue-600 border border-blue-600";
-  if (score >= 70) return "bg-sky-500 hover:bg-sky-600 border border-sky-600";
-  if (score >= 60) return "bg-teal-500 hover:bg-teal-600 border border-teal-600";
-  if (score >= 50) return "bg-green-500 hover:bg-green-600 border border-green-600";
-  if (score >= 40) return "bg-lime-500 hover:bg-lime-600 border border-lime-600";
-  if (score >= 30) return "bg-yellow-500 hover:bg-yellow-600 border border-yellow-600";
-  if (score >= 20) return "bg-amber-500 hover:bg-amber-600 border border-amber-600";
-  if (score >= 10) return "bg-orange-500 hover:bg-orange-600 border border-orange-600";
-  return "bg-rose-600 hover:bg-rose-700 border border-rose-700";
+  if (score === null) return "bg-zinc-200/60 border border-zinc-300/50 opacity-90";
+  if (score >= 90) return "bg-indigo-400 hover:bg-indigo-500 border border-indigo-500 opacity-90";
+  if (score >= 80) return "bg-blue-400 hover:bg-blue-500 border border-blue-500 opacity-90";
+  if (score >= 70) return "bg-sky-400 hover:bg-sky-500 border border-sky-500 opacity-90";
+  if (score >= 60) return "bg-teal-400 hover:bg-teal-500 border border-teal-500 opacity-90";
+  if (score >= 50) return "bg-green-400 hover:bg-green-500 border border-green-500 opacity-90";
+  if (score >= 40) return "bg-lime-400 hover:bg-lime-500 border border-lime-500 opacity-90";
+  if (score >= 30) return "bg-yellow-400 hover:bg-yellow-500 border border-yellow-500 opacity-90";
+  if (score >= 20) return "bg-amber-500 hover:bg-amber-600 border border-amber-600 opacity-90";
+  if (score >= 10) return "bg-orange-500 hover:bg-orange-600 border border-orange-600 opacity-90";
+  return "bg-rose-600 hover:bg-rose-700 border border-rose-700 opacity-90";
 };
 
 const getTextColorClass = (score: number | null): string => {
-  if (score === null) return "text-muted-foreground";
-  return "text-white";
+  if (score === null) return "text-zinc-500";
+  // Light text for darker colors, dark text for lighter colors
+  if (score >= 50) return "text-zinc-900"; // Lighter colors: green, lime, yellow
+  return "text-zinc-100"; // Darker colors: indigo, blue, sky, teal, amber, orange, rose
 };
 
 export function LandingHeatmap() {
@@ -146,11 +137,46 @@ export function LandingHeatmap() {
           </div>
         </div>
 
-        {/* Footer with legend hint */}
+        {/* Footer with color legend */}
         <div className="px-4 pb-4">
-          <div className="flex items-center justify-between text-xs text-muted-foreground">
-            <span>Higher scores = warmer colors</span>
-            <span>Click any day to view details</span>
+          <div className="text-xs text-muted-foreground mb-2">Score Legend:</div>
+          <div className="flex flex-wrap gap-2 text-xs">
+            <div className="flex items-center gap-1.5">
+              <div className="w-3 h-3 rounded-sm bg-indigo-400"></div>
+              <span className="text-zinc-600">90-100</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <div className="w-3 h-3 rounded-sm bg-blue-400"></div>
+              <span className="text-zinc-600">80-89</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <div className="w-3 h-3 rounded-sm bg-sky-400"></div>
+              <span className="text-zinc-600">70-79</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <div className="w-3 h-3 rounded-sm bg-teal-400"></div>
+              <span className="text-zinc-600">60-69</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <div className="w-3 h-3 rounded-sm bg-green-400"></div>
+              <span className="text-zinc-600">50-59</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <div className="w-3 h-3 rounded-sm bg-lime-400"></div>
+              <span className="text-zinc-600">40-49</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <div className="w-3 h-3 rounded-sm bg-yellow-400"></div>
+              <span className="text-zinc-600">30-39</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <div className="w-3 h-3 rounded-sm bg-amber-500"></div>
+              <span className="text-zinc-600">20-29</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <div className="w-3 h-3 rounded-sm bg-zinc-200/60 border border-zinc-300/50"></div>
+              <span className="text-zinc-600">No log</span>
+            </div>
           </div>
         </div>
       </div>

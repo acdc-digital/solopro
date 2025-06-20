@@ -30,12 +30,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { ProfileModal } from "@/components/ProfileModal";
 
 export function BrowserNavbar() {
   const { isAuthenticated, userId } = useConvexUser();
   const { signOut } = useAuthActions();
   const { currentView, setView } = useSidebarStore();
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = React.useState(false);
 
   // Get user details
   const user = useQuery(
@@ -92,91 +94,103 @@ export function BrowserNavbar() {
   }
 
   return (
-    <nav className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 pl-5 pr-12 py-3">
-      <div className="flex items-center justify-between w-full">
-        {/* Logo/Brand */}
-        <div className="flex items-center gap-3">
-          <button 
-            onClick={() => window.location.href = process.env.NEXT_PUBLIC_WEBSITE_URL || "https://www.acdc.digital"}
-            className="flex items-center gap-3 hover:opacity-80 transition-opacity"
-          >
-            <Image
-              src="/solologo.svg"
-              alt="Soloist Logo"
-              width={32}
-              height={32}
-              className="w-8 h-8"
-            />
-            <div className="flex flex-row text-xl font-bold text-zinc-900 dark:text-zinc-100">
-              Soloist.
-            </div>
-          </button>
-        </div>
-
-        {/* Right side actions */}
-        <div className="flex items-center gap-3">
-          {/* User Menu */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative h-8 w-8 rounded-full pr-4">
-                <Avatar className="h-8 w-8">
-                  <AvatarImage src={user?.image || undefined} alt={user?.name || "User"} />
-                  <AvatarFallback className="text-xs">{userInitials}</AvatarFallback>
-                </Avatar>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56" align="end" forceMount>
-              <div className="flex flex-col space-y-1 p-2">
-                <p className="text-sm font-medium leading-none">{user?.name || "User"}</p>
-                <p className="text-xs leading-none text-muted-foreground">
-                  {user?.email || "user@example.com"}
-                </p>
+    <div>
+      <nav className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 pl-5 pr-12 py-3">
+        <div className="flex items-center justify-between w-full">
+          {/* Logo/Brand */}
+          <div className="flex items-center gap-3">
+            <button 
+              onClick={() => window.location.href = process.env.NEXT_PUBLIC_WEBSITE_URL || "https://www.acdc.digital"}
+              className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+            >
+              <Image
+                src="/solologo.svg"
+                alt="Soloist Logo"
+                width={32}
+                height={32}
+                className="w-8 h-8"
+              />
+              <div className="flex flex-row text-xl font-bold text-zinc-900 dark:text-zinc-100">
+                Soloist.
               </div>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={handleDownloadApp}>
-                <Download className="mr-2 h-4 w-4" />
-                Download Desktop App
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => signOut()}>
-                Sign out
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+            </button>
+          </div>
 
-          {/* Mobile menu button */}
-          <Button
-            variant="ghost"
-            size="sm"
-            className="md:hidden"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            {mobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
-          </Button>
-        </div>
-      </div>
+          {/* Right side actions */}
+          <div className="flex items-center gap-3">
+            {/* User Menu */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="relative h-8 w-8 rounded-full pr-4">
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage src={user?.image || undefined} alt={user?.name || "User"} />
+                    <AvatarFallback className="text-xs">{userInitials}</AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56" align="end" forceMount>
+                <div className="flex flex-col space-y-1 p-2">
+                  <p className="text-sm font-medium leading-none">{user?.name || "User"}</p>
+                  <p className="text-xs leading-none text-muted-foreground">
+                    {user?.email || "user@example.com"}
+                  </p>
+                </div>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => setIsProfileModalOpen(true)}>
+                  <User className="mr-2 h-4 w-4" />
+                  Profile
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleDownloadApp}>
+                  <Download className="mr-2 h-4 w-4" />
+                  Download Desktop App
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => signOut()}>
+                  Sign out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
 
-      {/* Mobile Navigation */}
-      {mobileMenuOpen && (
-        <div className="md:hidden mt-3 pt-3 border-t border-zinc-200 dark:border-zinc-800">
-          <div className="flex flex-col gap-1">
-            {navItems.map((item) => (
-              <Button
-                key={item.id}
-                variant={item.active ? "default" : "ghost"}
-                size="sm"
-                onClick={() => {
-                  item.action();
-                  setMobileMenuOpen(false);
-                }}
-                className="justify-start gap-2"
-              >
-                <item.icon className="h-4 w-4" />
-                {item.label}
-              </Button>
-            ))}
+            {/* Mobile menu button */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="md:hidden"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              {mobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+            </Button>
           </div>
         </div>
-      )}
-    </nav>
+
+        {/* Mobile Navigation */}
+        {mobileMenuOpen && (
+          <div className="md:hidden mt-3 pt-3 border-t border-zinc-200 dark:border-zinc-800">
+            <div className="flex flex-col gap-1">
+              {navItems.map((item) => (
+                <Button
+                  key={item.id}
+                  variant={item.active ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => {
+                    item.action();
+                    setMobileMenuOpen(false);
+                  }}
+                  className="justify-start gap-2"
+                >
+                  <item.icon className="h-4 w-4" />
+                  {item.label}
+                </Button>
+              ))}
+            </div>
+          </div>
+        )}
+      </nav>
+
+      {/* Profile Modal */}
+      <ProfileModal
+        open={isProfileModalOpen}
+        onOpenChange={setIsProfileModalOpen}
+      />
+    </div>
   );
 } 

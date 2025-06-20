@@ -210,34 +210,34 @@ Guidelines:
  */
 export const AI_CONFIG = {
   SCORING: {
-    model: "gpt-3.5-turbo",
+    model: "gpt-4.1-mini",
     temperature: 0.0,
     max_tokens: 5,
   },
   FORECASTING: {
-    model: "gpt-3.5-turbo-1106",
+    model: "gpt-4.1-mini",
     temperature: 0.3,
     max_tokens: 800,
     response_format: { type: "json_object" },
   },
   FEED: {
-    model: "gpt-3.5-turbo",
+    model: "gpt-4.1-mini",
     temperature: 0.7,
     max_tokens: 200,
   },
   CONSULTATION: {
-    model: "gpt-3.5-turbo",
+    model: "gpt-4.1-mini",
     temperature: 0.5,
     max_tokens: 150,
   },
   INSIGHTS: {
-    model: "gpt-3.5-turbo-1106",
+    model: "gpt-4.1-mini",
     temperature: 0.5,
     max_tokens: 300,
     response_format: { type: "json_object" },
   },
   RANDOM_LOG: {
-    model: "gpt-3.5-turbo-1106",
+    model: "gpt-4.1-mini",
     temperature: 0.7,
     max_tokens: 400,
     response_format: { type: "json_object" },

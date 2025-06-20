@@ -34,6 +34,7 @@ import type * as testing from "../testing.js";
 import type * as userAttributes from "../userAttributes.js";
 import type * as userSubscriptions from "../userSubscriptions.js";
 import type * as users from "../users.js";
+import type * as waitlist from "../waitlist.js";
 import type * as webhooks from "../webhooks.js";
 
 /**
@@ -66,6 +67,7 @@ declare const fullApi: ApiFromModules<{
   userAttributes: typeof userAttributes;
   userSubscriptions: typeof userSubscriptions;
   users: typeof users;
+  waitlist: typeof waitlist;
   webhooks: typeof webhooks;
 }>;
 export declare const api: FilterApi<
