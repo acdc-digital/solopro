@@ -231,9 +231,9 @@ ipcMain.on('window-close', (event) => {
 });
 
 app.whenReady().then(() => {
-  // Set dock icon explicitly for macOS
+  // Set dock icon explicitly for macOS - PNG works better than .icns for dock icons
   if (process.platform === 'darwin') {
-    const dockIconPath = path.join(__dirname, "dock-icon-48.png");
+    const dockIconPath = path.join(__dirname, "dock-icon-padded56.png");
     if (fs.existsSync(dockIconPath)) {
       app.dock.setIcon(dockIconPath);
       console.log('🖼️ Dock icon set to:', dockIconPath);

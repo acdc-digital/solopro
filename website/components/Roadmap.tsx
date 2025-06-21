@@ -22,7 +22,7 @@ type RoadmapItem = {
 };
 
 export function Roadmap() {
-  const [activePhase, setActivePhase] = useState<RoadmapPhase>("planned");
+  const [activePhase, setActivePhase] = useState<RoadmapPhase>("in-progress");
   const [waitlistStates, setWaitlistStates] = useState<Record<string, boolean>>({});
   const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>({});
   
@@ -91,6 +91,20 @@ export function Roadmap() {
         "Custom metrics",
         "Yearly trends",
         "Advanced filters"
+      ]
+    },
+    {
+      title: "Social Platform Integration",
+      description: "Connect your social feeds to enrich your mood tracking",
+      phase: "in-progress",
+      quarter: "Q2 2025",
+      icon: Globe,
+      features: [
+        "Facebook feed integration",
+        "Instagram updates",
+        "Twitter/X posts",
+        "LinkedIn activity",
+        "Social context insights"
       ]
     },
     {
@@ -184,7 +198,7 @@ export function Roadmap() {
             Product Roadmap
           </div>
           <h2 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">
-            Where we're headed
+            Where we&apos;re headed
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             Building the future of mood intelligence, one feature at a time.
@@ -193,7 +207,7 @@ export function Roadmap() {
 
         {/* Phase Filter */}
         <div className="flex flex-wrap justify-center gap-2 mb-8">
-          {(["planned", "in-progress", "shipped"] as const).map((phase) => {
+          {(["in-progress", "planned", "shipped"] as const).map((phase) => {
             const config = phaseConfig[phase];
             const Icon = config.icon;
             return (
@@ -296,4 +310,3 @@ export function Roadmap() {
     </section>
   );
 }
-
