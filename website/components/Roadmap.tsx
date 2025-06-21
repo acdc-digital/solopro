@@ -4,7 +4,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { MapPin, CheckCircle2, Circle, Brain, Smartphone, Globe, Zap, LineChart, Users, Shield } from "lucide-react";
+import { MapPin, CheckCircle2, Circle, Brain, Smartphone, Globe, Zap, LineChart, Users, Shield, BookOpen } from "lucide-react";
 import { useAuthActions } from "@convex-dev/auth/react";
 import { useMutation } from "convex/react";
 import { api } from "../convex/_generated/api";
@@ -97,7 +97,7 @@ export function Roadmap() {
       title: "Social Platform Integration",
       description: "Connect your social feeds to enrich your mood tracking",
       phase: "in-progress",
-      quarter: "Q2 2025",
+      quarter: "Q4 2025",
       icon: Globe,
       features: [
         "Facebook feed integration",
@@ -105,6 +105,20 @@ export function Roadmap() {
         "Twitter/X posts",
         "LinkedIn activity",
         "Social context insights"
+      ]
+    },
+    {
+      title: "Guided Journaling Starter Kit",
+      description: "Daily templated logs that evolve over a set period, helping new users build a consistent journaling habit.",
+      phase: "in-progress",
+      quarter: "Q4 2025",
+      icon: BookOpen,
+      features: [
+        "Daily log templates",
+        "Progressive prompts",
+        "7-day starter course",
+        "Automatic reflections",
+        "Personalized guidance"
       ]
     },
     {
