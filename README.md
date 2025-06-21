@@ -1,5 +1,14 @@
 ## Soloist
 
+[![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white&labelColor=101010)](https://reactjs.org/)  
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white&labelColor=101010)](https://www.typescriptlang.org/)  
+[![Next.js](https://img.shields.io/badge/Next.js-15-000000?logo=next.js&logoColor=white&labelColor=101010)](https://nextjs.org/)  
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3-06B6D4?logo=tailwindcss&logoColor=white&labelColor=101010)](https://tailwindcss.com/)  
+[![Electron](https://img.shields.io/badge/Electron-30-47848F?logo=electron&logoColor=white&labelColor=101010)](https://www.electronjs.org/)  
+[![Convex](https://img.shields.io/badge/Convex_DB-1.24-450AFF?logo=data%3Adownload&logoColor=white&labelColor=101010)](https://convex.dev/)  
+[![OpenAI](https://img.shields.io/badge/OpenAI-Node-000000?logo=openai&logoColor=white&labelColor=101010)](https://openai.com/)  
+[![Vercel](https://img.shields.io/badge/Vercel-Hosting-000000?logo=vercel&logoColor=white&labelColor=101010)](https://vercel.com/)
+
 **Version:** `1.6.2` | **License:** For-Profit Open Source | **Status:** Active Development
 
 ---
@@ -55,6 +64,36 @@ pnpm --filter solopro-electron run build:linux   # Linux AppImage + Deb (needs D
 ```
 
 Outputs are written to `electron/dist/`.
+
+---
+
+## Development Commands
+
+| Command | Description |
+|---------|-------------|
+| `pnpm dev` | Boot website, renderer, Electron shell |
+| `pnpm dev:renderer` | Next.js renderer only (port 3002) |
+| `pnpm dev:website` | Marketing site only (port 3004) |
+| `pnpm dev:electron` | Electron window with live-reload |
+
+## Deployment Commands
+
+| Command | Description |
+|---------|-------------|
+| `pnpm run deploy:all` | Deploy website **and** renderer to Vercel Prod |
+| `pnpm run deploy:website` | Deploy website only |
+| `pnpm run deploy:renderer` | Deploy renderer only |
+
+## Version Management (Git)
+
+```bash
+# Bump version, tag & push
+npm version <patch|minor|major>
+git push origin main --tags
+
+# Reset to a specific version
+git checkout v1.6.2
+```
 
 ---
 
