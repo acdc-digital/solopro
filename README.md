@@ -1,149 +1,79 @@
-## <img src="public/logo-ACDC.svg" alt="ACDC Logo" height="30" align="center"/>
+## Soloist
 
-# Soloist.
-
-
-[![React](https://img.shields.io/badge/React-%2320232A.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)](https://reactjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-%233178C6.svg?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Next.js](https://img.shields.io/badge/Next.js-%23000000.svg?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-%2306B6D4.svg?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
-[![OpenAI](https://img.shields.io/badge/OpenAI-%23000000.svg?style=for-the-badge&logo=OpenAI&logoColor=white)](https://www.openai.com/)
-[![Vercel](https://img.shields.io/badge/Vercel-%23000000.svg?style=for-the-badge&logo=Vercel&logoColor=white)](https://vercel.com/)
-[![ShadCN/ui](https://img.shields.io/badge/shadcn/ui-%2327272A.svg?style=for-the-badge&logoColor=white)](https://ui.shadcn.com/)
-[![Convex DB](https://img.shields.io/badge/Convex_DB-%23450AFF.svg?style=for-the-badge&logo=convex&logoColor=white)](https://convex.dev/)
-
-**📊 Version:** `1.6.2` | **📝 License:** For-Profit Open Source | **🚀 Status:** Active Development
-
-[**📖 Documentation**](https://github.com/acdc-digital/solopro/wiki) • [**📋 Project Board**](https://github.com/users/acdc-digital/projects/10) • [**🔖 Release Notes**](https://github.com/acdc-digital/solopro/releases)
-
-</div>
+**Version:** `1.6.2` | **License:** For-Profit Open Source | **Status:** Active Development
 
 ---
 
-## What is Soloist?
+## About
 
-**Soloist** is a dynamic personal analytics platform that helps you identify self-patterns and make data-driven decisions about your life. Through intelligent tracking and predictive analysis, Soloist transforms your daily experiences into actionable insights.
+**Soloist** is a personal analytics platform that turns day-to-day experiences into actionable insights through intelligent tracking and predictive analysis.
 
 ### Key Features
 
-- ** Daily Log** - Customizable templates for tracking your daily activities
-- ** Auto-Summaries** - AI-generated summaries of your day
-- ** Predictive Forecasting** - Get 3-day forecasts based on your 4-day patterns
-- ** Dynamic Feed** - Real-time waterfall view of your notes, media, and tags
-- ** Playground Mode** - Test forecasts against historical data
-- ** 365 Heatmap** - Visualize your entire year at a glance
-- ** Smart Profiles** - Enable auto-generation for effortless tracking
+| Category | Highlights |
+|----------|------------|
+| Daily Logging | Custom templates, auto-summaries, progressive prompts |
+| Predictive Analytics | 3-day forecasts, yearly heat-map, pattern detection |
+| Integrations | Social feed import (Facebook, Instagram, X / Twitter, LinkedIn) |
+| Starter Kits | Guided 7-day journaling programme (new in 1.6.2) |
+| Desktop Experience | Native macOS / Windows / Linux apps built with Electron |
 
 ---
 
-## 🚀 Quick Start
+## Downloads
 
-### Prerequisites
+| Platform | File | Direct Link |
+|----------|------|-------------|
+| macOS (Intel) | `Soloist.Pro-1.6.2-x64.dmg` | [Download](https://github.com/acdc-digital/solopro/releases/download/v1.6.2/Soloist.Pro-1.6.2-x64.dmg) |
+| macOS (Apple Silicon) | `Soloist.Pro-1.6.2-arm64.dmg` | [Download](https://github.com/acdc-digital/solopro/releases/download/v1.6.2/Soloist.Pro-1.6.2-arm64.dmg) |
+| Windows | `Soloist.Pro-Setup-1.6.2.exe` | [Download](https://github.com/acdc-digital/solopro/releases/download/v1.6.2/Soloist.Pro-Setup-1.6.2.exe) |
+| Linux (AppImage) | `Soloist.Pro-1.6.2.AppImage` | [Download](https://github.com/acdc-digital/solopro/releases/download/v1.6.2/Soloist.Pro-1.6.2.AppImage) |
+| Linux (Deb) | `solopro-electron-1.6.2.deb` | [Download](https://github.com/acdc-digital/solopro/releases/download/v1.6.2/solopro-electron-1.6.2.deb) |
 
-- Node.js 18+
-- pnpm 8+
-- Git
+---
 
-### Installation
+## Quick Start
 
 ```bash
-# Clone the repository
+# Clone
 git clone https://github.com/acdc-digital/solopro.git
-
-# Navigate to project directory
 cd solopro
 
-# Install dependencies
+# Install dependencies (pnpm recommended)
 pnpm install
 
-# Start development environment
-pnpm dev
+# Start Dev Environment
+pnpm dev          # boots website, renderer and Electron shell
 ```
 
-### Development Commands
-
-| Command | Description |
-|---------|-------------|
-| `pnpm dev` | Start all services (recommended) |
-| `pnpm dev:renderer` | Start Electron content only (port 3002) |
-| `pnpm dev:website` | Start website only (port 3004) |
-| `pnpm dev:electron` | Start Electron window only |
-
-### Deployment
-
-| Command | Description |
-|---------|-------------|
-| `pnpm run deploy:all` | Deploy all services |
-| `pnpm run deploy:renderer` | Deploy renderer only |
-| `pnpm run deploy:website` | Deploy website only |
-
----
-
-## 🔧 Development Workflow
-
-### Feature Development
+Build desktop installers locally:
 
 ```bash
-# Create feature branch
-git checkout -b feature/your-feature-name
-
-# Make changes and commit
-git add .
-git commit -m "feat: add your feature description"
-
-# Push to origin
-git push origin feature/your-feature-name
+pnpm --filter solopro-electron run build:mac     # macOS dmg
+pnpm --filter solopro-electron run build:win     # Windows exe (needs Wine)
+pnpm --filter solopro-electron run build:linux   # Linux AppImage + Deb (needs Docker)
 ```
 
-### Version Management
-
-```bash
-# Update version
-git add .
-git commit -m "chore: bump version to x.x.x"
-git tag vx.x.x
-git push origin main vx.x.x
-
-# (Optional) Reset to specific version
-git reset --hard vx.x.x
-```
+Outputs are written to `electron/dist/`.
 
 ---
 
-## 📚 Version History
+## Version History
 
-| Version | Date | Description |
-|---------|------|-------------|
-| **v1.6.1** | 2025-01-17 | **Build & Notarization** - Complete Apple notarization setup, automated build scripts for macOS, enhanced code signing configuration, universal binary support (Intel + Apple Silicon), streamlined development workflow |
-| **v1.6.0** | 2024-12-31 | **UI/UX Enhancements** - Enhanced draggable window controls for Electron app with macOS-style traffic lights, improved website navbar with clickable user avatars and dropdown menus, removed floating action button for cleaner interface, added comprehensive user profile management |
-| **v1.5.0** | 2024-12-30 | **Infrastructure & Components** - Major UI component library updates, enhanced authentication flow, improved Convex integration, added avatar support across platform |
-| **v1.4.2** | 2024-12-29 | **Bug Fixes & Stability** - Critical bug fixes and performance improvements |
-| **v1.1.0** | 2024-12-28 | **Foundation Release** - Workspace initialization complete with enhanced authentication, core platform architecture established |
-
----
-
-## 🤝 Contributing
-
-We believe in the power of community! Soloist is a **For-Profit Open Source** project, and we welcome contributions from developers worldwide.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+| Version | Date | Notes |
+|---------|------|-------|
+| **v1.6.2** | 2025-02-01 | Guided journaling starter kit, social platform integration preview, refined macOS dock icon |
+| **v1.6.1** | 2025-01-17 | Build & notarisation improvements |
+| **v1.6.0** | 2024-12-31 | UI/UX enhancements |
+| **v1.5.0** | 2024-12-30 | Infrastructure & components |
+| **v1.4.2** | 2024-12-29 | Bug fixes & stability |
 
 ---
 
-## 📬 Contact & Support
+## Contributing
 
-- **Maintainer:** msimon@acdc.digital
-- **Company:** [ACDC.digital](https://acdc.digital)
-- **Issues:** [GitHub Issues](https://github.com/acdc-digital/solopro/issues)
+Contributions are welcome! Please read our [CONTRIBUTING.md](docs/CONTRIBUTING.md) for guidelines.
 
 ---
 
-If you find Soloist helpful, please consider giving us a star. It helps us reach more developers and improve the project!
-
-**Built with ❤️ by ACDC.digital**
-
-</div>
+© 2025 ACDC.digital • Maintainer: msimon@acdc.digital
