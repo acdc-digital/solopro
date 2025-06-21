@@ -1,17 +1,10 @@
-## Soloist
-
-[![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white&labelColor=101010)](https://reactjs.org/)  
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white&labelColor=101010)](https://www.typescriptlang.org/)  
-[![Next.js](https://img.shields.io/badge/Next.js-15-000000?logo=next.js&logoColor=white&labelColor=101010)](https://nextjs.org/)  
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3-06B6D4?logo=tailwindcss&logoColor=white&labelColor=101010)](https://tailwindcss.com/)  
-[![Electron](https://img.shields.io/badge/Electron-30-47848F?logo=electron&logoColor=white&labelColor=101010)](https://www.electronjs.org/)  
-[![Convex](https://img.shields.io/badge/Convex_DB-1.24-450AFF?logo=data%3Adownload&logoColor=white&labelColor=101010)](https://convex.dev/)  
-[![OpenAI](https://img.shields.io/badge/OpenAI-Node-000000?logo=openai&logoColor=white&labelColor=101010)](https://openai.com/)  
-[![Vercel](https://img.shields.io/badge/Vercel-Hosting-000000?logo=vercel&logoColor=white&labelColor=101010)](https://vercel.com/)
+## <img src="public/solologo.png" alt="Soloist Logo" height="28" style="vertical-align:middle; margin-right:6px;"> Soloist
 
 **Version:** `1.6.2` | **License:** For-Profit Open Source | **Status:** Active Development
 
 ---
+
+[![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white&labelColor=101010)](https://reactjs.org/) [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white&labelColor=101010)](https://www.typescriptlang.org/) [![Next.js](https://img.shields.io/badge/Next.js-15-000000?logo=next.js&logoColor=white&labelColor=101010)](https://nextjs.org/) [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3-06B6D4?logo=tailwindcss&logoColor=white&labelColor=101010)](https://tailwindcss.com/) [![Electron](https://img.shields.io/badge/Electron-30-47848F?logo=electron&logoColor=white&labelColor=101010)](https://www.electronjs.org/) [![Convex](https://img.shields.io/badge/Convex_DB-1.24-450AFF?logo=data%3Adownload&logoColor=white&labelColor=101010)](https://convex.dev/) [![OpenAI](https://img.shields.io/badge/OpenAI-Node-000000?logo=openai&logoColor=white&labelColor=101010)](https://openai.com/) [![Vercel](https://img.shields.io/badge/Vercel-Hosting-000000?logo=vercel&logoColor=white&labelColor=101010)](https://vercel.com/)
 
 ## About
 
@@ -94,6 +87,36 @@ git push origin main --tags
 # Reset to a specific version
 git checkout v1.6.2
 ```
+
+## Git Command Reference
+
+| Purpose | Command | Notes |
+|---------|---------|-------|
+| Clone repository | `git clone https://github.com/acdc-digital/solopro.git` | Creates local copy of remote repo |
+| List branches | `git branch -a` | `-a` shows local & remote |
+| Create feature branch | `git checkout -b feature/<name>` | Based off current branch (usually `main`) |
+| Stage all changes | `git add .` | Use `git add <file>` for single files |
+| Amend staged file list | `git restore --staged <file>` | Unstage a file before commit |
+| Commit staged changes | `git commit -m "feat: concise message"` | Conventional commits recommended |
+| Push branch to origin | `git push -u origin feature/<name>` | `-u` sets upstream for future `git push` |
+| Fetch & merge remote main | `git pull origin main` | Keeps branch up-to-date before PR |
+| Rebase onto main | `git fetch origin && git rebase origin/main` | Cleaner history (resolve conflicts if any) |
+| Squash last N commits | `git rebase -i HEAD~N` | Use interactive rebase; replace `pick` with `squash` |
+| Switch branches | `git checkout <branch>` | Or `git switch <branch>` |
+| Delete local branch | `git branch -d feature/<name>` | Use `-D` to force delete |
+| Create version tag | `git tag v1.6.2` | Lightweight tag |
+| Annotated version tag | `git tag -a v1.6.2 -m "Soloist v1.6.2"` | Preferred for releases |
+| Push single tag | `git push origin v1.6.2` | Uploads tag to remote |
+| Push all tags | `git push --tags` | After multiple new tags |
+| Remove remote tag | `git push --delete origin v1.6.1` | Keep history tidy |
+| Stash work-in-progress | `git stash push -m "wip"` | Temporarily save uncommitted work |
+| List stashes | `git stash list` | Shows stash stack |
+| Apply & keep stash | `git stash apply stash@{0}` | Use `pop` to apply & drop |
+| View commit history | `git log --oneline --graph --decorate --all` | Compact visual graph |
+| Undo local commit (keep changes) | `git reset --soft HEAD~1` | Moves `HEAD` back one commit |
+| Hard reset to origin | `git reset --hard origin/main` | **Destroys** local changes |
+
+> Tip: configure aliases in `~/.gitconfig` to speed up frequent commands.
 
 ---
 
