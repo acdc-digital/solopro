@@ -76,7 +76,7 @@ export function Admin() {
   };
 
   const handleDirectDownload = () => {
-    const downloadUrl = 'https://github.com/acdc-digital/solopro/releases/download/v1.6.1/Soloist.Pro-1.6.1-x64.dmg';
+    const downloadUrl = 'https://github.com/acdc-digital/solopro/releases/download/v1.6.2/Soloist.Pro-1.6.2-x64.dmg';
     const link = document.createElement('a');
     link.href = downloadUrl;
     link.download = '';
