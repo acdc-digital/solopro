@@ -48,6 +48,9 @@ dist/
 # Proprietary AI prompts - keep secret sauce private
 convex/prompts.ts
 
+# Proprietary documentation - optimization summaries
+docs/PROMPT_OPTIMIZATION_SUMMARY.md
+
 # OS files
 .DS_Store
 Thumbs.db
