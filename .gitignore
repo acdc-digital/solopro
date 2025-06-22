@@ -45,6 +45,9 @@ electron/dist/
 electron/out/
 dist/
 
+# Proprietary AI prompts - keep secret sauce private
+convex/prompts.ts
+
 # OS files
 .DS_Store
 Thumbs.db
