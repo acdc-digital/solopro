@@ -8,7 +8,7 @@
 
 ## About
 
-**Soloist** is a personal analytics platform that turns day-to-day experiences into actionable insights through intelligent tracking and predictive analysis.
+**Soloist** is a personal analytics platform that turns day-to-day experiences into actionable insights through intelligent tracking and predictive analysis. Our goal is act as your weather forecast for your mood. Our objective is to make it easier for our Users to understand themselves, correct unwanted behaviours, and align their futureselves with who they want to be.
 
 ### Key Features
 
@@ -17,7 +17,7 @@
 | Daily Logging | Custom templates, auto-summaries, progressive prompts |
 | Predictive Analytics | 3-day forecasts, yearly heat-map, pattern detection |
 | Integrations | Social feed import (Facebook, Instagram, X / Twitter, LinkedIn) |
-| Starter Kits | Guided 7-day journaling programme (new in 1.6.2) |
+| Starter Kits | Guided 7-day journaling programme (coming Q4 2025) |
 | Desktop Experience | Native macOS / Windows / Linux apps built with Electron |
 
 ---
