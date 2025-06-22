@@ -13,6 +13,7 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
+import type * as ResendOTP from "../ResendOTP.js";
 import type * as admin from "../admin.js";
 import type * as auth from "../auth.js";
 import type * as dailyLogTemplates from "../dailyLogTemplates.js";
@@ -46,6 +47,7 @@ import type * as webhooks from "../webhooks.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  ResendOTP: typeof ResendOTP;
   admin: typeof admin;
   auth: typeof auth;
   dailyLogTemplates: typeof dailyLogTemplates;
