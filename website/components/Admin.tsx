@@ -73,7 +73,7 @@ export function Admin() {
   }, [user?.name]);
 
   const handleDirectDownload = () => {
-    const downloadUrl = 'https://github.com/acdc-digital/solopro/releases/download/v1.6.2/Soloist.Pro-1.6.2-x64.dmg';
+    const downloadUrl = 'https://github.com/acdc-digital/solopro/releases/download/v1.6.4/Soloist.Pro-1.6.4-x64.dmg';
 
     // Create a temporary link and trigger download
     const link = document.createElement('a');

@@ -51,6 +51,9 @@ convex/prompts.ts
 # Proprietary documentation - optimization summaries
 docs/PROMPT_OPTIMIZATION_SUMMARY.md
 
+# Release assets - upload to GitHub Releases, don't store in repo
+releases/
+
 # OS files
 .DS_Store
 Thumbs.db

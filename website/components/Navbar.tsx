@@ -128,12 +128,12 @@ export function Navbar() {
 
     // Default to the user's OS, but fallback to macOS if unknown
     if (detectedOS === 'Windows') {
-      downloadUrl = 'https://github.com/acdc-digital/solopro/releases/download/v1.6.2/Soloist.Pro-Setup-1.6.2.exe';
+      downloadUrl = 'https://github.com/acdc-digital/solopro/releases/download/v1.6.4/Soloist.Pro-Setup-1.6.4.exe';
     } else if (detectedOS === 'macOS') {
-      downloadUrl = 'https://github.com/acdc-digital/solopro/releases/download/v1.6.2/Soloist.Pro-1.6.2-x64.dmg';
+      downloadUrl = 'https://github.com/acdc-digital/solopro/releases/download/v1.6.4/Soloist.Pro-1.6.4-x64.dmg';
     } else {
       // Default to macOS x64 for other OS
-      downloadUrl = 'https://github.com/acdc-digital/solopro/releases/download/v1.6.2/Soloist.Pro-1.6.2-x64.dmg';
+      downloadUrl = 'https://github.com/acdc-digital/solopro/releases/download/v1.6.4/Soloist.Pro-1.6.4-x64.dmg';
     }
 
     // Create a temporary link and trigger download
@@ -169,7 +169,7 @@ export function Navbar() {
                 Soloist.
               </span>
               <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-600 border border-slate-200 -mt-1 ml-0.5 shadow-sm">
-                v1.6.2
+                v1.6.4
               </span>
             </div>
           </div>

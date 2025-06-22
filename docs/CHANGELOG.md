@@ -5,6 +5,60 @@ All notable changes to SoloPro will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.4] - 2025-01-29
+
+### Added
+- **Email Verification System**: Required email verification for all new user accounts
+  - 8-digit OTP codes sent via professional branded emails
+  - Resend integration for reliable email delivery
+  - Secure token generation using Oslo cryptography
+  
+- **Advanced Password Security**: Strong password requirements and validation
+  - 8+ characters with uppercase, lowercase, numbers, and special characters
+  - Real-time validation with helpful requirement hints
+  - Custom password provider with detailed error messages
+  - Backward compatibility for existing user accounts
+
+- **Complete Password Reset Flow**: Email-based password reset with secure OTP verification
+  - Two-step process: email verification → new password creation
+  - Rate limiting protection via Convex Auth
+  - Professional email templates with security warnings
+
+- **Enhanced Error Handling**: Smart error detection with contextual messaging
+  - Color-coded badges: amber for verification issues, red for critical errors
+  - User-friendly suggestions with actionable next steps
+  - Professional styling with icons and proper visual hierarchy
+
+- **Streamlined Security Settings**: Integrated password reset within user profile modals
+  - No overlapping modals - clean, single-modal experience
+  - Consistent security iconography across all interfaces
+  - Mobile-responsive design for all authentication flows
+
+### Fixed
+- **Schema & Database**: Fixed schema conflicts between custom users table and Convex Auth
+  - Standardized user ID fields across all tables
+  - Database cleanup of orphaned authentication records
+  - Maintained backward compatibility with existing data
+
+- **TypeScript & Build**: Fixed compilation errors in authentication components
+  - Proper type annotations for enhanced development experience
+  - Build optimization for all packages (renderer, website, electron)
+
+### Changed
+- **Architecture Updates**: Unified authentication system across website and desktop app
+  - Consistent error handling between all authentication states
+  - Proper flow control with back navigation and state management
+  - Security-first design with verification-required workflows
+
+- **Component Architecture**: Reusable authentication components across packages
+  - Shared error handling logic for consistent user experience
+  - Modular security features for easy maintenance and updates
+
+### Security
+- **Professional Email Templates**: Branded verification and security-focused messaging
+- **Reliable Email Delivery**: Resend service integration with proper domain verification
+- **Enhanced Error Logging**: Improved debugging for email and authentication issues
+
 ## [1.5.0] - 2025-01-28
 
 ### Added

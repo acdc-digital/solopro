@@ -11,7 +11,7 @@ export interface VersionInfo {
 
 export function useAppVersion() {
   const [versionInfo, setVersionInfo] = useState<VersionInfo>({
-    current: '1.6.1', // Fallback version
+    current: '1.6.4', // Fallback version
     latest: null,
     updateAvailable: false,
     isChecking: true,
@@ -25,13 +25,13 @@ export function useAppVersion() {
       try {
         // Try to get version from Electron
         if (typeof window !== 'undefined' && (window as any).electron) {
-          return (window as any).electron.getVersion?.() || '1.6.1';
+          return (window as any).electron.getVersion?.() || '1.6.4';
         }
         // Fallback for web/development
-        return '1.6.1';
+        return '1.6.4';
       } catch (error) {
         console.warn('Could not get app version:', error);
-        return '1.6.1';
+        return '1.6.4';
       }
     };
 

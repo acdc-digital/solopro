@@ -9,13 +9,12 @@ import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Download, Monitor, Apple, Package, Calendar, Brain, BarChart3, Target, Sparkles, Shield, Zap } from "lucide-react";
+import { Download, Monitor, Apple, Package } from "lucide-react";
 
 interface DownloadModalProps {
   children: React.ReactNode;
@@ -28,21 +27,21 @@ export function DownloadModal({ children }: DownloadModalProps) {
       icon: <Monitor className="w-6 h-6" />,
       description: 'Windows 10 or later (64-bit)',
       buttonText: 'Download for Windows',
-      url: 'https://github.com/acdc-digital/solopro/releases/download/v1.6.2/Soloist.Pro-Setup-1.6.2.exe',
+              url: 'https://github.com/acdc-digital/solopro/releases/download/v1.6.4/Soloist.Pro-Setup-1.6.4.exe',
     },
     {
       os: 'macOS',
       icon: <Apple className="w-6 h-6" />,
       description: 'macOS 10.15 or later',
       buttonText: 'Download for Mac',
-      url: 'https://github.com/acdc-digital/solopro/releases/download/v1.6.2/Soloist.Pro-1.6.2-x64.dmg',
+              url: 'https://github.com/acdc-digital/solopro/releases/download/v1.6.4/Soloist.Pro-1.6.4-x64.dmg',
     },
     {
       os: 'Linux',
       icon: <Package className="w-6 h-6" />,
       description: 'AppImage for most distributions',
       buttonText: 'Download for Linux',
-      url: 'https://github.com/acdc-digital/solopro/releases/download/v1.6.2/Soloist.Pro-1.6.2.AppImage',
+              url: 'https://github.com/acdc-digital/solopro/releases/download/v1.6.4/Soloist.Pro-1.6.4.AppImage',
     },
   ];
 
@@ -58,7 +57,7 @@ export function DownloadModal({ children }: DownloadModalProps) {
             <DialogTitle className="text-2xl font-bold">Download Soloist</DialogTitle>
           </div>
                   <Badge variant="outline" className="w-fit mb-2 border-emerald-500 text-emerald-600 font-medium">
-          Version 1.6.1 • Desktop Application
+                      Version 1.6.4 • Desktop Application
         </Badge>
         </DialogHeader>
         
@@ -160,7 +159,7 @@ export function DownloadModal({ children }: DownloadModalProps) {
                 <p className="text-gray-700 dark:text-gray-300 text-base leading-relaxed">
                   Soloist is proudly developed by ACDC.digital as a for-profit open source project. 
                   We believe in transparency and community collaboration. Your data stays yours, 
-                  our code stays open, and together we're building a better way to understand ourselves.
+                  our code stays open, and together we&apos;re building a better way to understand ourselves.
                 </p>
               </div>
 
