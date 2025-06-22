@@ -9,10 +9,31 @@ import { authTables } from "@convex-dev/auth/server";
 // requires indexes defined on `authTables`.
 // The schema provides more precise TypeScript types.
 export default defineSchema({
+  // Extend the authTables with additional indexes for users
   ...authTables,
+  
+  // Override the users table from authTables to add our custom fields and indexes
+  users: defineTable({
+    // Include all standard Convex Auth fields
+    name: v.optional(v.string()),
+    image: v.optional(v.string()),
+    email: v.optional(v.string()),
+    emailVerificationTime: v.optional(v.float64()),
+    phone: v.optional(v.string()),
+    phoneVerificationTime: v.optional(v.float64()),
+    isAnonymous: v.optional(v.boolean()),
+    
+    // Custom fields for your app
+    authId: v.optional(v.string()),
+    githubId: v.optional(v.number()),
+    role: v.optional(v.union(v.literal("user"), v.literal("admin"))),
+  })
+  .index("email", ["email"])
+  .index("byAuthId", ["authId"])
+  .index("byRole", ["role"]),
 
    feedTags: defineTable({
-    userId: v.string(),
+    userId: v.id("users"), // Use v.id("users") for consistency
     feedId: v.id("feed"),
     tagId: v.string(),
     tagName: v.string(),
@@ -24,26 +45,26 @@ export default defineSchema({
   .index("byUserIdAndTagId", ["userId", "tagId"]),
 
   feed: defineTable({
-    userId: v.string(),
+    userId: v.id("users"), // Use v.id("users") for consistency
     date: v.string(),
     message: v.string(),
     createdAt: v.number(),
     comments: v.optional(v.array(v.object({
-      userId: v.string(),
+      userId: v.id("users"), // Use v.id("users") for consistency
       userName: v.string(),
       userImage: v.optional(v.string()),
       content: v.string(),
       createdAt: v.number(),
     }))),
     feedback: v.optional(v.array(v.object({
-      userId: v.string(),
+      userId: v.id("users"), // Use v.id("users") for consistency
       isLiked: v.boolean(),
       createdAt: v.number(),
     }))),
   }),
 
   logs: defineTable({
-    userId: v.string(),
+    userId: v.id("users"), // Use v.id("users") for consistency
     date: v.string(),
     answers: v.any(),
     score: v.optional(v.number()),
@@ -51,22 +72,6 @@ export default defineSchema({
     updatedAt: v.number(),
   })
   .index("byUserDate", ["userId", "date"]),
-
-  users: defineTable({
-    authId: v.optional(v.string()),
-    name: v.optional(v.string()),
-    image: v.optional(v.string()),
-    email: v.optional(v.string()),
-    emailVerificationTime: v.optional(v.float64()),
-    phone: v.optional(v.string()),
-    phoneVerificationTime: v.optional(v.float64()),
-    isAnonymous: v.optional(v.boolean()),
-    githubId: v.optional(v.number()),
-    role: v.optional(v.union(v.literal("user"), v.literal("admin"))),
-  })
-  .index("email", ["email"])
-  .index("byAuthId", ["authId"])
-  .index("byRole", ["role"]),
 
   userSubscriptions: defineTable({
     userId: v.id("users"),
@@ -78,7 +83,7 @@ export default defineSchema({
   }).index("by_userId", ["userId"]),
 
   userAttributes: defineTable({
-    userId: v.string(),
+    userId: v.id("users"), // Use v.id("users") for consistency
     attributes: v.any(),
     updatedAt: v.number(),
   })
@@ -103,7 +108,7 @@ export default defineSchema({
     .index("by_userId", ["userId"]),
 
   forecast: defineTable({
-    userId: v.string(),
+    userId: v.id("users"), // Use v.id("users") for consistency
     date: v.string(),
     emotionScore: v.number(),
     trend: v.string(),
@@ -117,7 +122,7 @@ export default defineSchema({
   .index("byUserDate", ["userId", "date"]),
 
   forecastFeedback: defineTable({
-    userId: v.string(),
+    userId: v.id("users"), // Use v.id("users") for consistency
     forecastDate: v.string(),
     feedback: v.union(v.literal("up"), v.literal("down")),
     createdAt: v.number(),
@@ -126,7 +131,7 @@ export default defineSchema({
   .index("byUserDate", ["userId", "forecastDate"]),
 
   randomizer: defineTable({
-    userId: v.string(),
+    userId: v.id("users"), // Use v.id("users") for consistency
     instructions: v.string(),
     createdAt: v.number(),
     updatedAt: v.number(),
@@ -146,7 +151,7 @@ export default defineSchema({
 
   templates: defineTable({
     name: v.string(),
-    userId: v.string(),
+    userId: v.id("users"), // Use v.id("users") for consistency
     questions: v.array(
       v.object({
         id: v.string(),
@@ -164,7 +169,7 @@ export default defineSchema({
   // New daily log templates for customizable forms
   dailyLogTemplates: defineTable({
     name: v.string(),
-    userId: v.string(),
+    userId: v.id("users"), // Use v.id("users") for consistency
     fields: v.array(
       v.object({
         id: v.string(),
@@ -193,7 +198,7 @@ export default defineSchema({
   .index("by_user_id_and_active", ["userId", "isActive"]),
 
   userFeedback: defineTable({
-    userId: v.optional(v.string()), // Optional to handle anonymous feedback
+    userId: v.optional(v.id("users")), // Use v.id("users") for consistency, keep optional for anonymous
     email: v.optional(v.string()),
     overallRating: v.number(),
     mostValuableFeature: v.optional(v.string()),
