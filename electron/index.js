@@ -1,6 +1,6 @@
 // electron/index.js
 
-const { app, BrowserWindow, net, ipcMain } = require("electron");
+const { app, BrowserWindow, net, ipcMain, shell } = require("electron");
 const path = require("path");
 const fs = require("fs");
 const { spawn } = require("child_process");
@@ -228,6 +228,17 @@ ipcMain.on('window-close', (event) => {
   if (win) {
     win.close();
   }
+});
+
+// Handle in-app update requests
+ipcMain.on('app-update', () => {
+  const latestReleaseUrl = 'https://github.com/acdc-digital/solopro/releases/latest';
+  shell.openExternal(latestReleaseUrl);
+});
+
+// Provide app version to renderer synchronously
+ipcMain.on('get-app-version', (event) => {
+  event.returnValue = app.getVersion();
 });
 
 app.whenReady().then(() => {
