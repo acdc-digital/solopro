@@ -8,7 +8,7 @@ import { X } from "lucide-react";
 interface SignInModalProps {
   isOpen: boolean;
   onClose: () => void;
-  initialFlow?: "signIn" | "signUp";
+  initialFlow?: "signIn" | "signUp" | "forgotPassword";
   onAuthSuccess?: () => void;
 }
 
@@ -19,7 +19,7 @@ export function SignInModal({
   onAuthSuccess 
 }: SignInModalProps) {
   const { signIn } = useAuthActions();
-  const [step, setStep] = useState<"signIn" | "signUp" | { email: string }>(initialFlow);
+  const [step, setStep] = useState<"signIn" | "signUp" | "forgotPassword" | { email: string } | { resetEmail: string }>(initialFlow);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
@@ -45,9 +45,43 @@ export function SignInModal({
     }
   }, [isOpen, initialFlow]);
 
+  // Clear any form values when entering verification step
+  useEffect(() => {
+    if (typeof step === "object") {
+      // We're in verification step - force clear any cached form values
+      const codeInput = document.getElementById('modal-code') as HTMLInputElement;
+      if (codeInput) {
+        codeInput.value = '';
+      }
+    }
+  }, [step]);
+
   // Helper function to provide user-friendly error messages
-  const getErrorMessage = (error: any, currentStep: "signIn" | "signUp" | { email: string }) => {
+  const getErrorMessage = (error: any, currentStep: "signIn" | "signUp" | "forgotPassword" | { email: string } | { resetEmail: string }) => {
     const errorMessage = error?.message || error?.toString() || "An error occurred";
+
+    // Check for verification code specific errors
+    const verificationCodePatterns = [
+      'could not verify code',
+      'invalid verification code',
+      'verification code expired',
+      'verification failed',
+      'code is invalid',
+      'incorrect code'
+    ];
+    
+    const isVerificationError = verificationCodePatterns.some(pattern => 
+      errorMessage.toLowerCase().includes(pattern)
+    );
+    
+    if (isVerificationError && typeof currentStep === "object") {
+      return {
+        message: "The verification code is incorrect or has expired. Please check your email and try again.",
+        suggestionAction: "resend-code",
+        showSwitchButton: false,
+        type: "verification"
+      };
+    }
     
     // Check for common "user not found" patterns
     const userNotFoundPatterns = [
@@ -68,7 +102,8 @@ export function SignInModal({
       return {
         message: "Account not found. Would you like to create an account instead?",
         suggestionAction: "switch-to-signup",
-        showSwitchButton: true
+        showSwitchButton: true,
+        type: "auth"
       };
     }
     
@@ -88,7 +123,8 @@ export function SignInModal({
       return {
         message: "Account already exists. Would you like to sign in instead?",
         suggestionAction: "switch-to-signin",
-        showSwitchButton: true
+        showSwitchButton: true,
+        type: "auth"
       };
     }
     
@@ -96,7 +132,8 @@ export function SignInModal({
     return {
       message: errorMessage,
       suggestionAction: null,
-      showSwitchButton: false
+      showSwitchButton: false,
+      type: "general"
     };
   };
 
@@ -105,6 +142,7 @@ export function SignInModal({
     message: string;
     suggestionAction: string | null;
     showSwitchButton: boolean;
+    type: "verification" | "auth" | "general";
   } | null>(null);
 
   // Handle successful authentication
@@ -142,6 +180,8 @@ export function SignInModal({
         <h2 className="text-2xl font-bold mb-6 text-center">
           {step === "signIn" ? "Sign in to your account" : 
            step === "signUp" ? "Create an account" : 
+           step === "forgotPassword" ? "Reset your password" :
+           typeof step === "object" && "resetEmail" in step ? "Enter new password" :
            "Verify your email"}
         </h2>
         
@@ -207,6 +247,11 @@ export function SignInModal({
                 placeholder={step === "signUp" ? "Create a password" : "Enter your password"}
                 required
               />
+              {step === "signUp" && (
+                <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                  Must contain 8+ characters with uppercase, lowercase, number, and special character
+                </p>
+              )}
             </div>
             
             <button
@@ -228,25 +273,56 @@ export function SignInModal({
             </button>
             
             {error && (
-              <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md">
-                <p className="text-sm text-red-800 dark:text-red-300">{error}</p>
-                {errorInfo?.showSwitchButton && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (errorInfo.suggestionAction === "switch-to-signup") {
-                        setStep("signUp");
-                      } else if (errorInfo.suggestionAction === "switch-to-signin") {
-                        setStep("signIn");
-                      }
-                      setError(null);
-                      setErrorInfo(null);
-                    }}
-                    className="mt-2 px-3 py-1 bg-red-100 dark:bg-red-800 hover:bg-red-200 dark:hover:bg-red-700 text-red-800 dark:text-red-200 text-xs font-medium rounded border border-red-300 dark:border-red-600 transition-colors"
-                  >
-                    {errorInfo.suggestionAction === "switch-to-signup" ? "Create Account" : "Sign In Instead"}
-                  </button>
-                )}
+              <div className={`p-4 rounded-lg border ${
+                errorInfo?.type === "verification" 
+                  ? "bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800" 
+                  : "bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800"
+              }`}>
+                <div className="flex items-start">
+                  <div className={`flex-shrink-0 mr-3 mt-0.5 ${
+                    errorInfo?.type === "verification" ? "text-amber-600" : "text-red-600"
+                  }`}>
+                    {errorInfo?.type === "verification" ? (
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                      </svg>
+                    ) : (
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                      </svg>
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <p className={`text-sm font-medium ${
+                      errorInfo?.type === "verification" 
+                        ? "text-amber-800 dark:text-amber-200" 
+                        : "text-red-800 dark:text-red-300"
+                    }`}>
+                      {error}
+                    </p>
+                    {errorInfo?.showSwitchButton && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (errorInfo.suggestionAction === "switch-to-signup") {
+                            setStep("signUp");
+                          } else if (errorInfo.suggestionAction === "switch-to-signin") {
+                            setStep("signIn");
+                          }
+                          setError(null);
+                          setErrorInfo(null);
+                        }}
+                        className={`mt-2 px-3 py-1 text-xs font-medium rounded border transition-colors ${
+                          errorInfo?.type === "verification"
+                            ? "bg-amber-100 dark:bg-amber-800 hover:bg-amber-200 dark:hover:bg-amber-700 text-amber-800 dark:text-amber-200 border-amber-300 dark:border-amber-600"
+                            : "bg-red-100 dark:bg-red-800 hover:bg-red-200 dark:hover:bg-red-700 text-red-800 dark:text-red-200 border-red-300 dark:border-red-600"
+                        }`}
+                      >
+                        {errorInfo.suggestionAction === "switch-to-signup" ? "Create Account" : "Sign In Instead"}
+                      </button>
+                    )}
+                  </div>
+                </div>
               </div>
             )}
             
@@ -263,11 +339,279 @@ export function SignInModal({
               >
                 {step === "signIn" ? "Sign up" : "Sign in"}
               </button>
+              
+              {step === "signIn" && (
+                <>
+                  {" • "}
+                  <button
+                    type="button"
+                    className="text-primary dark:text-primary hover:underline font-medium"
+                    onClick={() => {
+                      setStep("forgotPassword");
+                      setError(null);
+                      setErrorInfo(null);
+                    }}
+                  >
+                    Forgot password?
+                  </button>
+                </>
+              )}
+            </div>
+          </form>
+        ) : step === "forgotPassword" ? (
+          // Forgot password form
+          <form
+            className="space-y-4"
+            onSubmit={(e) => {
+              e.preventDefault();
+              setIsSubmitting(true);
+              setError(null);
+              setErrorInfo(null);
+              
+              const formData = new FormData(e.target as HTMLFormElement);
+              formData.set("flow", "reset");
+              
+              void signIn("password", formData)
+                .then(() => {
+                  setStep({ resetEmail: formData.get("email") as string });
+                })
+                .catch((error) => {
+                  const errorDetails = getErrorMessage(error, step);
+                  setError(errorDetails.message);
+                  setErrorInfo(errorDetails);
+                })
+                .finally(() => {
+                  setIsSubmitting(false);
+                });
+            }}
+          >
+            <div className="text-center mb-4">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Enter your email address and we'll send you a code to reset your password.
+              </p>
+            </div>
+            
+            <div>
+              <label htmlFor="modal-reset-email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Email address
+              </label>
+              <input
+                id="modal-reset-email"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                type="email"
+                name="email"
+                placeholder="you@example.com"
+                required
+              />
+            </div>
+            
+            <button
+              className="w-full py-2 px-4 bg-primary hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed text-primary-foreground font-medium rounded-full shadow focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors"
+              type="submit"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? (
+                <span className="flex items-center justify-center">
+                  <svg className="animate-spin -ml-1 mr-3 h-4 w-4 text-current" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Sending code...
+                </span>
+              ) : (
+                "Send reset code"
+              )}
+            </button>
+            
+            {error && (
+              <div className={`p-4 rounded-lg border ${
+                errorInfo?.type === "verification" 
+                  ? "bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800" 
+                  : "bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800"
+              }`}>
+                <div className="flex items-start">
+                  <div className={`flex-shrink-0 mr-3 mt-0.5 ${
+                    errorInfo?.type === "verification" ? "text-amber-600" : "text-red-600"
+                  }`}>
+                    {errorInfo?.type === "verification" ? (
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                      </svg>
+                    ) : (
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                      </svg>
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <p className={`text-sm font-medium ${
+                      errorInfo?.type === "verification" 
+                        ? "text-amber-800 dark:text-amber-200" 
+                        : "text-red-800 dark:text-red-300"
+                    }`}>
+                      {error}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            <div className="text-center mt-4 text-sm text-gray-600 dark:text-gray-400">
+              <button
+                type="button"
+                className="text-primary dark:text-primary hover:underline font-medium"
+                onClick={() => {
+                  setStep("forgotPassword");
+                  setError(null);
+                  setErrorInfo(null);
+                }}
+              >
+                Back to email entry
+              </button>
+            </div>
+          </form>
+        ) : typeof step === "object" && "resetEmail" in step ? (
+          // Password reset verification form
+          <form
+            key={`reset-verification-${step.resetEmail}`}
+            className="space-y-4"
+            onSubmit={(e) => {
+              e.preventDefault();
+              setIsSubmitting(true);
+              setError(null);
+              setErrorInfo(null);
+              
+              const formData = new FormData(e.target as HTMLFormElement);
+              formData.set("flow", "reset-verification");
+              formData.set("email", step.resetEmail);
+              
+              void signIn("password", formData)
+                .then(() => {
+                  handleAuthSuccess();
+                })
+                .catch((error) => {
+                  const errorDetails = getErrorMessage(error, step);
+                  setError(errorDetails.message);
+                  setErrorInfo(errorDetails);
+                })
+                .finally(() => {
+                  setIsSubmitting(false);
+                });
+            }}
+          >
+            <div className="text-center mb-4">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                We've sent a reset code to <strong>{step.resetEmail}</strong>
+              </p>
+            </div>
+            
+            <div>
+              <label htmlFor="modal-reset-code" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Reset Code
+              </label>
+              <input
+                key={`reset-code-input-${step.resetEmail}`}
+                id="modal-reset-code"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-center font-mono text-lg tracking-wider placeholder:text-gray-400 placeholder:font-sans"
+                type="text"
+                name="code"
+                placeholder="Enter your code..."
+                maxLength={8}
+                autoComplete="off"
+                autoCorrect="off"
+                autoCapitalize="off"
+                spellCheck={false}
+                data-form-type="other"
+                required
+              />
+            </div>
+            
+            <div>
+              <label htmlFor="modal-new-password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                New Password
+              </label>
+              <input
+                id="modal-new-password"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                type="password"
+                name="newPassword"
+                placeholder="Create a new password"
+                required
+              />
+              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                Must contain 8+ characters with uppercase, lowercase, number, and special character
+              </p>
+            </div>
+            
+            <button
+              className="w-full py-2 px-4 bg-primary hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed text-primary-foreground font-medium rounded-full shadow focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors"
+              type="submit"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? (
+                <span className="flex items-center justify-center">
+                  <svg className="animate-spin -ml-1 mr-3 h-4 w-4 text-current" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 814 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Resetting password...
+                </span>
+              ) : (
+                "Reset password"
+              )}
+            </button>
+            
+            {error && (
+              <div className={`p-4 rounded-lg border ${
+                errorInfo?.type === "verification" 
+                  ? "bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800" 
+                  : "bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800"
+              }`}>
+                <div className="flex items-start">
+                  <div className={`flex-shrink-0 mr-3 mt-0.5 ${
+                    errorInfo?.type === "verification" ? "text-amber-600" : "text-red-600"
+                  }`}>
+                    {errorInfo?.type === "verification" ? (
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                      </svg>
+                    ) : (
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                      </svg>
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <p className={`text-sm font-medium ${
+                      errorInfo?.type === "verification" 
+                        ? "text-amber-800 dark:text-amber-200" 
+                        : "text-red-800 dark:text-red-300"
+                    }`}>
+                      {error}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            <div className="text-center mt-4 text-sm text-gray-600 dark:text-gray-400">
+              <button
+                type="button"
+                className="text-primary dark:text-primary hover:underline font-medium"
+                onClick={() => {
+                  setStep("forgotPassword");
+                  setError(null);
+                  setErrorInfo(null);
+                }}
+              >
+                Back to email entry
+              </button>
             </div>
           </form>
         ) : (
           // Email verification form
           <form
+            key={`verification-${step.email}`}
             className="space-y-4"
             onSubmit={(e) => {
               e.preventDefault();
@@ -307,12 +651,18 @@ export function SignInModal({
                 Verification Code
               </label>
               <input
+                key={`code-input-${step.email}`}
                 id="modal-code"
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-center font-mono text-lg tracking-wider"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-center font-mono text-lg tracking-wider placeholder:text-gray-400 placeholder:font-sans"
                 type="text"
                 name="code"
-                placeholder="12345678"
+                placeholder="Enter your code..."
                 maxLength={8}
+                autoComplete="off"
+                autoCorrect="off"
+                autoCapitalize="off"
+                spellCheck={false}
+                data-form-type="other"
                 required
               />
             </div>
@@ -326,7 +676,7 @@ export function SignInModal({
                 <span className="flex items-center justify-center">
                   <svg className="animate-spin -ml-1 mr-3 h-4 w-4 text-current" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 714 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
                   Verifying...
                 </span>
@@ -336,8 +686,35 @@ export function SignInModal({
             </button>
             
             {error && (
-              <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md">
-                <p className="text-sm text-red-800 dark:text-red-300">{error}</p>
+              <div className={`p-4 rounded-lg border ${
+                errorInfo?.type === "verification" 
+                  ? "bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800" 
+                  : "bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800"
+              }`}>
+                <div className="flex items-start">
+                  <div className={`flex-shrink-0 mr-3 mt-0.5 ${
+                    errorInfo?.type === "verification" ? "text-amber-600" : "text-red-600"
+                  }`}>
+                    {errorInfo?.type === "verification" ? (
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                      </svg>
+                    ) : (
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                      </svg>
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <p className={`text-sm font-medium ${
+                      errorInfo?.type === "verification" 
+                        ? "text-amber-800 dark:text-amber-200" 
+                        : "text-red-800 dark:text-red-300"
+                    }`}>
+                      {error}
+                    </p>
+                  </div>
+                </div>
               </div>
             )}
             

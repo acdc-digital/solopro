@@ -45,7 +45,7 @@ export default function LandingPage() {
   const { signOut } = useAuthActions();
   const router = useRouter();
   const [isSignInModalOpen, setIsSignInModalOpen] = useState(false);
-  const [signInFlow, setSignInFlow] = useState<"signIn" | "signUp">("signIn");
+  const [signInFlow, setSignInFlow] = useState<"signIn" | "signUp" | "forgotPassword">("signIn");
   const isBrowser = useBrowserEnvironment();
 
   // Always call useQuery hook - use "skip" when not authenticated
@@ -151,7 +151,7 @@ export default function LandingPage() {
               Create Account
             </Button>
           </CardContent>
-          <CardFooter className="text-center text-sm text-muted-foreground">
+          <CardFooter className="flex flex-col text-center text-sm text-muted-foreground space-y-2">
             <p>Secured authentication with Convex Auth</p>
           </CardFooter>
         </Card>

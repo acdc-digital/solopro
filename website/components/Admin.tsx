@@ -27,13 +27,13 @@ import {
   Target,
   Download,
   User,
-  Loader2
+  Loader2,
+  LogOut
 } from "lucide-react";
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useAuthActions } from "@convex-dev/auth/react";
-import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { useConvexUser } from "../lib/hooks/useConvexUser";
 import {
@@ -44,6 +44,7 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { ProfileModal } from "../modals/ProfileModal";
+import { SignInModal } from "../modals/SignInModal";
 
 export function Admin() {
   const userSubscriptions = useQuery(api.admin.getAllUserSubscriptions);
@@ -51,11 +52,11 @@ export function Admin() {
   const isAdmin = useQuery(api.admin.isCurrentUserAdmin);
   const [activeView, setActiveView] = useState<'overview' | 'users' | 'subscriptions' | 'analytics'>('overview');
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [isSignInModalOpen, setIsSignInModalOpen] = useState(false);
 
   // Auth and user info for navbar
   const { isAuthenticated, isLoading, userId } = useConvexUser();
   const { signOut } = useAuthActions();
-  const router = useRouter();
 
   // Get user details
   const user = useQuery(
@@ -71,12 +72,10 @@ export function Admin() {
     return (names[0][0] + names[names.length - 1][0]).toUpperCase();
   }, [user?.name]);
 
-  const handleSignOut = () => {
-    signOut().then(() => router.push('/'));
-  };
-
   const handleDirectDownload = () => {
     const downloadUrl = 'https://github.com/acdc-digital/solopro/releases/download/v1.6.2/Soloist.Pro-1.6.2-x64.dmg';
+
+    // Create a temporary link and trigger download
     const link = document.createElement('a');
     link.href = downloadUrl;
     link.download = '';
@@ -235,14 +234,15 @@ export function Admin() {
                     <User className="mr-2 h-4 w-4" />
                     Profile
                   </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => signOut()}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Sign out
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleDirectDownload}>
                     <Download className="mr-2 h-4 w-4" />
                     Download Desktop App
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleSignOut}>
-                    Sign out
-                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : null}
@@ -731,6 +731,14 @@ export function Admin() {
       <ProfileModal
         open={isProfileModalOpen}
         onOpenChange={setIsProfileModalOpen}
+      />
+
+      {/* Security/Password Reset Modal */}
+      <SignInModal
+        isOpen={isSignInModalOpen}
+        onClose={() => setIsSignInModalOpen(false)}
+        initialFlow="forgotPassword"
+        onAuthSuccess={() => setIsSignInModalOpen(false)}
       />
     </div>
   );

@@ -10,7 +10,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { useState, useCallback, useEffect, useMemo } from "react";
 import { SignInModal } from "../modals/SignInModal";
 import { DocsModal } from "./Docs";
-import { Loader2, Menu, X, Shield, ShieldUserIcon, User, FileDown } from "lucide-react";
+import { Loader2, Menu, X, Shield, ShieldUserIcon, User, FileDown, LogOut } from "lucide-react";
 import Image from "next/image";
 import { api } from "../convex/_generated/api";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
@@ -33,7 +33,7 @@ export function Navbar() {
   const router = useRouter();
   const pathname = usePathname();
   const [isSignInModalOpen, setIsSignInModalOpen] = useState(false);
-  const [signInFlow, setSignInFlow] = useState<"signIn" | "signUp">("signIn");
+  const [signInFlow, setSignInFlow] = useState<"signIn" | "signUp" | "forgotPassword">("signIn");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [detectedOS, setDetectedOS] = useState<'Windows' | 'macOS' | 'Other'>('Other');
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
@@ -253,22 +253,19 @@ export function Navbar() {
                       </p>
                     </div>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => setIsProfileModalOpen(true)}>
-                      <User className="mr-2 h-4 w-4" />
-                      Profile
+                    <DropdownMenuItem
+                      onClick={() => setIsProfileModalOpen(true)}
+                      className="cursor-pointer flex items-center gap-2"
+                    >
+                      <User className="h-4 w-4" />
+                      <span>Profile</span>
                     </DropdownMenuItem>
-                    <ExportDataModal>
-                      <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                        <FileDown className="mr-2 h-4 w-4" />
-                        Export Data
-                      </DropdownMenuItem>
-                    </ExportDataModal>
-                    <DropdownMenuItem onClick={handleDirectDownload}>
-                      <Download className="mr-2 h-4 w-4" />
-                      Download Desktop App
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={handleSignOut}>
-                      Sign out
+                    <DropdownMenuItem
+                      onClick={() => signOut()}
+                      className="cursor-pointer flex items-center gap-2 text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+                    >
+                      <LogOut className="h-4 w-4" />
+                      <span>Sign out</span>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -409,6 +406,13 @@ export function Navbar() {
                       Export Data
                     </button>
                   </ExportDataModal>
+                  <button
+                    onClick={handleDirectDownload}
+                    className="w-full inline-flex items-center justify-center gap-2 rounded-3xl border border-input bg-background px-5 py-2.5 text-base font-medium text-foreground hover:bg-accent hover:text-accent-foreground transition-all duration-200"
+                  >
+                    <Download className="h-5 w-5" />
+                    Download Desktop App
+                  </button>
                   <button
                     onClick={handleSignOut}
                     className="w-full inline-flex items-center justify-center rounded-3xl border border-black bg-white px-5 py-2.5 text-base font-medium text-foreground hover:bg-accent hover:text-accent-foreground hover:border-foreground transition-all duration-200"
