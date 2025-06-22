@@ -17,6 +17,11 @@ interface OpenAIChatCompletion {
       content?: string;
     };
   }>;
+  usage?: {
+    prompt_tokens: number;
+    completion_tokens: number;
+    total_tokens: number;
+  };
 }
 
 /**
@@ -105,6 +110,23 @@ export const generateFeedForDailyLog = action({
     const completion: OpenAIChatCompletion = await response.json();
     const assistantReply: string =
       completion.choices?.[0]?.message?.content?.trim() || "(No response)";
+
+    // Track OpenAI usage for cost monitoring
+    if (completion.usage) {
+      try {
+        await ctx.runMutation(api.openai.trackUsage, {
+          userId,
+          feature: "feed_generation",
+          model: config.model,
+          promptTokens: completion.usage.prompt_tokens || 0,
+          completionTokens: completion.usage.completion_tokens || 0,
+          metadata: { date }
+        });
+      } catch (trackingError) {
+        console.error("[generateFeedForDailyLog] Failed to track usage:", trackingError);
+        // Don't fail the main operation if tracking fails
+      }
+    }
 
     // 5) Store the LLM response in the "feed" table
     await ctx.runMutation(api.feed.storeFeedMessage, {

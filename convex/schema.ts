@@ -228,4 +228,21 @@ export default defineSchema({
   .index("byUserId", ["userId"])
   .index("byFeature", ["feature"])
   .index("byUserIdAndFeature", ["userId", "feature"]),
+
+  openaiUsage: defineTable({
+    userId: v.string(), // Use authId string instead of v.id("users") for consistency with AI functions
+    feature: v.string(), // "forecast", "consultation", "weekly_analysis", etc.
+    model: v.string(), // "gpt-4", "gpt-3.5-turbo", etc.
+    promptTokens: v.number(),
+    completionTokens: v.number(),
+    totalTokens: v.number(),
+    cost: v.number(), // Cost in USD cents (multiply by 100 for storage)
+    requestId: v.optional(v.string()), // OpenAI request ID for reference
+    metadata: v.optional(v.any()), // Additional data if needed
+    createdAt: v.number(),
+  })
+  .index("by_user", ["userId"])
+  .index("by_user_and_date", ["userId", "createdAt"])
+  .index("by_feature", ["feature"])
+  .index("by_model", ["model"]),
 });

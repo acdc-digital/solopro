@@ -45,12 +45,13 @@ import {
 } from "./ui/dropdown-menu";
 import { ProfileModal } from "../modals/ProfileModal";
 import { SignInModal } from "../modals/SignInModal";
+import { OpenAIDashboard } from "../app/admin/_components/OpenAI";
 
 export function Admin() {
   const userSubscriptions = useQuery(api.admin.getAllUserSubscriptions);
   const allUsers = useQuery(api.admin.getAllUsers);
   const isAdmin = useQuery(api.admin.isCurrentUserAdmin);
-  const [activeView, setActiveView] = useState<'overview' | 'users' | 'subscriptions' | 'analytics'>('overview');
+  const [activeView, setActiveView] = useState<'overview' | 'users' | 'subscriptions' | 'analytics' | 'openai'>('overview');
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [isSignInModalOpen, setIsSignInModalOpen] = useState(false);
 
@@ -176,6 +177,11 @@ export function Admin() {
       id: 'subscriptions',
       label: 'Subscriptions',
       icon: CreditCard,
+    },
+    {
+      id: 'openai',
+      label: 'LLM Usage',
+      icon: DollarSign,
     }
   ];
 
@@ -267,7 +273,7 @@ export function Admin() {
                   "w-full justify-start",
                   activeView === item.id && "bg-gray-100 text-gray-900"
                 )}
-                onClick={() => setActiveView(item.id as 'overview' | 'users' | 'subscriptions' | 'analytics')}
+                onClick={() => setActiveView(item.id as 'overview' | 'users' | 'subscriptions' | 'analytics' | 'openai')}
               >
                 <item.icon className="h-4 w-4 mr-3" />
                 {item.label}
@@ -722,6 +728,8 @@ export function Admin() {
                   </Card>
                 </>
               )}
+
+              {activeView === 'openai' && <OpenAIDashboard />}
             </div>
           </ScrollArea>
         </div>
