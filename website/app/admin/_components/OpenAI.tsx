@@ -21,7 +21,7 @@ import {
   AlertTriangle,
   Download
 } from "lucide-react";
-import { format } from "date-fns";
+// Removed date-fns import - using native JS formatting instead
 
 export function OpenAIDashboard() {
   const [timeRange, setTimeRange] = useState(30);
@@ -335,7 +335,7 @@ export function OpenAIDashboard() {
                   <div className="text-right">
                     <p className="font-medium">${(usage.cost / 100).toFixed(3)}</p>
                     <p className="text-muted-foreground">
-                      {format(new Date(usage.createdAt), "HH:mm")}
+                      {new Date(usage.createdAt).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })}
                     </p>
                   </div>
                 </div>
