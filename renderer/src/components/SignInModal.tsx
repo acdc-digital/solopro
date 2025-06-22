@@ -57,7 +57,12 @@ export function SignInModal({
   }, [step]);
 
   // Helper function to provide user-friendly error messages
-  const getErrorMessage = (error: any, currentStep: "signIn" | "signUp" | "forgotPassword" | { email: string } | { resetEmail: string }) => {
+  const getErrorMessage = (error: any, currentStep: "signIn" | "signUp" | "forgotPassword" | { email: string } | { resetEmail: string }): {
+    message: string;
+    suggestionAction: string | null;
+    showSwitchButton: boolean;
+    type: "verification" | "auth" | "general";
+  } => {
     const errorMessage = error?.message || error?.toString() || "An error occurred";
 
     // Check for verification code specific errors
@@ -201,8 +206,8 @@ export function SignInModal({
               void signIn("password", formData)
                 .then((result) => {
                   console.log("🔴 Password sign-in result:", result);
-                  // If result is not true, it means we need email verification
-                  if (result !== true) {
+                  // If result exists but no redirect, it means we need email verification
+                  if (result && !result.redirect) {
                     console.log("🔴 Email verification required");
                     setStep({ email: formData.get("email") as string });
                   } else {
