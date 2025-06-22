@@ -1,6 +1,6 @@
 ## <img src="public/solologo.png" alt="Soloist Logo" height="28" style="vertical-align:bottom; margin-right:6px;"> Soloist
 
-**Version:** `1.6.2` | **License:** For-Profit Open Source | **Status:** Active Development
+**Version:** `1.6.5` | **License:** For-Profit Open Source | **Status:** Active Development
 
 ---
 
@@ -16,6 +16,8 @@
 |----------|------------|
 | Daily Logging | Custom templates, auto-summaries, progressive prompts |
 | Predictive Analytics | 3-day forecasts, yearly heat-map, pattern detection |
+| AI Cost Tracking | Real-time OpenAI usage monitoring, cost analytics, feature breakdown |
+| Admin Dashboard | Live usage statistics, cost alerts, model performance metrics |
 | Integrations | Social feed import (Facebook, Instagram, X / Twitter, LinkedIn) |
 | Starter Kits | Guided 7-day journaling programme (coming Q4 2025) |
 | Desktop Experience | Native macOS / Windows / Linux apps built with Electron |
@@ -26,11 +28,11 @@
 
 | Platform | File | Direct Link |
 |----------|------|-------------|
-| macOS (Intel) | `Soloist.Pro-1.6.2-x64.dmg` | [Download](https://github.com/acdc-digital/solopro/releases/download/v1.6.2/Soloist.Pro-1.6.2-x64.dmg) |
-| macOS (Apple Silicon) | `Soloist.Pro-1.6.2-arm64.dmg` | [Download](https://github.com/acdc-digital/solopro/releases/download/v1.6.2/Soloist.Pro-1.6.2-arm64.dmg) |
-| Windows | `Soloist.Pro-Setup-1.6.2.exe` | [Download](https://github.com/acdc-digital/solopro/releases/download/v1.6.2/Soloist.Pro-Setup-1.6.2.exe) |
-| Linux (AppImage) | `Soloist.Pro-1.6.2.AppImage` | [Download](https://github.com/acdc-digital/solopro/releases/download/v1.6.2/Soloist.Pro-1.6.2.AppImage) |
-| Linux (Deb) | `solopro-electron-1.6.2.deb` | [Download](https://github.com/acdc-digital/solopro/releases/download/v1.6.2/solopro-electron-1.6.2.deb) |
+| macOS (Intel) | `Soloist.Pro-1.6.5-x64.dmg` | [Download](https://github.com/acdc-digital/solopro/releases/download/v1.6.5/Soloist.Pro-1.6.5-x64.dmg) |
+| macOS (Apple Silicon) | `Soloist.Pro-1.6.5-arm64.dmg` | [Download](https://github.com/acdc-digital/solopro/releases/download/v1.6.5/Soloist.Pro-1.6.5-arm64.dmg) |
+| Windows | `Soloist.Pro-Setup-1.6.5.exe` | [Download](https://github.com/acdc-digital/solopro/releases/download/v1.6.5/Soloist.Pro-Setup-1.6.5.exe) |
+| Linux (AppImage) | `Soloist.Pro-1.6.5.AppImage` | [Download](https://github.com/acdc-digital/solopro/releases/download/v1.6.5/Soloist.Pro-1.6.5.AppImage) |
+| Linux (Deb) | `solopro-electron-1.6.5.deb` | [Download](https://github.com/acdc-digital/solopro/releases/download/v1.6.5/solopro-electron-1.6.5.deb) |
 
 ---
 
@@ -85,7 +87,7 @@ npm version <patch|minor|major>
 git push origin main --tags
 
 # Reset to a specific version
-git checkout v1.6.2
+git checkout v1.6.5
 ```
 
 ## Git Command Reference
@@ -104,9 +106,9 @@ git checkout v1.6.2
 | Squash last N commits | `git rebase -i HEAD~N` | Use interactive rebase; replace `pick` with `squash` |
 | Switch branches | `git checkout <branch>` | Or `git switch <branch>` |
 | Delete local branch | `git branch -d feature/<name>` | Use `-D` to force delete |
-| Create version tag | `git tag v1.6.2` | Lightweight tag |
-| Annotated version tag | `git tag -a v1.6.2 -m "Soloist v1.6.2"` | Preferred for releases |
-| Push single tag | `git push origin v1.6.2` | Uploads tag to remote |
+| Create version tag | `git tag v1.6.5` | Lightweight tag |
+| Annotated version tag | `git tag -a v1.6.5 -m "Soloist v1.6.5"` | Preferred for releases |
+| Push single tag | `git push origin v1.6.5` | Uploads tag to remote |
 | Push all tags | `git push --tags` | After multiple new tags |
 | Remove remote tag | `git push --delete origin v1.6.1` | Keep history tidy |
 | Stash work-in-progress | `git stash push -m "wip"` | Temporarily save uncommitted work |
@@ -124,11 +126,11 @@ git checkout v1.6.2
 
 | Version | Date | Notes |
 |---------|------|-------|
+| **v1.6.5** | 2025-01-22 | 💰 OpenAI cost tracking & analytics, real-time usage monitoring, admin dashboard |
+| **v1.6.4** | 2025-01-29 | Enhanced security & authentication, email verification, password management |
 | **v1.6.2** | 2025-02-01 | Guided journaling starter kit, social platform integration preview, refined macOS dock icon |
 | **v1.6.1** | 2025-01-17 | Build & notarisation improvements |
 | **v1.6.0** | 2024-12-31 | UI/UX enhancements |
-| **v1.5.0** | 2024-12-30 | Infrastructure & components |
-| **v1.4.2** | 2024-12-29 | Bug fixes & stability |
 
 ---
 
