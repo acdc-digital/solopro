@@ -1,16 +1,14 @@
-import { Password } from "@convex-dev/auth/providers/Password";
 import { convexAuth } from "@convex-dev/auth/server";
 import { query } from "./_generated/server";
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { internal } from "./_generated/api";
-import { ResendOTP } from "./ResendOTP";
+import { CustomPassword } from "./CustomPassword";
+import { ResendOTPPasswordReset } from "./ResendOTPPasswordReset";
 
-// Configure auth with Password provider and email verification
+// Configure auth with CustomPassword provider including email verification and password reset
 export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
   providers: [
-    // Temporarily disable email verification while debugging Resend issues
-    Password({ verify: ResendOTP })
-    // Password({ verify: ResendOTP })  // Uncomment this line once Resend is working
+    CustomPassword
   ],
   callbacks: {
     async afterUserCreatedOrUpdated(ctx, { existingUserId, userId }) {

@@ -15,7 +15,9 @@ import {
   Download,
   Menu,
   X,
-  HomeIcon
+  HomeIcon,
+  Shield,
+  LogOut
 } from "lucide-react";
 import { useConvexUser } from "@/hooks/useConvexUser";
 import { useQuery } from "convex/react";
@@ -89,6 +91,11 @@ export function BrowserNavbar() {
     window.open(process.env.NEXT_PUBLIC_WEBSITE_URL || "https://www.acdc.digital", "_blank");
   };
 
+  const handleSignOut = () => {
+    signOut();
+    setIsProfileModalOpen(false);
+  };
+
   if (!isAuthenticated) {
     return null; // Don't show navbar if not authenticated
   }
@@ -144,7 +151,8 @@ export function BrowserNavbar() {
                   <Download className="mr-2 h-4 w-4" />
                   Download Desktop App
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => signOut()}>
+                <DropdownMenuItem onClick={handleSignOut}>
+                  <LogOut className="mr-2 h-4 w-4" />
                   Sign out
                 </DropdownMenuItem>
               </DropdownMenuContent>

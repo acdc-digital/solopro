@@ -12,11 +12,12 @@ import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useConvexUser } from "@/hooks/useConvexUser";
-import { Loader2, CheckCircle2, User, Phone, Camera, Upload, X } from "lucide-react";
+import { Loader2, CheckCircle2, User, Phone, Camera, Upload, X, Shield, ArrowLeft } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { useAuthActions } from "@convex-dev/auth/react";
 
 interface ProfileModalProps {
   open: boolean;
@@ -25,6 +26,7 @@ interface ProfileModalProps {
 
 export function ProfileModal({ open, onOpenChange }: ProfileModalProps) {
   const { isAuthenticated, isLoading: authLoading, userId } = useConvexUser();
+  const { signIn } = useAuthActions();
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [imageUrl, setImageUrl] = useState("");
@@ -32,6 +34,15 @@ export function ProfileModal({ open, onOpenChange }: ProfileModalProps) {
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+
+  // Password reset state
+  const [passwordResetStep, setPasswordResetStep] = useState<"idle" | "email" | "verification">("idle");
+  const [resetEmail, setResetEmail] = useState("");
+  const [verificationCode, setVerificationCode] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [isSubmittingReset, setIsSubmittingReset] = useState(false);
+  const [resetError, setResetError] = useState<string | null>(null);
+  const [resetSuccess, setResetSuccess] = useState(false);
 
   // Get user details from Convex when authenticated
   const user = useQuery(
@@ -49,8 +60,21 @@ export function ProfileModal({ open, onOpenChange }: ProfileModalProps) {
       setPhone(user.phone || "");
       setImageUrl(user.image || "");
       setPreviewImage(null);
+      setResetEmail(user.email || "");
     }
   }, [user]);
+
+  // Reset password flow state when modal closes
+  useEffect(() => {
+    if (!open) {
+      setPasswordResetStep("idle");
+      setVerificationCode("");
+      setNewPassword("");
+      setResetError(null);
+      setResetSuccess(false);
+      setIsSubmittingReset(false);
+    }
+  }, [open]);
 
   // Get user initials for avatar fallback
   const userInitials = React.useMemo(() => {
@@ -125,6 +149,80 @@ export function ProfileModal({ open, onOpenChange }: ProfileModalProps) {
   const handleRemoveImage = () => {
     setImageUrl("");
     setPreviewImage(null);
+  };
+
+  const handleStartPasswordReset = () => {
+    setPasswordResetStep("email");
+    setResetError(null);
+  };
+
+  const handleSendResetCode = async () => {
+    if (!resetEmail.trim()) {
+      setResetError("Please enter your email address");
+      return;
+    }
+
+    setIsSubmittingReset(true);
+    setResetError(null);
+
+    try {
+      const formData = new FormData();
+      formData.set("flow", "reset");
+      formData.set("email", resetEmail);
+
+      await signIn("password", formData);
+      setPasswordResetStep("verification");
+    } catch (error) {
+      setResetError(error instanceof Error ? error.message : "Failed to send reset code");
+    } finally {
+      setIsSubmittingReset(false);
+    }
+  };
+
+  const handleResetPassword = async () => {
+    if (!verificationCode.trim()) {
+      setResetError("Please enter the verification code");
+      return;
+    }
+
+    if (!newPassword.trim()) {
+      setResetError("Please enter a new password");
+      return;
+    }
+
+    setIsSubmittingReset(true);
+    setResetError(null);
+
+    try {
+      const formData = new FormData();
+      formData.set("flow", "reset-verification");
+      formData.set("email", resetEmail);
+      formData.set("code", verificationCode);
+      formData.set("password", newPassword);
+
+      await signIn("password", formData);
+      setResetSuccess(true);
+
+      // Reset form after successful password change
+      setTimeout(() => {
+        setPasswordResetStep("idle");
+        setVerificationCode("");
+        setNewPassword("");
+        setResetSuccess(false);
+      }, 2000);
+    } catch (error) {
+      setResetError(error instanceof Error ? error.message : "Failed to reset password");
+    } finally {
+      setIsSubmittingReset(false);
+    }
+  };
+
+  const handleCancelPasswordReset = () => {
+    setPasswordResetStep("idle");
+    setVerificationCode("");
+    setNewPassword("");
+    setResetError(null);
+    setResetSuccess(false);
   };
 
   const displayImage = previewImage || imageUrl;
@@ -282,19 +380,201 @@ export function ProfileModal({ open, onOpenChange }: ProfileModalProps) {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Security Section */}
+            <Card className="border-zinc-200 dark:border-zinc-700">
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center gap-2 text-base">
+                  <Shield className="h-4 w-4 text-red-600 dark:text-red-500" />
+                  Security
+                </CardTitle>
+                <CardDescription className="text-sm">
+                  Manage your password and account security
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="pt-0">
+                {passwordResetStep === "idle" && (
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium">Password</p>
+                      <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                        Update your password to keep your account secure
+                      </p>
+                    </div>
+                    <Button
+                      onClick={handleStartPasswordReset}
+                      variant="outline"
+                      size="sm"
+                      className="flex items-center gap-2"
+                    >
+                      <Shield className="h-4 w-4" />
+                      Change Password
+                    </Button>
+                  </div>
+                )}
+
+                {passwordResetStep === "email" && (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Button
+                          onClick={handleCancelPasswordReset}
+                          variant="ghost"
+                          size="sm"
+                          className="p-0 h-auto"
+                        >
+                          <ArrowLeft className="h-4 w-4" />
+                        </Button>
+                        <div>
+                          <p className="text-sm font-medium">Reset Password</p>
+                          <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                            Enter your email to receive a reset code
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="reset-email" className="text-sm font-medium">
+                        Email Address
+                      </Label>
+                      <Input
+                        id="reset-email"
+                        type="email"
+                        placeholder="Enter your email"
+                        value={resetEmail}
+                        onChange={(e) => setResetEmail(e.target.value)}
+                        className="w-full"
+                      />
+                    </div>
+
+                    {resetError && (
+                      <div className="p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
+                        <p className="text-sm text-red-800 dark:text-red-200">{resetError}</p>
+                      </div>
+                    )}
+
+                    <Button
+                      onClick={handleSendResetCode}
+                      disabled={isSubmittingReset}
+                      className="w-full"
+                    >
+                      {isSubmittingReset ? (
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                          Sending Code...
+                        </>
+                      ) : (
+                        "Send Reset Code"
+                      )}
+                    </Button>
+                  </div>
+                )}
+
+                {passwordResetStep === "verification" && (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Button
+                          onClick={() => setPasswordResetStep("email")}
+                          variant="ghost"
+                          size="sm"
+                          className="p-0 h-auto"
+                        >
+                          <ArrowLeft className="h-4 w-4" />
+                        </Button>
+                        <div>
+                          <p className="text-sm font-medium">Verify & Set New Password</p>
+                          <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                            Check your email for the verification code
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="verification-code" className="text-sm font-medium">
+                        Verification Code
+                      </Label>
+                      <Input
+                        id="verification-code"
+                        type="text"
+                        placeholder="Enter verification code"
+                        value={verificationCode}
+                        onChange={(e) => setVerificationCode(e.target.value)}
+                        maxLength={8}
+                        className="w-full font-mono text-center"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="new-password" className="text-sm font-medium">
+                        New Password
+                      </Label>
+                      <Input
+                        id="new-password"
+                        type="password"
+                        placeholder="Enter new password"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        className="w-full"
+                      />
+                      <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                        Must contain 8+ characters with uppercase, lowercase, number, and special character
+                      </p>
+                    </div>
+
+                    {resetError && (
+                      <div className="p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
+                        <p className="text-sm text-red-800 dark:text-red-200">{resetError}</p>
+                      </div>
+                    )}
+
+                    {resetSuccess && (
+                      <div className="p-3 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
+                        <p className="text-sm text-green-800 dark:text-green-200 flex items-center gap-2">
+                          <CheckCircle2 className="h-4 w-4" />
+                          Password updated successfully!
+                        </p>
+                      </div>
+                    )}
+
+                    <Button
+                      onClick={handleResetPassword}
+                      disabled={isSubmittingReset || resetSuccess}
+                      className="w-full"
+                    >
+                      {isSubmittingReset ? (
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                          Updating Password...
+                        </>
+                      ) : resetSuccess ? (
+                        <>
+                          <CheckCircle2 className="h-4 w-4 mr-2" />
+                          Password Updated!
+                        </>
+                      ) : (
+                        "Update Password"
+                      )}
+                    </Button>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
           </div>
         </ScrollArea>
 
         {/* Footer with Save Button */}
         <div className="flex justify-end gap-3 p-6 pt-4 border-t border-zinc-200 dark:border-zinc-700">
-          <Button 
+          <Button
             onClick={() => onOpenChange(false)}
             variant="outline"
             size="sm"
           >
             Cancel
           </Button>
-          <Button 
+          <Button
             onClick={handleSaveProfile}
             disabled={isSaving}
             size="sm"
@@ -318,4 +598,4 @@ export function ProfileModal({ open, onOpenChange }: ProfileModalProps) {
       </DialogContent>
     </Dialog>
   );
-} 
+}

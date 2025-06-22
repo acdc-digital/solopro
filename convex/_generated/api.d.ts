@@ -13,7 +13,9 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
+import type * as CustomPassword from "../CustomPassword.js";
 import type * as ResendOTP from "../ResendOTP.js";
+import type * as ResendOTPPasswordReset from "../ResendOTPPasswordReset.js";
 import type * as admin from "../admin.js";
 import type * as auth from "../auth.js";
 import type * as dailyLogTemplates from "../dailyLogTemplates.js";
@@ -47,7 +49,9 @@ import type * as webhooks from "../webhooks.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  CustomPassword: typeof CustomPassword;
   ResendOTP: typeof ResendOTP;
+  ResendOTPPasswordReset: typeof ResendOTPPasswordReset;
   admin: typeof admin;
   auth: typeof auth;
   dailyLogTemplates: typeof dailyLogTemplates;
