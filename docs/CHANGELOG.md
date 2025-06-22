@@ -5,6 +5,26 @@ All notable changes to SoloPro will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.5] - 2025-01-22
+
+### Added
+- 💰 **OpenAI Cost Tracking System** - Comprehensive monitoring of all AI usage
+- 📊 **Admin Analytics Dashboard** - Real-time cost statistics and trends
+- 🎯 **Feature Breakdown** - Cost analysis by AI function (forecasting, consultation, etc.)
+- ⚡ **Model Performance Metrics** - Efficiency comparison across OpenAI models
+- 🚨 **Cost Alerts** - Warnings when projected monthly spending exceeds thresholds
+- 📈 **Usage Analytics** - Token usage, request counts, and user attribution
+- 🗂️ **Database Schema** - New `openaiUsage` table with optimized indexes
+
+### Enhanced
+- 🔧 **AI Integration** - All AI functions now track costs automatically
+- 🎨 **Admin Interface** - New LLM Usage section with intuitive navigation
+- 📱 **Responsive Design** - Cost dashboard works across all device sizes
+
+### Fixed
+- 🛠️ **Build Issues** - Removed date-fns dependency, fixed production compilation
+- ⚡ **Performance** - Native JavaScript date formatting for better compatibility
+
 ## [1.6.4] - 2025-01-29
 
 ### Added
