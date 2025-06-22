@@ -12,11 +12,11 @@ interface SignInModalProps {
   onAuthSuccess?: () => void;
 }
 
-export function SignInModal({ 
-  isOpen, 
-  onClose, 
+export function SignInModal({
+  isOpen,
+  onClose,
   initialFlow = "signIn",
-  onAuthSuccess 
+  onAuthSuccess
 }: SignInModalProps) {
   const { signIn } = useAuthActions();
   const [step, setStep] = useState<"signIn" | "signUp" | "forgotPassword" | { email: string } | { resetEmail: string }>(initialFlow);
@@ -25,13 +25,19 @@ export function SignInModal({
   const router = useRouter();
 
   // Helper function to provide user-friendly error messages
-  const getErrorMessage = (error: any, currentStep: "signIn" | "signUp" | "forgotPassword" | { email: string } | { resetEmail: string }): {
+  const getErrorMessage = (error: Error | unknown, currentStep: "signIn" | "signUp" | "forgotPassword" | { email: string } | { resetEmail: string }): {
     message: string;
     suggestionAction: string | null;
     showSwitchButton: boolean;
     type: "verification" | "auth" | "general";
   } => {
-    const errorMessage = error?.message || error?.toString() || "An error occurred";
+    const errorMessage = error instanceof Error
+      ? error.message
+      : typeof error === 'object' && error && 'message' in error
+        ? String((error as { message: unknown }).message)
+        : typeof error === 'string'
+          ? error
+          : "An error occurred";
 
     // Check for verification code specific errors
     const verificationCodePatterns = [
@@ -150,7 +156,7 @@ export function SignInModal({
   const handleAuthSuccess = () => {
     // Close the modal
     onClose();
-    
+
     // Call the success callback if provided
     if (onAuthSuccess) {
       onAuthSuccess();
@@ -167,25 +173,25 @@ export function SignInModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Backdrop */}
       <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" onClick={onClose}></div>
-      
+
       {/* Modal */}
       <div className="relative w-full max-w-md bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 md:p-8">
-        <button 
+        <button
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
           aria-label="Close sign in modal"
         >
           <X size={24} />
         </button>
-        
+
         <h2 className="text-2xl font-bold mb-6 text-center">
-          {step === "signIn" ? "Sign in to your account" : 
-           step === "signUp" ? "Create an account" : 
+          {step === "signIn" ? "Sign in to your account" :
+           step === "signUp" ? "Create an account" :
            step === "forgotPassword" ? "Reset your password" :
            typeof step === "object" && "resetEmail" in step ? "Enter new password" :
            "Verify your email"}
         </h2>
-        
+
         {step === "signIn" || step === "signUp" ? (
           <form
             className="space-y-4"
@@ -194,14 +200,15 @@ export function SignInModal({
               setIsSubmitting(true);
               setError(null);
               setErrorInfo(null);
-              
+
               const formData = new FormData(e.target as HTMLFormElement);
               formData.set("flow", step);
-              
+
               void signIn("password", formData)
                 .then((result) => {
-                  // If result is not true, it means we need email verification
-                  if (result !== true) {
+                  // Check if we need email verification
+                  // If result exists and has no redirect, we likely need verification
+                  if (result && !result.redirect) {
                     setStep({ email: formData.get("email") as string });
                   } else {
                     handleAuthSuccess();
@@ -230,7 +237,7 @@ export function SignInModal({
                 required
               />
             </div>
-            
+
             <div>
               <label htmlFor="modal-password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Password
@@ -244,7 +251,7 @@ export function SignInModal({
                 required
               />
             </div>
-            
+
             <button
               className="w-full py-2 px-4 bg-primary hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed text-primary-foreground font-medium rounded-full shadow focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors"
               type="submit"
@@ -262,7 +269,7 @@ export function SignInModal({
                 step === "signIn" ? "Sign in" : "Sign up"
               )}
             </button>
-            
+
             {error && (
               <div className={`p-4 rounded-lg border ${
                 errorInfo?.type === "verification"
@@ -316,7 +323,7 @@ export function SignInModal({
                 </div>
               </div>
             )}
-            
+
             <div className="text-center mt-4 text-sm text-gray-600 dark:text-gray-400">
               {step === "signIn" ? "Don't have an account? " : "Already have an account? "}
               <button
@@ -332,7 +339,7 @@ export function SignInModal({
               </button>
             </div>
           </form>
-        ) : (
+        ) : typeof step === "object" && "email" in step ? (
           // Email verification form
           <form
             key={`verification-${step.email}`}
@@ -342,11 +349,13 @@ export function SignInModal({
               setIsSubmitting(true);
               setError(null);
               setErrorInfo(null);
-              
+
               const formData = new FormData(e.target as HTMLFormElement);
               formData.set("flow", "email-verification");
-              formData.set("email", step.email);
-              
+              if (typeof step === "object" && "email" in step) {
+                formData.set("email", step.email);
+              }
+
               void signIn("password", formData)
                 .then(() => {
                   handleAuthSuccess();
@@ -363,16 +372,19 @@ export function SignInModal({
           >
             <div className="text-center mb-4">
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                We've sent a verification code to <strong>{step.email}</strong>
+                We&apos;ve sent a verification code to{" "}
+                <strong>
+                  {typeof step === "object" && "email" in step ? step.email : ""}
+                </strong>
               </p>
             </div>
-            
+
             <div>
               <label htmlFor="modal-code" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Verification Code
               </label>
               <input
-                key={`code-input-${step.email}`}
+                key={`code-input-${typeof step === "object" && "email" in step ? step.email : ""}`}
                 id="modal-code"
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-center font-mono text-lg tracking-wider placeholder:text-gray-400 placeholder:font-sans"
                 type="text"
@@ -387,7 +399,7 @@ export function SignInModal({
                 required
               />
             </div>
-            
+
             <button
               className="w-full py-2 px-4 bg-primary hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed text-primary-foreground font-medium rounded-full shadow focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors"
               type="submit"
@@ -405,7 +417,7 @@ export function SignInModal({
                 "Verify Email"
               )}
             </button>
-            
+
             {error && (
               <div className={`p-4 rounded-lg border ${
                 errorInfo?.type === "verification"
@@ -459,7 +471,7 @@ export function SignInModal({
                 </div>
               </div>
             )}
-            
+
             <div className="text-center mt-4 text-sm text-gray-600 dark:text-gray-400">
               <button
                 type="button"
@@ -474,8 +486,8 @@ export function SignInModal({
               </button>
             </div>
           </form>
-        )}
-        
+        ) : null}
+
         {(step === "signIn" || step === "signUp") && (
           <div className="mt-6">
             <div className="relative">
@@ -488,7 +500,7 @@ export function SignInModal({
                 </span>
               </div>
             </div>
-            
+
             <div className="mt-6">
               <button
                 onClick={() => {
@@ -515,4 +527,4 @@ export function SignInModal({
       </div>
     </div>
   );
-} 
+}
