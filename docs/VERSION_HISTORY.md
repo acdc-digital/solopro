@@ -1,3 +1,117 @@
+# 💰 SoloPro v1.6.5 - OpenAI Cost Tracking & Analytics
+
+This release introduces comprehensive OpenAI cost tracking and analytics to help monitor and optimize AI spending across all features.
+
+## ✨ **Major New Features**
+
+### 📊 **OpenAI Cost Tracking System**
+
+#### **Real-time Cost Monitoring**
+- ✅ **Automatic tracking** of all OpenAI API usage across features
+- ✅ **Precise cost calculation** based on current OpenAI pricing (stored in cents)
+- ✅ **Token usage analytics** (prompt, completion, and total tokens)
+- ✅ **Feature breakdown** showing costs by AI function type
+
+#### **Comprehensive Admin Dashboard**
+- ✅ **Live usage statistics** with total costs, requests, and tokens
+- ✅ **Cost alerts** warning when projected monthly spending exceeds $100
+- ✅ **Feature analysis** showing top AI features by cost
+- ✅ **Model performance** comparison across different OpenAI models
+- ✅ **Recent activity** log with user attribution and request details
+
+#### **Advanced Analytics**
+- ✅ **Time range filtering** (7, 30, 90-day views)
+- ✅ **Cost trends** over time for budget planning
+- ✅ **User breakdown** showing top spenders
+- ✅ **Efficiency metrics** (cost per token, average request cost)
+
+### 🔧 **Enhanced AI Integration**
+
+#### **Universal Cost Tracking**
+- ✅ **Forecast generation** tracking with context metadata
+- ✅ **Daily consultation** cost monitoring  
+- ✅ **Weekly insights** usage analytics
+- ✅ **Feed generation** cost tracking
+- ✅ **Scoring system** usage monitoring
+
+#### **Production-Ready Infrastructure**
+- ✅ **Schema optimizations** with proper indexing for fast queries
+- ✅ **Error handling** ensuring tracking failures don't break AI features
+- ✅ **Metadata storage** for debugging and optimization
+- ✅ **Database cleanup** functions for data retention management
+
+### 🎯 **User Experience Improvements**
+
+#### **Admin Interface**
+- ✅ **New LLM Usage section** in admin dashboard
+- ✅ **Intuitive navigation** with clear cost breakdown cards
+- ✅ **Visual indicators** for high usage and cost alerts
+- ✅ **Responsive design** working across all device sizes
+
+## 📦 Downloads
+
+**Choose the right version for your platform:**
+
+| Platform | Download | Size | Compatibility |
+|----------|----------|------|---------------|
+| **Windows** | [Soloist.Pro-Setup-1.6.5.exe](https://github.com/acdc-digital/solopro/releases/download/v1.6.5/Soloist.Pro-Setup-1.6.5.exe) | ~74MB | Windows 10 or later (64-bit) |
+| **macOS Intel** | [Soloist.Pro-1.6.5-x64.dmg](https://github.com/acdc-digital/solopro/releases/download/v1.6.5/Soloist.Pro-1.6.5-x64.dmg) | ~99MB | Intel-based Macs, macOS 10.15+ |
+| **macOS Apple Silicon** | [Soloist.Pro-1.6.5-arm64.dmg](https://github.com/acdc-digital/solopro/releases/download/v1.6.5/Soloist.Pro-1.6.5-arm64.dmg) | ~92MB | M1/M2/M3 Macs, macOS 11+ |
+| **Linux AppImage** | [Soloist.Pro-1.6.5.AppImage](https://github.com/acdc-digital/solopro/releases/download/v1.6.5/Soloist.Pro-1.6.5.AppImage) | ~102MB | Most Linux distributions |
+| **Ubuntu/Debian** | [solopro-electron-1.6.5.deb](https://github.com/acdc-digital/solopro/releases/download/v1.6.5/solopro-electron-1.6.5.deb) | ~71MB | Ubuntu, Debian, and derivatives |
+
+> **Platform Detection:**
+> - **Windows**: Download the `.exe` installer
+> - **Mac (2020+)**: Download Apple Silicon `.dmg`
+> - **Mac (2019-)**: Download Intel `.dmg`  
+> - **Linux**: Try AppImage first, or use `.deb` for Ubuntu/Debian
+
+## 🔄 Upgrading from v1.6.4
+
+This is a seamless upgrade with new cost tracking capabilities:
+- Your data and settings are preserved
+- New OpenAI usage analytics automatically begin tracking
+- Admin users gain access to comprehensive cost monitoring
+- No breaking changes to existing functionality
+
+## 🚀 **Technical Highlights**
+
+### **Database Enhancements**
+- New `openaiUsage` table with optimized indexes
+- Cost storage in cents for precision
+- User attribution with authId consistency
+- Metadata support for debugging and optimization
+
+### **Backend Functions**
+- `trackUsage` - Record API usage with automatic cost calculation
+- `getUsageStats` - Comprehensive analytics for admin dashboard
+- `getRecentUsage` - Activity log with user information
+- `getCostTrends` - Time-based analytics for budget planning
+- `getTopFeatures` - Feature ranking by cost and efficiency
+
+### **Build Improvements**
+- Fixed date-fns dependency issues for production builds
+- Native JavaScript date formatting for better compatibility
+- Optimized webpack compilation
+
+## 🎯 **What's Next?**
+
+This release establishes comprehensive AI cost monitoring for SoloPro. Future updates will expand on these analytics with:
+
+### Upcoming Features
+- Cost budgets and spending limits
+- Automated cost optimization recommendations
+- Advanced caching for reduced API calls
+- Cost prediction models
+
+---
+
+**Full Changelog**: [v1.6.4...v1.6.5](https://github.com/acdc-digital/solopro/compare/v1.6.4...v1.6.5)
+
+**Built with ❤️ by [ACDC.digital](https://acdc.digital)**
+
+---
+
 # 🔐 SoloPro v1.6.4 - Enhanced Security & Authentication
 
 This release significantly strengthens user security with comprehensive authentication enhancements, email verification, and robust password management.

@@ -27,21 +27,21 @@ export function DownloadModal({ children }: DownloadModalProps) {
       icon: <Monitor className="w-6 h-6" />,
       description: 'Windows 10 or later (64-bit)',
       buttonText: 'Download for Windows',
-              url: 'https://github.com/acdc-digital/solopro/releases/download/v1.6.4/Soloist.Pro-Setup-1.6.4.exe',
+              url: 'https://github.com/acdc-digital/solopro/releases/download/v1.6.5/Soloist.Pro-Setup-1.6.5.exe',
     },
     {
       os: 'macOS',
       icon: <Apple className="w-6 h-6" />,
       description: 'macOS 10.15 or later',
       buttonText: 'Download for Mac',
-              url: 'https://github.com/acdc-digital/solopro/releases/download/v1.6.4/Soloist.Pro-1.6.4-x64.dmg',
+              url: 'https://github.com/acdc-digital/solopro/releases/download/v1.6.5/Soloist.Pro-1.6.5-x64.dmg',
     },
     {
       os: 'Linux',
       icon: <Package className="w-6 h-6" />,
       description: 'AppImage for most distributions',
       buttonText: 'Download for Linux',
-              url: 'https://github.com/acdc-digital/solopro/releases/download/v1.6.4/Soloist.Pro-1.6.4.AppImage',
+              url: 'https://github.com/acdc-digital/solopro/releases/download/v1.6.5/Soloist.Pro-1.6.5.AppImage',
     },
   ];
 
@@ -57,7 +57,7 @@ export function DownloadModal({ children }: DownloadModalProps) {
             <DialogTitle className="text-2xl font-bold">Download Soloist</DialogTitle>
           </div>
                   <Badge variant="outline" className="w-fit mb-2 border-emerald-500 text-emerald-600 font-medium">
-                      Version 1.6.4 • Desktop Application
+                      Version 1.6.5 • Desktop Application
         </Badge>
         </DialogHeader>
         
