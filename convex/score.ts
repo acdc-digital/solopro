@@ -76,6 +76,23 @@ export const scoreDailyLog = action({
       finalScore = 50; // default to 50 if invalid
     }
 
+    // Track OpenAI usage for cost monitoring
+    if (completion.usage) {
+      try {
+        await ctx.runMutation(api.openai.trackUsage, {
+          userId,
+          feature: "scoring",
+          model: config.model,
+          promptTokens: completion.usage.prompt_tokens || 0,
+          completionTokens: completion.usage.completion_tokens || 0,
+          metadata: { date, score: finalScore }
+        });
+      } catch (trackingError) {
+        console.error("[scoreDailyLog] Failed to track usage:", trackingError);
+        // Don't fail the main operation if tracking fails
+      }
+    }
+
     // 5) Update the daily log's score via a mutation
     await ctx.runMutation(api.score.updateLogScore, {
       logId: dailyLog._id,

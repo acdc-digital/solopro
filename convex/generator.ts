@@ -4,6 +4,7 @@ import { internalAction, action } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { Id } from "./_generated/dataModel";
 import { FORECASTING_PROMPT, DAILY_CONSULTATION_PROMPT, WEEKLY_INSIGHTS_PROMPT, AI_CONFIG, getColorCategory } from "./prompts";
+import { api } from "./_generated/api";
 
 // Define the expected structure from OpenAI response choices
 interface OpenAIChatCompletion {
@@ -12,6 +13,11 @@ interface OpenAIChatCompletion {
       content?: string;
     };
   }>;
+  usage?: {
+    prompt_tokens: number;
+    completion_tokens: number;
+    total_tokens: number;
+  };
 }
 
 // Define types for our forecast
@@ -104,6 +110,23 @@ Target forecast dates: ${targetDates.join(', ')}`;
       
       if (!content) {
         throw new Error("Empty response from OpenAI");
+      }
+
+      // Track OpenAI usage for cost monitoring
+      if (completion.usage) {
+        try {
+          await ctx.runMutation(api.openai.trackUsage, {
+            userId,
+            feature: "forecast_generation",
+            model: config.model,
+            promptTokens: completion.usage.prompt_tokens || 0,
+            completionTokens: completion.usage.completion_tokens || 0,
+            metadata: { targetDates, logsCount: pastLogs.length }
+          });
+        } catch (trackingError) {
+          console.error("[generateForecastWithAI] Failed to track usage:", trackingError);
+          // Don't fail the main operation if tracking fails
+        }
       }
 
       // Parse the JSON response
@@ -299,6 +322,23 @@ ${contextString}`;
         return { success: false, error: "AI service returned an empty response." };
       }
 
+      // Track OpenAI usage for cost monitoring
+      if (completion.usage) {
+        try {
+          await ctx.runMutation(api.openai.trackUsage, {
+            userId,
+            feature: "daily_consultation",
+            model: config.model,
+            promptTokens: completion.usage.prompt_tokens || 0,
+            completionTokens: completion.usage.completion_tokens || 0,
+            metadata: { selectedDate: selectedDayData.date, contextDays: sevenDayContextData.length }
+          });
+        } catch (trackingError) {
+          console.error("[generateDailyConsultation] Failed to track usage:", trackingError);
+          // Don't fail the main operation if tracking fails
+        }
+      }
+
       console.log("[Action generateDailyConsultation] Received consultation via fetch:", consultationText);
       return { success: true, consultationText };
 
@@ -393,6 +433,23 @@ ${formattedSevenDayData}`;
       if (jsonResponse.choices && jsonResponse.choices[0] && jsonResponse.choices[0].message && jsonResponse.choices[0].message.content) {
         const content = jsonResponse.choices[0].message.content;
         console.log("[Action generateWeeklyInsights] Raw AI response content:", content);
+        
+        // Track OpenAI usage for cost monitoring
+        if (jsonResponse.usage) {
+          try {
+            await ctx.runMutation(api.openai.trackUsage, {
+              userId,
+              feature: "weekly_insights",
+              model: config.model,
+              promptTokens: jsonResponse.usage.prompt_tokens || 0,
+              completionTokens: jsonResponse.usage.completion_tokens || 0,
+              metadata: { contextDays: sevenDayContextData.length }
+            });
+          } catch (trackingError) {
+            console.error("[generateWeeklyInsights] Failed to track usage:", trackingError);
+            // Don't fail the main operation if tracking fails
+          }
+        }
         
         try {
           const parsedContent = JSON.parse(content);
