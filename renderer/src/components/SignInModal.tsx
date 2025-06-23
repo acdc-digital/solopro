@@ -12,6 +12,44 @@ interface SignInModalProps {
   onAuthSuccess?: () => void;
 }
 
+// Password Requirements Component
+const PasswordRequirements = ({ password, show }: { password: string; show: boolean }) => {
+  const requirements = [
+    { text: "At least 8 characters long", test: (pwd: string) => pwd.length >= 8 },
+    { text: "Contains at least one number", test: (pwd: string) => /\d/.test(pwd) },
+    { text: "Contains at least one lowercase letter", test: (pwd: string) => /[a-z]/.test(pwd) },
+    { text: "Contains at least one uppercase letter", test: (pwd: string) => /[A-Z]/.test(pwd) },
+    { text: "Contains at least one special character", test: (pwd: string) => /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(pwd) },
+  ];
+
+  if (!show) return null;
+
+  return (
+    <div className="mt-2 p-3 bg-gray-50 dark:bg-gray-700 rounded-md border">
+      <p className="text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">Password requirements:</p>
+      {requirements.map((req, index) => {
+        const isValid = req.test(password);
+        return (
+          <div key={index} className="flex items-center text-xs mb-1">
+            {isValid ? (
+              <svg className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+              </svg>
+            ) : (
+              <svg className="w-4 h-4 text-red-500 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+              </svg>
+            )}
+            <span className={isValid ? "text-green-700 dark:text-green-300" : "text-red-700 dark:text-red-300"}>
+              {req.text}
+            </span>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
 export function SignInModal({ 
   isOpen, 
   onClose, 
@@ -22,6 +60,8 @@ export function SignInModal({
   const [step, setStep] = useState<"signIn" | "signUp" | "forgotPassword" | { email: string } | { resetEmail: string }>(initialFlow);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPasswordRequirements, setShowPasswordRequirements] = useState(false);
+  const [password, setPassword] = useState("");
   const router = useRouter();
 
   // Debug: Check if auth context is working
@@ -61,9 +101,23 @@ export function SignInModal({
     message: string;
     suggestionAction: string | null;
     showSwitchButton: boolean;
-    type: "verification" | "auth" | "general";
+    type: "verification" | "auth" | "general" | "password";
   } => {
     const errorMessage = error?.message || error?.toString() || "An error occurred";
+
+    // Check for password validation errors
+    if (errorMessage.includes("Password validation failed:")) {
+      // Extract the specific requirements from the error message
+      const requirementsPart = errorMessage.split("Password validation failed: ")[1];
+      if (requirementsPart) {
+        return {
+          message: "Password does not meet requirements. Please check the requirements above and try again.",
+          suggestionAction: null,
+          showSwitchButton: false,
+          type: "password"
+        };
+      }
+    }
 
     // Check for verification code specific errors
     const verificationCodePatterns = [
@@ -88,15 +142,41 @@ export function SignInModal({
       };
     }
     
-    // Check for common "user not found" patterns
+    // Check for wrong password patterns (account exists but password is incorrect)
+    const wrongPasswordPatterns = [
+      'invalid credentials',
+      'authentication failed',
+      'incorrect password',
+      'wrong password',
+      'password incorrect',
+      'login failed',
+      'sign in failed',
+      'signin failed',
+      'invalidsecret', // Convex Auth specific error for wrong password
+      'invalid secret'
+    ];
+    
+    const isWrongPassword = wrongPasswordPatterns.some(pattern => 
+      errorMessage.toLowerCase().includes(pattern)
+    );
+    
+    if (isWrongPassword && currentStep === "signIn") {
+      return {
+        message: "Incorrect password. Please check your password and try again.",
+        suggestionAction: null,
+        showSwitchButton: false,
+        type: "auth"
+      };
+    }
+    
+    // Check for specific "user not found" patterns (account doesn't exist)
     const userNotFoundPatterns = [
       'user not found',
       'user does not exist',
-      'invalid credentials',
       'account not found',
       'no user found',
-      'authentication failed',
-      'server error' // Common when user doesn't exist
+      'no account found',
+      'email not registered'
     ];
     
     const isUserNotFound = userNotFoundPatterns.some(pattern => 
@@ -112,12 +192,21 @@ export function SignInModal({
       };
     }
     
-    // Check for "user already exists" patterns
+    // Improved "user already exists" patterns - more comprehensive
     const userExistsPatterns = [
       'user already exists',
       'account already exists',
       'email already registered',
-      'user already registered'
+      'user already registered',
+      'email is already in use',
+      'already has an account',
+      'duplicate user',
+      'user with this email exists',
+      'account with this email',
+      'email already taken',
+      'user creation failed', // Sometimes Convex returns generic errors for existing users
+      'constraint violation', // Database constraint errors
+      'unique constraint'
     ];
     
     const isUserExists = userExistsPatterns.some(pattern => 
@@ -126,7 +215,17 @@ export function SignInModal({
     
     if (isUserExists && currentStep === "signUp") {
       return {
-        message: "Account already exists. Would you like to sign in instead?",
+        message: "An account with this email already exists. Would you like to sign in instead?",
+        suggestionAction: "switch-to-signin",
+        showSwitchButton: true,
+        type: "auth"
+      };
+    }
+
+    // If it's a ConvexError during sign up that we haven't caught, it might be a duplicate account
+    if (currentStep === "signUp" && (errorMessage.includes("ConvexError") || errorMessage.includes("Error:"))) {
+      return {
+        message: "This email may already be registered. Would you like to try signing in instead?",
         suggestionAction: "switch-to-signin",
         showSwitchButton: true,
         type: "auth"
@@ -147,7 +246,7 @@ export function SignInModal({
     message: string;
     suggestionAction: string | null;
     showSwitchButton: boolean;
-    type: "verification" | "auth" | "general";
+    type: "verification" | "auth" | "general" | "password";
   } | null>(null);
 
   // Handle successful authentication
@@ -250,12 +349,13 @@ export function SignInModal({
                 type="password"
                 name="password"
                 placeholder={step === "signUp" ? "Create a password" : "Enter your password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                onFocus={() => step === "signUp" && setShowPasswordRequirements(true)}
                 required
               />
               {step === "signUp" && (
-                <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                  Must contain 8+ characters with uppercase, lowercase, number, and special character
-                </p>
+                <PasswordRequirements password={password} show={showPasswordRequirements} />
               )}
             </div>
             
@@ -280,16 +380,23 @@ export function SignInModal({
             {error && (
               <div className={`p-4 rounded-lg border ${
                 errorInfo?.type === "verification" 
-                  ? "bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800" 
+                  ? "bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800"
+                  : errorInfo?.type === "password"
+                  ? "bg-orange-50 dark:bg-orange-900/20 border-orange-200 dark:border-orange-800"
                   : "bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800"
               }`}>
                 <div className="flex items-start">
                   <div className={`flex-shrink-0 mr-3 mt-0.5 ${
-                    errorInfo?.type === "verification" ? "text-amber-600" : "text-red-600"
+                    errorInfo?.type === "verification" ? "text-amber-600" : 
+                    errorInfo?.type === "password" ? "text-orange-600" : "text-red-600"
                   }`}>
                     {errorInfo?.type === "verification" ? (
                       <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                      </svg>
+                    ) : errorInfo?.type === "password" ? (
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M18 8a6 6 0 01-7.743 5.743L10 14l-1 1-1 1H6v2H2v-4l4.257-4.257A6 6 0 1118 8zm-6-4a1 1 0 100 2 2 2 0 012 2 1 1 0 102 0 4 4 0 00-4-4z" clipRule="evenodd" />
                       </svg>
                     ) : (
                       <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -298,9 +405,11 @@ export function SignInModal({
                     )}
                   </div>
                   <div className="flex-1">
-                    <p className={`text-sm font-medium ${
+                    <p className={`text-sm font-medium whitespace-pre-line ${
                       errorInfo?.type === "verification" 
-                        ? "text-amber-800 dark:text-amber-200" 
+                        ? "text-amber-800 dark:text-amber-200"
+                        : errorInfo?.type === "password"
+                        ? "text-orange-800 dark:text-orange-200"
                         : "text-red-800 dark:text-red-300"
                     }`}>
                       {error}

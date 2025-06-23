@@ -28,6 +28,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 // Import Stores & Modals
 import { SettingsDialog } from "@/app/settings/SettingsDialog";
 import { HelpModal } from "@/components/HelpModal";
+import { ProfileModal } from "@/components/ProfileModal";
 import { useFeedStore } from "@/store/feedStore";
 import { useConvexUser } from "@/hooks/useConvexUser";
 import { useQuery } from "convex/react";
@@ -35,6 +36,16 @@ import { api } from "@/convex/_generated/api";
 import { useBrowserEnvironment } from "@/utils/environment";
 // Import SignOut component
 import { SignOutWithGitHub } from "@/auth/oauth/SignOutWithGitHub";
+// Import auth actions for sign out
+import { useAuthActions } from "@convex-dev/auth/react";
+// Import dropdown menu components
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface SidebarProps {
   className?: string;
@@ -68,9 +79,6 @@ export function Sidebar({ className }: SidebarProps) {
   // Use actual subscription status for both browser and desktop mode
   const effectiveSubscription = hasActiveSubscription;
   
-  // State for accordion
-  const [accountMenuOpen, setAccountMenuOpen] = React.useState(false);
-  
   const { 
     collapsed, 
     toggleCollapsed, 
@@ -85,6 +93,15 @@ export function Sidebar({ className }: SidebarProps) {
   
   // State to control the HelpModal
   const [isHelpOpen, setIsHelpOpen] = React.useState(false);
+
+  // State to control the ProfileModal
+  const [isProfileModalOpen, setIsProfileModalOpen] = React.useState(false);
+
+  // State to track dropdown open state for chevron direction
+  const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
+
+  // Auth actions for sign out
+  const { signOut } = useAuthActions();
   
   // Handlers
   const handleGoToSettings = () => {
@@ -173,13 +190,17 @@ export function Sidebar({ className }: SidebarProps) {
   };
   
   const handleProfileClick = () => {
-    console.log("Profile clicked");
-    setAccountMenuOpen(false);
+    setIsProfileModalOpen(true);
+    console.log("Profile modal opened");
   };
   
   const handleSettingsClick = () => {
     handleGoToSettings();
-    setAccountMenuOpen(false);
+  };
+
+  const handleSignOut = () => {
+    signOut();
+    console.log("User signed out");
   };
   
   // Items that show only if expanded
@@ -204,7 +225,6 @@ export function Sidebar({ className }: SidebarProps) {
     }] : []),
     { id: "calendar", label: "Calendar",       icon: Calendar,        action: handleCalendar, active: currentView === "dashboard", disabled: false },
     { id: "new-log",  label: "Create New Log", icon: Plus,            action: handleCreateNewLog, active: false, disabled: false },
-    { id: "settings", label: "Settings",       icon: Settings,        action: handleGoToSettings, disabled: false },
     { id: "help",     label: "Help",           icon: CircleHelpIcon,  action: handleGoTohelp, disabled: false },
   ];
   
@@ -315,10 +335,127 @@ export function Sidebar({ className }: SidebarProps) {
             </div>
           )}
         </div>
-        {/* BOTTOM SECTION */}
+
+        {/* FOOTER SECTION */}
         <div className="relative">
+          {!collapsed && isAuthenticated && effectiveUser && (
+            <div className="border-t border-zinc-300/30 dark:border-zinc-700/30 p-3 mb-5">
+              <DropdownMenu onOpenChange={setIsDropdownOpen}>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="footer"
+                    className="w-full h-auto p-2 justify-start"
+                  >
+                    <div className="flex items-center gap-3 w-full">
+                      <Avatar className="h-8 w-8 flex-shrink-0">
+                        <AvatarImage src={effectiveUser.image || undefined} alt={effectiveUser.name || "User"} />
+                        <AvatarFallback className="text-xs bg-zinc-200 dark:bg-zinc-700 text-zinc-700 dark:text-zinc-300">
+                          {userInitials}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex flex-col items-start min-w-0 flex-1 hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50 rounded-lg transition-colors pt-2 pb-2 pr-2">
+                        <span className="text-sm font-medium text-zinc-900 dark:text-zinc-100 truncate text-left px-2 py-0">
+                          {effectiveUser.name || "User"}
+                        </span>
+                        <span className="text-xs text-zinc-500 dark:text-zinc-400 truncate text-left px-2 py-0">
+                          {effectiveUser.email || ""}
+                        </span>
+                      </div>
+                      {isDropdownOpen ? (
+                        <ChevronDown className="h-4 w-4 text-zinc-500 dark:text-zinc-400 flex-shrink-0" />
+                      ) : (
+                        <ChevronUp className="h-4 w-4 text-zinc-500 dark:text-zinc-400 flex-shrink-0" />
+                      )}
+                    </div>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56 mb-2 ml-2" align="start" side="top">
+                  <div className="flex flex-col space-y-1 p-2">
+                    <p className="text-sm font-medium leading-none">{effectiveUser.name || "User"}</p>
+                    <p className="text-xs leading-none text-muted-foreground">
+                      {effectiveUser.email || "user@example.com"}
+                    </p>
+                  </div>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={handleProfileClick}
+                    className="cursor-pointer flex items-center gap-2"
+                  >
+                    <User className="h-4 w-4" />
+                    <span>Profile</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={handleSettingsClick}
+                    className="cursor-pointer flex items-center gap-2"
+                  >
+                    <Settings className="h-4 w-4" />
+                    <span>Settings</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={handleSignOut}
+                    className="cursor-pointer flex items-center gap-2 text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+                  >
+                    <ArrowRightToLine className="h-4 w-4" />
+                    <span>Sign out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          )}
+          {collapsed && isAuthenticated && effectiveUser && (
+            <div className="border-t border-zinc-300/30 dark:border-zinc-700/30 p-2 flex justify-center">
+              <DropdownMenu onOpenChange={setIsDropdownOpen}>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="footer"
+                    size="icon"
+                    className="h-10 w-10 rounded-full mb-6"
+                  >
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={effectiveUser.image || undefined} alt={effectiveUser.name || "User"} />
+                      <AvatarFallback className="text-xs bg-zinc-200 dark:bg-zinc-700 text-zinc-700 dark:text-zinc-300">
+                        {userInitials}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56 mb-2 ml-12" align="start" side="top">
+                  <div className="flex flex-col space-y-1 p-2">
+                    <p className="text-sm font-medium leading-none">{effectiveUser.name || "User"}</p>
+                    <p className="text-xs leading-none text-muted-foreground">
+                      {effectiveUser.email || "user@example.com"}
+                    </p>
+                  </div>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={handleProfileClick}
+                    className="cursor-pointer flex items-center gap-2"
+                  >
+                    <User className="h-4 w-4" />
+                    <span>Profile</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={handleSettingsClick}
+                    className="cursor-pointer flex items-center gap-2"
+                  >
+                    <Settings className="h-4 w-4" />
+                    <span>Settings</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={handleSignOut}
+                    className="cursor-pointer flex items-center gap-2 text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+                  >
+                    <ArrowRightToLine className="h-4 w-4" />
+                    <span>Sign out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          )}
           {/* Additional padding at bottom */}
-          <div className="h-10"></div>
+          <div className="h-4"></div>
         </div>
       </div>
       {/* Our SettingsDialog component, controlled by local state */}
@@ -326,6 +463,9 @@ export function Sidebar({ className }: SidebarProps) {
       
       {/* Our HelpModal component, controlled by local state */}
       <HelpModal open={isHelpOpen} onOpenChange={setIsHelpOpen} />
+
+      {/* Our ProfileModal component, controlled by local state */}
+      <ProfileModal open={isProfileModalOpen} onOpenChange={setIsProfileModalOpen} />
     </div>
   );
 }

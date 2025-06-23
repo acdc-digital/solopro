@@ -151,11 +151,14 @@ const fieldTypeOptions = [
 ];
 
 export default function Templates({ onClose, onSaveTemplate, currentTemplate, templates }: TemplatesProps) {
+  // Check if this is a new template creation (no currentTemplate provided)
+  const isCreatingNew = !currentTemplate;
+
   const [fields, setFields] = useState<TemplateField[]>(
-    currentTemplate?.fields || defaultFields
+    currentTemplate?.fields || [] // Empty array for new templates, existing fields for editing
   );
   const [templateName, setTemplateName] = useState(
-    currentTemplate?.name || "Daily Log Template"
+    currentTemplate?.name || "" // Empty string for new templates, existing name for editing
   );
   const [editingCategoryId, setEditingCategoryId] = useState<string | null>(null);
   const [categoryNames, setCategoryNames] = useState<Record<string, string>>({});
@@ -207,20 +210,31 @@ export default function Templates({ onClose, onSaveTemplate, currentTemplate, te
       ...prev,
       [oldName]: newName
     }));
-    
+
     // Update all fields with this category
-    setFields(prev => prev.map(field => 
-      field.category === oldName 
+    setFields(prev => prev.map(field =>
+      field.category === oldName
         ? { ...field, category: newName }
         : field
     ));
   };
 
   const handleSave = () => {
+    // Validation for new templates
+    if (!templateName.trim()) {
+      alert("Please enter a template name before saving.");
+      return;
+    }
+
+    if (fields.length === 0) {
+      alert("Please add at least one field to your template before saving.");
+      return;
+    }
+
     // Check if this is a new template name or updating existing
     const existingTemplateWithSameName = templates?.find(t => t.name === templateName && t.id !== currentTemplate?.id);
     const isNewTemplate = !currentTemplate || currentTemplate.name !== templateName;
-    
+
     const templateToSave: Template = {
       id: isNewTemplate ? `template_${Date.now()}` : (currentTemplate?.id || `template_${Date.now()}`),
       name: templateName,
@@ -240,8 +254,8 @@ export default function Templates({ onClose, onSaveTemplate, currentTemplate, te
   };
 
   // Simple Switch component using checkbox styling
-  const Switch = ({ checked, onCheckedChange, id }: { 
-    checked: boolean; 
+  const Switch = ({ checked, onCheckedChange, id }: {
+    checked: boolean;
     onCheckedChange: (checked: boolean) => void;
     id?: string;
   }) => (
@@ -258,8 +272,8 @@ export default function Templates({ onClose, onSaveTemplate, currentTemplate, te
         htmlFor={id}
         className={cn(
           "block h-4 w-7 rounded-full border transition-colors cursor-pointer",
-          checked 
-            ? "bg-emerald-600 border-emerald-600" 
+          checked
+            ? "bg-emerald-600 border-emerald-600"
             : "bg-zinc-200 dark:bg-zinc-700 border-zinc-300 dark:border-zinc-600"
         )}
       >
@@ -400,8 +414,11 @@ export default function Templates({ onClose, onSaveTemplate, currentTemplate, te
             id="template-name"
             value={templateName}
             onChange={(e) => setTemplateName(e.target.value)}
-            placeholder="Enter template name"
-            className="text-sm focus:ring-0"
+            placeholder={isCreatingNew ? "Template name here..." : "Enter template name"}
+            className={cn(
+              "text-sm focus:ring-0",
+              isCreatingNew && !templateName && "text-zinc-400 dark:text-zinc-500"
+            )}
           />
         </div>
       </div>
@@ -409,87 +426,112 @@ export default function Templates({ onClose, onSaveTemplate, currentTemplate, te
       {/* Fields Editor */}
       <ScrollArea className="flex-1 px-4 py-4">
         <div className="space-y-4">
-          {Object.entries(groupedFields).map(([category, categoryFields]) => (
-            <div key={category} className="space-y-2">
-              {/* Editable Category Header */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  {editingCategoryId === category ? (
-                    <div className="flex items-center gap-2">
-                      <Input
-                        value={categoryNames[category] || category}
-                        onChange={(e) => handleCategoryNameChange(category, e.target.value)}
-                        className="h-7 text-sm font-medium border-zinc-300 dark:border-zinc-600 focus:ring-0"
-                        onBlur={() => setEditingCategoryId(null)}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter') {
-                            setEditingCategoryId(null);
-                          }
-                        }}
-                        autoFocus
-                      />
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setEditingCategoryId(null)}
-                        className="h-6 w-6 p-0"
-                      >
-                        <Check className="h-3 w-3 text-emerald-600" />
-                      </Button>
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-2">
-                      <h3 className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                        {categoryNames[category] || category}
-                        <span className="text-xs text-zinc-500 ml-2">
-                          ({categoryFields.length} field{categoryFields.length !== 1 ? 's' : ''})
-                        </span>
-                      </h3>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setEditingCategoryId(category)}
-                        className="h-6 w-6 p-0"
-                      >
-                        <Edit3 className="h-3 w-3" />
-                      </Button>
-                    </div>
-                  )}
-                </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleAddField(category)}
-                  className="h-7 text-xs focus:ring-0"
-                >
-                  <Plus className="h-3 w-3 mr-1" />
-                  Add Field
-                </Button>
+          {fields.length === 0 ? (
+            /* Empty state for new templates */
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <div className="mb-6 p-4 rounded-full bg-emerald-50 dark:bg-emerald-900/20">
+                <Plus className="h-8 w-8 text-emerald-600 dark:text-emerald-500" />
               </div>
-
-              {/* Fields */}
-              <div className="space-y-2">
-                {categoryFields.map((field) => (
-                  <FieldRow key={field.id} field={field} />
-                ))}
-              </div>
-            </div>
-          ))}
-          
-          {/* Add new category */}
-          <Card className="border-dashed border-2 border-zinc-300 dark:border-zinc-700">
-            <CardContent className="p-3">
+              <h3 className="text-lg font-medium text-zinc-900 dark:text-zinc-100 mb-2">
+                Start Building Your Template
+              </h3>
+              <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-6 max-w-sm">
+                Create custom fields to capture exactly what matters in your daily logs. Add rating scales, text areas, checkboxes, and more.
+              </p>
               <Button
-                variant="ghost"
-                size="sm"
                 onClick={() => handleAddField("Custom Fields")}
-                className="w-full h-10 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 focus:ring-0"
+                className="bg-emerald-600 hover:bg-emerald-700 text-white focus:ring-0"
               >
                 <Plus className="h-4 w-4 mr-2" />
-                Add New Custom Field
+                Add Your First Field
               </Button>
-            </CardContent>
-          </Card>
+            </div>
+          ) : (
+            /* Existing fields display */
+            <>
+              {Object.entries(groupedFields).map(([category, categoryFields]) => (
+                <div key={category} className="space-y-2">
+                  {/* Editable Category Header */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      {editingCategoryId === category ? (
+                        <div className="flex items-center gap-2">
+                          <Input
+                            value={categoryNames[category] || category}
+                            onChange={(e) => handleCategoryNameChange(category, e.target.value)}
+                            className="h-7 text-sm font-medium border-zinc-300 dark:border-zinc-600 focus:ring-0"
+                            onBlur={() => setEditingCategoryId(null)}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') {
+                                setEditingCategoryId(null);
+                              }
+                            }}
+                            autoFocus
+                          />
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setEditingCategoryId(null)}
+                            className="h-6 w-6 p-0"
+                          >
+                            <Check className="h-3 w-3 text-emerald-600" />
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-2">
+                          <h3 className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                            {categoryNames[category] || category}
+                            <span className="text-xs text-zinc-500 ml-2">
+                              ({categoryFields.length} field{categoryFields.length !== 1 ? 's' : ''})
+                            </span>
+                          </h3>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setEditingCategoryId(category)}
+                            className="h-6 w-6 p-0"
+                          >
+                            <Edit3 className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleAddField(category)}
+                      className="h-7 text-xs focus:ring-0"
+                    >
+                      <Plus className="h-3 w-3 mr-1" />
+                      Add Field
+                    </Button>
+                  </div>
+
+                  {/* Fields */}
+                  <div className="space-y-2">
+                    {categoryFields.map((field) => (
+                      <FieldRow key={field.id} field={field} />
+                    ))}
+                  </div>
+                </div>
+              ))}
+
+              {/* Add new category - only show when there are existing fields */}
+              <Card className="border-dashed border-2 border-zinc-300 dark:border-zinc-700">
+                <CardContent className="p-3">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleAddField("Custom Fields")}
+                    className="w-full h-10 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 focus:ring-0"
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add New Custom Field
+                  </Button>
+                </CardContent>
+              </Card>
+            </>
+          )}
         </div>
       </ScrollArea>
 
