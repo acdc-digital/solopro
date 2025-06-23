@@ -3,7 +3,7 @@
 
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { parseISO, format } from "date-fns";
@@ -168,13 +168,15 @@ export default function Dashboard() {
   );
 
   // Templates state
-  const [showTemplates, setShowTemplates] = React.useState(false);
+  const [showTemplates, setShowTemplates] = useState(false);
+  const [isCreatingNewTemplate, setIsCreatingNewTemplate] = useState(false);
   
   // Templates hook
   const {
     activeTemplate,
     saveTemplate,
     templates,
+    setActiveTemplate,
   } = useTemplates({ userId: convexUserId || undefined });
 
   /* ───────────────────────────────────────────── */
@@ -381,8 +383,11 @@ export default function Dashboard() {
             <span className="font-semibold">Daily Log Form</span>
             <TemplateSelector
               userId={convexUserId || undefined}
-              onCustomize={() => setShowTemplates(!showTemplates)}
-              showTemplates={showTemplates}
+              onCreateNew={() => {
+                // Open templates in creation mode (without currentTemplate)
+                setIsCreatingNewTemplate(true);
+                setShowTemplates(true);
+              }}
             />
           </div>
         );
@@ -397,8 +402,11 @@ export default function Dashboard() {
           </span>
           <TemplateSelector
             userId={convexUserId || undefined}
-            onCustomize={() => setShowTemplates(!showTemplates)}
-            showTemplates={showTemplates}
+            onCreateNew={() => {
+              // Open templates in creation mode (without currentTemplate)
+              setIsCreatingNewTemplate(true);
+              setShowTemplates(true);
+            }}
           />
         </div>
       );
@@ -499,12 +507,16 @@ export default function Dashboard() {
             >
               {showTemplates ? (
                 <Templates
-                  onClose={() => setShowTemplates(false)}
+                  onClose={() => {
+                    setShowTemplates(false);
+                    setIsCreatingNewTemplate(false);
+                  }}
                   onSaveTemplate={(template: Template) => {
                     saveTemplate(template, true); // Set as active when saved
                     setShowTemplates(false);
+                    setIsCreatingNewTemplate(false);
                   }}
-                  currentTemplate={activeTemplate || undefined}
+                  currentTemplate={isCreatingNewTemplate ? undefined : (activeTemplate || undefined)}
                   templates={templates}
                 />
               ) : activeTab === "log" ? (
@@ -512,6 +524,11 @@ export default function Dashboard() {
                   <DailyLogForm
                     date={selectedDate}
                     hasActiveSubscription={hasActiveSubscription}
+                    showTemplates={showTemplates}
+                    onCustomize={() => {
+                      setIsCreatingNewTemplate(false);
+                      setShowTemplates(!showTemplates);
+                    }}
                     onClose={isBrowser === true ? () => setActiveTab("feed") : () => {
                       toggleSidebar();
                       updateDatePreserveTab(null);

@@ -14,7 +14,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { AlertCircle, Loader2, Zap, X, Check, Plus, Minus, Settings } from "lucide-react";
+import {
+  AlertCircle,
+  Loader2,
+  Settings,
+  Settings2,
+  X,
+  Zap,
+} from "lucide-react";
 import { useFeedStore } from "@/store/feedStore";
 import { addDays, format, subDays } from "date-fns";
 import { useConvex } from "convex/react";
@@ -41,9 +48,11 @@ interface DailyLogFormData {
 }
 
 interface DailyLogFormProps {
-  onClose: () => void; // still used for cancel button
-  date?: string;
-  hasActiveSubscription?: boolean; // Add subscription status prop
+  onClose: () => void;
+  date: string;
+  hasActiveSubscription?: boolean;
+  showTemplates?: boolean;
+  onCustomize?: () => void;
 }
 
 /**
@@ -51,7 +60,7 @@ interface DailyLogFormProps {
  * Server logic lives in `convex/dailyLogs.ts`.
  * Now supports customizable templates (managed from main page)!
  */
-export default function DailyLogForm({ onClose, date, hasActiveSubscription }: DailyLogFormProps) {
+export default function DailyLogForm({ onClose, date, hasActiveSubscription, showTemplates, onCustomize }: DailyLogFormProps) {
   console.log("DailyLogForm mounted", { date, hasActiveSubscription });
   const { isAuthenticated, isLoading: userLoading, userId } = useConvexUser();
   const isBrowser = useBrowserEnvironment();
@@ -70,7 +79,7 @@ export default function DailyLogForm({ onClose, date, hasActiveSubscription }: D
     api.userAttributes.getAttributes,
     userId ? { userId } : "skip"
   );
-  
+
   const userInstructions = useQuery(
     api.randomizer.getInstructions,
     userId ? { userId } : "skip"
@@ -230,14 +239,14 @@ export default function DailyLogForm({ onClose, date, hasActiveSubscription }: D
       if (!generateRandomLog) {
         throw new Error("Random generation feature is not available.");
       }
-      const generatedData = await generateRandomLog({ 
+      const generatedData = await generateRandomLog({
         date: effectiveDate,
         userId
       });
 
       if (generatedData && typeof generatedData === 'object') {
         const validatedData: Partial<DailyLogFormData> = {};
-        
+
         // Validate generated data against current form fields
         stableFormFields.forEach(field => {
           if (!field || !field.id) return;
@@ -267,7 +276,7 @@ export default function DailyLogForm({ onClose, date, hasActiveSubscription }: D
 
         // Reset the form with the generated data
         reset(validatedData);
-        
+
         // AUTO-SUBMIT: After generating and filling the form, submit it automatically
         console.log("Auto-submitting the generated log data");
         await onSubmit(validatedData as DailyLogFormData);
@@ -294,36 +303,58 @@ export default function DailyLogForm({ onClose, date, hasActiveSubscription }: D
 
     switch (field.type) {
       case "slider":
+        const sliderValue = watchValue || field.defaultValue || 1;
+        const max = field.max || 10;
+        const percentage = ((sliderValue - (field.min || 1)) / (max - (field.min || 1))) * 100;
+
         return (
-          <div key={field.id} className="space-y-1">
+          <div key={field.id} className="space-y-3">
             <div className="flex items-center justify-between">
-              <Label htmlFor={field.id} className="text-sm">
+              <Label htmlFor={field.id} className="text-sm text-zinc-600">
                 {field.label}
                 {field.required && <span className="text-red-500 ml-1">*</span>}
               </Label>
-              <span className="text-xs text-zinc-600 dark:text-zinc-400">
-                {watchValue}/{field.max || 10}
-              </span>
+              <div className="text-sm font-medium text-zinc-900">
+                {sliderValue}/{max}
+              </div>
             </div>
-            <Input
-              id={field.id}
-              type="range"
-              min={field.min || 1}
-              max={field.max || 10}
-              step={field.step || 1}
-              className="accent-sky-600"
-              {...register(field.id, {
-                required: field.required,
-                valueAsNumber: true,
-              })}
-            />
+
+            <div className="relative">
+              {/* Clean solid blue track */}
+              <div className="relative h-2 bg-zinc-200 rounded-full overflow-hidden">
+                <div
+                  className="absolute top-0 left-0 h-full bg-blue-500 rounded-full transition-all duration-200"
+                  style={{ width: `${percentage}%` }}
+                />
+              </div>
+
+              {/* Hidden native slider for functionality */}
+              <Input
+                id={field.id}
+                type="range"
+                min={field.min || 1}
+                max={max}
+                step={field.step || 1}
+                className="absolute top-0 left-0 w-full h-2 opacity-0 cursor-pointer"
+                {...register(field.id, {
+                  required: field.required,
+                  valueAsNumber: true,
+                })}
+              />
+
+              {/* Clean white thumb */}
+              <div
+                className="absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-white border border-zinc-200 rounded-full shadow-sm transition-all duration-200 pointer-events-none"
+                style={{ left: `calc(${percentage}% - 8px)` }}
+              />
+            </div>
           </div>
         );
 
       case "number":
         return (
-          <div key={field.id} className="flex items-center space-x-4">
-            <Label htmlFor={field.id} className="w-28 text-sm">
+          <div key={field.id} className="space-y-2">
+            <Label htmlFor={field.id} className="text-sm text-zinc-600">
               {field.label}
               {field.required && <span className="text-red-500 ml-1">*</span>}
             </Label>
@@ -334,7 +365,7 @@ export default function DailyLogForm({ onClose, date, hasActiveSubscription }: D
               min={field.min}
               max={field.max}
               placeholder={field.placeholder}
-              className="max-w-[120px]"
+              className="bg-white border border-zinc-200 rounded-md px-3 py-2 focus:border-blue-400 focus:ring-1 focus:ring-blue-400 transition-colors duration-200"
               {...register(field.id, {
                 required: field.required,
                 valueAsNumber: true,
@@ -345,14 +376,14 @@ export default function DailyLogForm({ onClose, date, hasActiveSubscription }: D
 
       case "checkbox":
         return (
-          <div key={field.id} className="flex items-center space-x-2">
+          <div key={field.id} className="flex items-center space-x-3">
             <input
               id={field.id}
               type="checkbox"
-              className="rounded bg-zinc-200 dark:bg-zinc-800 border-zinc-400 dark:border-zinc-700 focus:ring-emerald-500 text-emerald-600"
+              className="w-4 h-4 border border-zinc-200 rounded bg-white checked:bg-blue-500 checked:border-blue-500 focus:ring-1 focus:ring-blue-400 transition-colors duration-200"
               {...register(field.id)}
             />
-            <Label htmlFor={field.id} className="text-sm">
+            <Label htmlFor={field.id} className="text-sm text-zinc-600 cursor-pointer">
               {field.label}
               {field.required && <span className="text-red-500 ml-1">*</span>}
             </Label>
@@ -361,15 +392,16 @@ export default function DailyLogForm({ onClose, date, hasActiveSubscription }: D
 
       case "textarea":
         return (
-          <div key={field.id} className="space-y-1.5">
-            <Label htmlFor={field.id} className="text-sm">
+          <div key={field.id} className="space-y-2">
+            <Label htmlFor={field.id} className="text-sm text-zinc-600">
               {field.label}
               {field.required && <span className="text-red-500 ml-1">*</span>}
             </Label>
             <Textarea
               id={field.id}
-              placeholder={field.placeholder}
-              className="w-full bg-zinc-50 dark:bg-zinc-800 border dark:border-zinc-700 placeholder:text-zinc-400 focus:ring-emerald-500"
+              placeholder={field.placeholder || `Enter ${field.label.toLowerCase()}...`}
+              rows={3}
+              className="bg-white border border-zinc-200 rounded-md px-3 py-2 focus:border-blue-400 focus:ring-1 focus:ring-blue-400 resize-none transition-colors duration-200 placeholder:text-zinc-400"
               {...register(field.id, { required: field.required })}
             />
           </div>
@@ -377,16 +409,16 @@ export default function DailyLogForm({ onClose, date, hasActiveSubscription }: D
 
       case "text":
         return (
-          <div key={field.id} className="space-y-1.5">
-            <Label htmlFor={field.id} className="text-sm">
+          <div key={field.id} className="space-y-2">
+            <Label htmlFor={field.id} className="text-sm text-zinc-600">
               {field.label}
               {field.required && <span className="text-red-500 ml-1">*</span>}
             </Label>
             <Input
               id={field.id}
               type="text"
-              placeholder={field.placeholder}
-              className="w-full bg-zinc-50 dark:bg-zinc-800 border dark:border-zinc-700 placeholder:text-zinc-400 focus:ring-emerald-500"
+              placeholder={field.placeholder || `Enter ${field.label.toLowerCase()}...`}
+              className="bg-white border border-zinc-200 rounded-md px-3 py-2 focus:border-blue-400 focus:ring-1 focus:ring-blue-400 transition-colors duration-200 placeholder:text-zinc-400"
               {...register(field.id, { required: field.required })}
             />
           </div>
@@ -407,7 +439,7 @@ export default function DailyLogForm({ onClose, date, hasActiveSubscription }: D
 
   const categoryNames: Record<string, string> = {
     ratings: "Rate Your Day",
-    wellness: "Basic Wellness", 
+    wellness: "Basic Wellness",
     reflections: "Quick Reflections",
     custom: "Custom Fields",
     other: "Other Fields",
@@ -418,98 +450,92 @@ export default function DailyLogForm({ onClose, date, hasActiveSubscription }: D
   /* ────────────────────────────────────────── */
   return (
     <div className="flex flex-col h-full bg-white dark:bg-zinc-900 text-zinc-800 dark:text-zinc-100 overflow-x-hidden">
-        {/* Generator Button - Show for subscribers (both browser and desktop) */}
-        {hasActiveSubscription && (
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div className="mt-3 ml-3 mr-3">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={handleGenerateRandom}
-                    disabled={isSubmitting || isGenerating || !settingsComplete}
-                    className="w-full text-sm bg-zinc-50 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 focus:ring-2 focus:ring-emerald-500 focus:ring-offset-1 dark:focus:ring-offset-zinc-900 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {isGenerating ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Generating...
-                      </>
-                    ) : (
-                      <>
-                        <Zap className="mr-2 h-4 w-4" />
-                        Generator
-                      </>
-                    )}
-                  </Button>
-                </div>
-              </TooltipTrigger>
-              {!settingsComplete && (
-                <TooltipContent side="bottom" className="max-w-sm">
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <Settings className="h-4 w-4" />
-                      <span className="font-medium">Complete Settings Required</span>
-                    </div>
-                    <p className="text-sm">To use the generator, please complete these settings:</p>
-                    <ul className="text-sm list-disc list-inside space-y-1">
-                      {missingSettings.map((setting) => (
-                        <li key={setting}>{setting}</li>
-                      ))}
-                    </ul>
-                    <p className="text-xs text-muted-foreground mt-2">
-                      Access settings via the sidebar → Settings button
-                    </p>
-                  </div>
-                </TooltipContent>
+      {/* Clean Header with buttons */}
+      {(hasActiveSubscription || onCustomize) && (
+        <div className="px-4 py-1.5 flex justify-end gap-2">
+          {/* Customize Button */}
+          {onCustomize && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={onCustomize}
+              className="bg-white hover:bg-zinc-200 text-zinc-800 text-xs px-3 py-1 mt-1 mb-1 rounded-lg border border-zinc-600 h-auto transition-colors"
+            >
+              {showTemplates ? (
+                <X className="h-3 w-3 mr-1" fill="currentColor" />
+              ) : (
+                <Settings2 className="h-3 w-3 mr-1" fill="currentColor" />
               )}
-            </Tooltip>
-          </TooltipProvider>
-        )}
+              Customize
+            </Button>
+          )}
 
-      {/* Dynamic Form Fields based on Template */}
+          {/* Generator Button */}
+          {hasActiveSubscription && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={handleGenerateRandom}
+              disabled={isSubmitting || isGenerating || !settingsComplete}
+              className="bg-white hover:bg-zinc-200 text-zinc-800 text-xs px-3 py-1 mt-1 mb-0 rounded-lg border border-zinc-600 h-auto transition-colors disabled:opacity-50"
+            >
+              {isGenerating ? (
+                <Loader2 className="h-3 w-3 animate-spin mr-1" />
+              ) : (
+                <Zap className="h-3 w-3 mr-1" fill="currentColor" />
+              )}
+              Generator
+            </Button>
+          )}
+        </div>
+      )}
+
+      {/* Clean Form Fields with Subtle Cards */}
       <div className="relative flex-1 overflow-hidden">
-        <ScrollArea className="h-full overflow-x-hidden px-3 py-2 pt-2 pl-4 pr-4">
+        <ScrollArea className="h-full overflow-x-hidden px-4 py-0">
           <form
             id="daily-log-form"
             onSubmit={handleSubmit(onSubmit)}
-            className="space-y-4 w-full max-w-full pt-2"
+            className="space-y-6 w-full max-w-full mt-6 mb-6"
           >
             {Object.entries(groupedFields).map(([category, fields]) => (
-              <div key={category} className="space-y-3">
-                <h3 className="font-medium text-sm text-zinc-700 dark:text-zinc-300">
-                  {categoryNames[category] || category}
-                  {category === "ratings" && fields.length > 0 && (
-                    <span className="text-xs ml-2">(1‑{fields[0]?.max || 10})</span>
-                  )}
-                </h3>
-                <div className="space-y-3">
+              <div key={category} className="bg-zinc-50/50 border border-zinc-100 rounded-md p-4 shadow-sm hover:shadow-md transition-shadow duration-200">
+                <div className="mb-4">
+                  <h3 className="text-xs uppercase tracking-wider text-zinc-400 mb-3">
+                    {categoryNames[category] || category}
+                  </h3>
+                </div>
+                <div className="space-y-4">
                   {fields.map(renderTemplateField)}
                 </div>
               </div>
             ))}
           </form>
         </ScrollArea>
-        
-        {/* Fade effect at bottom */}
-        <div className="absolute bottom-0 left-0 right-0 h-6 bg-gradient-to-t from-white dark:from-zinc-900 to-transparent pointer-events-none" />
+
+        {/* Top fade effect */}
+        <div className="absolute top-0 left-0 right-0 h-6 bg-gradient-to-b from-white to-transparent pointer-events-none" />
+
+        {/* Bottom fade effect */}
+        <div className="absolute bottom-0 left-0 right-0 h-6 bg-gradient-to-t from-white to-transparent pointer-events-none" />
       </div>
 
-      {/* Footer */}
-      <div className="sticky bottom-0 w-full border-t border-zinc-100 dark:border-zinc-700 bg-white dark:bg-zinc-900 p-2 pb-2 pt-2">
+      {/* Clean Footer matching existing style */}
+      <div className="sticky bottom-0 w-full border-t border-zinc-200 bg-white px-4 py-3">
         {error && (
-          <div className="flex items-center space-x-2 mb-2 text-red-600">
+          <div className="flex items-center space-x-2 mb-3 p-3 bg-red-50 border border-red-200 rounded-md text-red-700">
             <AlertCircle size={16} />
-            <span>{error}</span>
+            <span className="text-sm">{error}</span>
           </div>
         )}
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center justify-between">
           <Button
             type="submit"
             form="daily-log-form"
             disabled={isSubmitting || isGenerating}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white text-sm ml-2"
+            className="bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-md transition-colors duration-200"
           >
             {isSubmitting ? (
               <>
@@ -524,10 +550,10 @@ export default function DailyLogForm({ onClose, date, hasActiveSubscription }: D
           </Button>
           <Button
             type="button"
-            variant="outline"
+            variant="ghost"
             onClick={onClose}
             disabled={isSubmitting || isGenerating}
-            className="border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-sm"
+            className="text-zinc-500 hover:text-zinc-700"
           >
             Cancel
           </Button>

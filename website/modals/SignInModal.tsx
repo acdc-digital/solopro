@@ -12,6 +12,44 @@ interface SignInModalProps {
   onAuthSuccess?: () => void;
 }
 
+// Password Requirements Component
+const PasswordRequirements = ({ password, show }: { password: string; show: boolean }) => {
+  const requirements = [
+    { text: "At least 8 characters long", test: (pwd: string) => pwd.length >= 8 },
+    { text: "Contains at least one number", test: (pwd: string) => /\d/.test(pwd) },
+    { text: "Contains at least one lowercase letter", test: (pwd: string) => /[a-z]/.test(pwd) },
+    { text: "Contains at least one uppercase letter", test: (pwd: string) => /[A-Z]/.test(pwd) },
+    { text: "Contains at least one special character", test: (pwd: string) => /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(pwd) },
+  ];
+
+  if (!show) return null;
+
+  return (
+    <div className="mt-2 p-3 bg-gray-50 dark:bg-gray-700 rounded-md border">
+      <p className="text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">Password requirements:</p>
+      {requirements.map((req, index) => {
+        const isValid = req.test(password);
+        return (
+          <div key={index} className="flex items-center text-xs mb-1">
+            {isValid ? (
+              <svg className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+              </svg>
+            ) : (
+              <svg className="w-4 h-4 text-red-500 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+              </svg>
+            )}
+            <span className={isValid ? "text-green-700 dark:text-green-300" : "text-red-700 dark:text-red-300"}>
+              {req.text}
+            </span>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
 export function SignInModal({
   isOpen,
   onClose,
@@ -22,6 +60,8 @@ export function SignInModal({
   const [step, setStep] = useState<"signIn" | "signUp" | "forgotPassword" | { email: string } | { resetEmail: string }>(initialFlow);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPasswordRequirements, setShowPasswordRequirements] = useState(false);
+  const [password, setPassword] = useState("");
   const router = useRouter();
 
   // Helper function to provide user-friendly error messages
@@ -29,7 +69,7 @@ export function SignInModal({
     message: string;
     suggestionAction: string | null;
     showSwitchButton: boolean;
-    type: "verification" | "auth" | "general";
+    type: "verification" | "auth" | "general" | "password";
   } => {
     const errorMessage = error instanceof Error
       ? error.message
@@ -38,6 +78,16 @@ export function SignInModal({
         : typeof error === 'string'
           ? error
           : "An error occurred";
+
+    // Check for password validation errors
+    if (errorMessage.includes("Password validation failed:")) {
+      return {
+        message: "Password does not meet requirements. Please check the requirements above and try again.",
+        suggestionAction: null,
+        showSwitchButton: false,
+        type: "password" as const
+      };
+    }
 
     // Check for verification code specific errors
     const verificationCodePatterns = [
@@ -62,15 +112,41 @@ export function SignInModal({
       };
     }
 
-    // Check for common "user not found" patterns
+    // Check for wrong password patterns (account exists but password is incorrect)
+    const wrongPasswordPatterns = [
+      'invalid credentials',
+      'authentication failed',
+      'incorrect password',
+      'wrong password',
+      'password incorrect',
+      'login failed',
+      'sign in failed',
+      'signin failed',
+      'invalidsecret', // Convex Auth specific error for wrong password
+      'invalid secret'
+    ];
+
+    const isWrongPassword = wrongPasswordPatterns.some(pattern =>
+      errorMessage.toLowerCase().includes(pattern)
+    );
+
+    if (isWrongPassword && currentStep === "signIn") {
+      return {
+        message: "Incorrect password. Please check your password and try again.",
+        suggestionAction: null,
+        showSwitchButton: false,
+        type: "auth" as const
+      };
+    }
+
+    // Check for specific "user not found" patterns (account doesn't exist)
     const userNotFoundPatterns = [
       'user not found',
       'user does not exist',
-      'invalid credentials',
       'account not found',
       'no user found',
-      'authentication failed',
-      'server error' // Common when user doesn't exist
+      'no account found',
+      'email not registered'
     ];
 
     const isUserNotFound = userNotFoundPatterns.some(pattern =>
@@ -86,12 +162,21 @@ export function SignInModal({
       };
     }
 
-    // Check for "user already exists" patterns
+    // Improved "user already exists" patterns - more comprehensive
     const userExistsPatterns = [
       'user already exists',
       'account already exists',
       'email already registered',
-      'user already registered'
+      'user already registered',
+      'email is already in use',
+      'already has an account',
+      'duplicate user',
+      'user with this email exists',
+      'account with this email',
+      'email already taken',
+      'user creation failed', // Sometimes Convex returns generic errors for existing users
+      'constraint violation', // Database constraint errors
+      'unique constraint'
     ];
 
     const isUserExists = userExistsPatterns.some(pattern =>
@@ -100,7 +185,17 @@ export function SignInModal({
 
     if (isUserExists && currentStep === "signUp") {
       return {
-        message: "Account already exists. Would you like to sign in instead?",
+        message: "An account with this email already exists. Would you like to sign in instead?",
+        suggestionAction: "switch-to-signin",
+        showSwitchButton: true,
+        type: "auth" as const
+      };
+    }
+
+    // If it's a ConvexError during sign up that we haven't caught, it might be a duplicate account
+    if (currentStep === "signUp" && (errorMessage.includes("ConvexError") || errorMessage.includes("Error:"))) {
+      return {
+        message: "This email may already be registered. Would you like to try signing in instead?",
         suggestionAction: "switch-to-signin",
         showSwitchButton: true,
         type: "auth" as const
@@ -121,7 +216,7 @@ export function SignInModal({
     message: string;
     suggestionAction: string | null;
     showSwitchButton: boolean;
-    type: "verification" | "auth" | "general";
+    type: "verification" | "auth" | "general" | "password";
   } | null>(null);
 
   // Reset step when modal opens and check localStorage for step preference
@@ -248,8 +343,14 @@ export function SignInModal({
                 type="password"
                 name="password"
                 placeholder={step === "signUp" ? "Create a password" : "Enter your password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                onFocus={() => step === "signUp" && setShowPasswordRequirements(true)}
                 required
               />
+              {step === "signUp" && (
+                <PasswordRequirements password={password} show={showPasswordRequirements} />
+              )}
             </div>
 
             <button
