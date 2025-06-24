@@ -340,9 +340,10 @@ export function SignInModal({
               void signIn("password", formData)
                 .then((result) => {
                   console.log("🔴 Password sign-in result:", result);
-                  // If result exists but no redirect, it means we need email verification
-                  if (result && !result.redirect) {
-                    console.log("🔴 Email verification required");
+                  // Only trigger email verification for sign-up, not sign-in
+                  // For sign-in, existing users should already be verified
+                  if (step === "signUp" && result && !result.redirect) {
+                    console.log("🔴 Email verification required for new signup");
                     setStep({ email: formData.get("email") as string });
                   } else {
                     console.log("🔴 Password sign-in successful");
