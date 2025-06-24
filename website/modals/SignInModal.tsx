@@ -337,9 +337,9 @@ export function SignInModal({
 
               void signIn("password", formData)
                 .then((result) => {
-                  // Check if we need email verification
-                  // If result exists and has no redirect, we likely need verification
-                  if (result && !result.redirect) {
+                  // Only trigger email verification for sign-up, not sign-in
+                  // For sign-in, existing users should already be verified
+                  if (step === "signUp" && result && !result.redirect) {
                     setStep({ email: formData.get("email") as string });
                   } else {
                     handleAuthSuccess();
