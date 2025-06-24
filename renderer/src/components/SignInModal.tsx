@@ -50,11 +50,11 @@ const PasswordRequirements = ({ password, show }: { password: string; show: bool
   );
 };
 
-export function SignInModal({ 
-  isOpen, 
-  onClose, 
+export function SignInModal({
+  isOpen,
+  onClose,
   initialFlow = "signIn",
-  onAuthSuccess 
+  onAuthSuccess
 }: SignInModalProps) {
   const { signIn } = useAuthActions();
   const [step, setStep] = useState<"signIn" | "signUp" | "forgotPassword" | { email: string } | { resetEmail: string }>(initialFlow);
@@ -64,14 +64,202 @@ export function SignInModal({
   const [password, setPassword] = useState("");
   const router = useRouter();
 
-  // Debug: Check if auth context is working
-  console.log("🔴 SignInModal: useAuthActions result:", { signIn });
-  console.log("🔴 SignInModal: signIn type:", typeof signIn);
+  // Helper function to provide user-friendly error messages
+  const getErrorMessage = (error: Error | unknown, currentStep: "signIn" | "signUp" | "forgotPassword" | { email: string } | { resetEmail: string }): {
+    message: string;
+    suggestionAction: string | null;
+    showSwitchButton: boolean;
+    type: "verification" | "auth" | "general" | "password";
+  } => {
+    // Enhanced error message extraction to handle various error formats
+    let errorMessage: string;
+
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    } else if (typeof error === 'string') {
+      errorMessage = error;
+    } else if (typeof error === 'object' && error && 'message' in error) {
+      errorMessage = String((error as { message: unknown }).message);
+    } else if (typeof error === 'object' && error && 'toString' in error) {
+      errorMessage = String(error);
+    } else {
+      errorMessage = "An error occurred";
+    }
+
+    // Log the actual error for debugging
+    console.log("🔴 SignInModal error:", { error, errorMessage, currentStep });
+
+    // Check for password validation errors
+    if (errorMessage.includes("Password validation failed:")) {
+      return {
+        message: "Password does not meet requirements. Please check the requirements above and try again.",
+        suggestionAction: null,
+        showSwitchButton: false,
+        type: "password" as const
+      };
+    }
+
+    // Check for verification code specific errors
+    const verificationCodePatterns = [
+      'could not verify code',
+      'invalid verification code',
+      'verification code expired',
+      'verification failed',
+      'code is invalid',
+      'incorrect code'
+    ];
+
+    const isVerificationError = verificationCodePatterns.some(pattern =>
+      errorMessage.toLowerCase().includes(pattern)
+    );
+
+    if (isVerificationError && typeof currentStep === "object") {
+      return {
+        message: "The verification code is incorrect or has expired. Please check your email and try again.",
+        suggestionAction: "resend-code",
+        showSwitchButton: false,
+        type: "verification" as const
+      };
+    }
+
+    // Check for wrong password patterns (account exists but password is incorrect)
+    const wrongPasswordPatterns = [
+      'invalid credentials',
+      'authentication failed',
+      'incorrect password',
+      'wrong password',
+      'password incorrect',
+      'login failed',
+      'sign in failed',
+      'signin failed',
+      'invalidsecret', // Convex Auth specific error for wrong password
+      'invalid secret',
+      'InvalidSecret', // Case-sensitive version
+      'INVALID_SECRET', // Uppercase version
+      'invalid_secret', // Underscore version
+      'auth failed',
+      'password mismatch',
+      'credentials invalid'
+    ];
+
+    // Check for generic Convex server errors during sign-in (likely wrong password)
+    const isGenericServerError = errorMessage.includes('[Request ID:') && errorMessage.includes('Server Error');
+    if (isGenericServerError && currentStep === "signIn") {
+      return {
+        message: "Incorrect password. Please check your password and try again.",
+        suggestionAction: null,
+        showSwitchButton: false,
+        type: "auth" as const
+      };
+    }
+
+    // Check for generic Convex server errors during sign-up (likely account already exists)
+    if (isGenericServerError && currentStep === "signUp") {
+      return {
+        message: "An account with this email already exists. Would you like to sign in instead?",
+        suggestionAction: "switch-to-signin",
+        showSwitchButton: true,
+        type: "auth" as const
+      };
+    }
+
+    const isWrongPassword = wrongPasswordPatterns.some(pattern =>
+      errorMessage.toLowerCase().includes(pattern)
+    );
+
+    if (isWrongPassword && currentStep === "signIn") {
+      return {
+        message: "Incorrect password. Please check your password and try again.",
+        suggestionAction: null,
+        showSwitchButton: false,
+        type: "auth" as const
+      };
+    }
+
+    // Check for specific "user not found" patterns (account doesn't exist)
+    const userNotFoundPatterns = [
+      'user not found',
+      'user does not exist',
+      'account not found',
+      'no user found',
+      'no account found',
+      'email not registered'
+    ];
+
+    const isUserNotFound = userNotFoundPatterns.some(pattern =>
+      errorMessage.toLowerCase().includes(pattern)
+    );
+
+    if (isUserNotFound && currentStep === "signIn") {
+      return {
+        message: "Account not found. Would you like to create an account instead?",
+        suggestionAction: "switch-to-signup",
+        showSwitchButton: true,
+        type: "auth" as const
+      };
+    }
+
+    // Improved "user already exists" patterns - more comprehensive
+    const userExistsPatterns = [
+      'user already exists',
+      'account already exists',
+      'email already registered',
+      'user already registered',
+      'email is already in use',
+      'already has an account',
+      'duplicate user',
+      'user with this email exists',
+      'account with this email',
+      'email already taken',
+      'user creation failed', // Sometimes Convex returns generic errors for existing users
+      'constraint violation', // Database constraint errors
+      'unique constraint'
+    ];
+
+    const isUserExists = userExistsPatterns.some(pattern =>
+      errorMessage.toLowerCase().includes(pattern)
+    );
+
+    if (isUserExists && currentStep === "signUp") {
+      return {
+        message: "An account with this email already exists. Would you like to sign in instead?",
+        suggestionAction: "switch-to-signin",
+        showSwitchButton: true,
+        type: "auth" as const
+      };
+    }
+
+    // If it's a ConvexError during sign up that we haven't caught, it might be a duplicate account
+    if (currentStep === "signUp" && (errorMessage.includes("ConvexError") || errorMessage.includes("Error:"))) {
+      return {
+        message: "This email may already be registered. Would you like to try signing in instead?",
+        suggestionAction: "switch-to-signin",
+        showSwitchButton: true,
+        type: "auth" as const
+      };
+    }
+
+    // Default error message
+    return {
+      message: errorMessage,
+      suggestionAction: null,
+      showSwitchButton: false,
+      type: "general" as const
+    };
+  };
+
+  // State for enhanced error handling
+  const [errorInfo, setErrorInfo] = useState<{
+    message: string;
+    suggestionAction: string | null;
+    showSwitchButton: boolean;
+    type: "verification" | "auth" | "general" | "password";
+  } | null>(null);
 
   // Reset step when modal opens and check localStorage for step preference
   useEffect(() => {
     if (isOpen) {
-      // First check localStorage for preferred step
+      // First check localStorage for preferred step (this matches the behavior of the old sign-in page)
       const savedStep = localStorage.getItem('authStep');
       if (savedStep === 'signUp') {
         setStep('signUp');
@@ -96,164 +284,11 @@ export function SignInModal({
     }
   }, [step]);
 
-  // Helper function to provide user-friendly error messages
-  const getErrorMessage = (error: any, currentStep: "signIn" | "signUp" | "forgotPassword" | { email: string } | { resetEmail: string }): {
-    message: string;
-    suggestionAction: string | null;
-    showSwitchButton: boolean;
-    type: "verification" | "auth" | "general" | "password";
-  } => {
-    const errorMessage = error?.message || error?.toString() || "An error occurred";
-
-    // Check for password validation errors
-    if (errorMessage.includes("Password validation failed:")) {
-      // Extract the specific requirements from the error message
-      const requirementsPart = errorMessage.split("Password validation failed: ")[1];
-      if (requirementsPart) {
-        return {
-          message: "Password does not meet requirements. Please check the requirements above and try again.",
-          suggestionAction: null,
-          showSwitchButton: false,
-          type: "password"
-        };
-      }
-    }
-
-    // Check for verification code specific errors
-    const verificationCodePatterns = [
-      'could not verify code',
-      'invalid verification code',
-      'verification code expired',
-      'verification failed',
-      'code is invalid',
-      'incorrect code'
-    ];
-    
-    const isVerificationError = verificationCodePatterns.some(pattern => 
-      errorMessage.toLowerCase().includes(pattern)
-    );
-    
-    if (isVerificationError && typeof currentStep === "object") {
-      return {
-        message: "The verification code is incorrect or has expired. Please check your email and try again.",
-        suggestionAction: "resend-code",
-        showSwitchButton: false,
-        type: "verification"
-      };
-    }
-    
-    // Check for wrong password patterns (account exists but password is incorrect)
-    const wrongPasswordPatterns = [
-      'invalid credentials',
-      'authentication failed',
-      'incorrect password',
-      'wrong password',
-      'password incorrect',
-      'login failed',
-      'sign in failed',
-      'signin failed',
-      'invalidsecret', // Convex Auth specific error for wrong password
-      'invalid secret'
-    ];
-    
-    const isWrongPassword = wrongPasswordPatterns.some(pattern => 
-      errorMessage.toLowerCase().includes(pattern)
-    );
-    
-    if (isWrongPassword && currentStep === "signIn") {
-      return {
-        message: "Incorrect password. Please check your password and try again.",
-        suggestionAction: null,
-        showSwitchButton: false,
-        type: "auth"
-      };
-    }
-    
-    // Check for specific "user not found" patterns (account doesn't exist)
-    const userNotFoundPatterns = [
-      'user not found',
-      'user does not exist',
-      'account not found',
-      'no user found',
-      'no account found',
-      'email not registered'
-    ];
-    
-    const isUserNotFound = userNotFoundPatterns.some(pattern => 
-      errorMessage.toLowerCase().includes(pattern)
-    );
-    
-    if (isUserNotFound && currentStep === "signIn") {
-      return {
-        message: "Account not found. Would you like to create an account instead?",
-        suggestionAction: "switch-to-signup",
-        showSwitchButton: true,
-        type: "auth"
-      };
-    }
-    
-    // Improved "user already exists" patterns - more comprehensive
-    const userExistsPatterns = [
-      'user already exists',
-      'account already exists',
-      'email already registered',
-      'user already registered',
-      'email is already in use',
-      'already has an account',
-      'duplicate user',
-      'user with this email exists',
-      'account with this email',
-      'email already taken',
-      'user creation failed', // Sometimes Convex returns generic errors for existing users
-      'constraint violation', // Database constraint errors
-      'unique constraint'
-    ];
-    
-    const isUserExists = userExistsPatterns.some(pattern => 
-      errorMessage.toLowerCase().includes(pattern)
-    );
-    
-    if (isUserExists && currentStep === "signUp") {
-      return {
-        message: "An account with this email already exists. Would you like to sign in instead?",
-        suggestionAction: "switch-to-signin",
-        showSwitchButton: true,
-        type: "auth"
-      };
-    }
-
-    // If it's a ConvexError during sign up that we haven't caught, it might be a duplicate account
-    if (currentStep === "signUp" && (errorMessage.includes("ConvexError") || errorMessage.includes("Error:"))) {
-      return {
-        message: "This email may already be registered. Would you like to try signing in instead?",
-        suggestionAction: "switch-to-signin",
-        showSwitchButton: true,
-        type: "auth"
-      };
-    }
-    
-    // Default error message
-    return {
-      message: errorMessage,
-      suggestionAction: null,
-      showSwitchButton: false,
-      type: "general"
-    };
-  };
-
-  // State for enhanced error handling
-  const [errorInfo, setErrorInfo] = useState<{
-    message: string;
-    suggestionAction: string | null;
-    showSwitchButton: boolean;
-    type: "verification" | "auth" | "general" | "password";
-  } | null>(null);
-
   // Handle successful authentication
   const handleAuthSuccess = () => {
     // Close the modal
     onClose();
-    
+
     // Call the success callback if provided
     if (onAuthSuccess) {
       onAuthSuccess();
@@ -270,25 +305,25 @@ export function SignInModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Backdrop */}
       <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" onClick={onClose}></div>
-      
+
       {/* Modal */}
       <div className="relative w-full max-w-md bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 md:p-8">
-        <button 
+        <button
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
           aria-label="Close sign in modal"
         >
           <X size={24} />
         </button>
-        
+
         <h2 className="text-2xl font-bold mb-6 text-center">
-          {step === "signIn" ? "Sign in to your account" : 
-           step === "signUp" ? "Create an account" : 
+          {step === "signIn" ? "Sign in to your account" :
+           step === "signUp" ? "Create an account" :
            step === "forgotPassword" ? "Reset your password" :
            typeof step === "object" && "resetEmail" in step ? "Enter new password" :
            "Verify your email"}
         </h2>
-        
+
         {step === "signIn" || step === "signUp" ? (
           <form
             className="space-y-4"
@@ -297,11 +332,11 @@ export function SignInModal({
               setIsSubmitting(true);
               setError(null);
               setErrorInfo(null);
-              
+
               console.log("🔴 Form submitted for step:", step);
               const formData = new FormData(e.target as HTMLFormElement);
               formData.set("flow", step);
-              
+
               void signIn("password", formData)
                 .then((result) => {
                   console.log("🔴 Password sign-in result:", result);
@@ -338,7 +373,7 @@ export function SignInModal({
                 required
               />
             </div>
-            
+
             <div>
               <label htmlFor="modal-password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Password
@@ -358,7 +393,7 @@ export function SignInModal({
                 <PasswordRequirements password={password} show={showPasswordRequirements} />
               )}
             </div>
-            
+
             <button
               className="w-full py-2 px-4 bg-primary hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed text-primary-foreground font-medium rounded-full shadow focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors"
               type="submit"
@@ -376,10 +411,10 @@ export function SignInModal({
                 step === "signIn" ? "Sign in" : "Sign up"
               )}
             </button>
-            
+
             {error && (
               <div className={`p-4 rounded-lg border ${
-                errorInfo?.type === "verification" 
+                errorInfo?.type === "verification"
                   ? "bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800"
                   : errorInfo?.type === "password"
                   ? "bg-orange-50 dark:bg-orange-900/20 border-orange-200 dark:border-orange-800"
@@ -387,7 +422,7 @@ export function SignInModal({
               }`}>
                 <div className="flex items-start">
                   <div className={`flex-shrink-0 mr-3 mt-0.5 ${
-                    errorInfo?.type === "verification" ? "text-amber-600" : 
+                    errorInfo?.type === "verification" ? "text-amber-600" :
                     errorInfo?.type === "password" ? "text-orange-600" : "text-red-600"
                   }`}>
                     {errorInfo?.type === "verification" ? (
@@ -406,7 +441,7 @@ export function SignInModal({
                   </div>
                   <div className="flex-1">
                     <p className={`text-sm font-medium whitespace-pre-line ${
-                      errorInfo?.type === "verification" 
+                      errorInfo?.type === "verification"
                         ? "text-amber-800 dark:text-amber-200"
                         : errorInfo?.type === "password"
                         ? "text-orange-800 dark:text-orange-200"
@@ -429,6 +464,8 @@ export function SignInModal({
                         className={`mt-2 px-3 py-1 text-xs font-medium rounded border transition-colors ${
                           errorInfo?.type === "verification"
                             ? "bg-amber-100 dark:bg-amber-800 hover:bg-amber-200 dark:hover:bg-amber-700 text-amber-800 dark:text-amber-200 border-amber-300 dark:border-amber-600"
+                            : errorInfo?.type === "password"
+                            ? "bg-orange-100 dark:bg-orange-800 hover:bg-orange-200 dark:hover:bg-orange-700 text-orange-800 dark:text-orange-200 border-orange-300 dark:border-orange-600"
                             : "bg-red-100 dark:bg-red-800 hover:bg-red-200 dark:hover:bg-red-700 text-red-800 dark:text-red-200 border-red-300 dark:border-red-600"
                         }`}
                       >
@@ -439,7 +476,7 @@ export function SignInModal({
                 </div>
               </div>
             )}
-            
+
             <div className="text-center mt-4 text-sm text-gray-600 dark:text-gray-400">
               {step === "signIn" ? "Don't have an account? " : "Already have an account? "}
               <button
@@ -453,7 +490,7 @@ export function SignInModal({
               >
                 {step === "signIn" ? "Sign up" : "Sign in"}
               </button>
-              
+
               {step === "signIn" && (
                 <>
                   {" • "}
@@ -481,10 +518,10 @@ export function SignInModal({
               setIsSubmitting(true);
               setError(null);
               setErrorInfo(null);
-              
+
               const formData = new FormData(e.target as HTMLFormElement);
               formData.set("flow", "reset");
-              
+
               void signIn("password", formData)
                 .then(() => {
                   setStep({ resetEmail: formData.get("email") as string });
@@ -504,7 +541,7 @@ export function SignInModal({
                 Enter your email address and we'll send you a code to reset your password.
               </p>
             </div>
-            
+
             <div>
               <label htmlFor="modal-reset-email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Email address
@@ -518,7 +555,7 @@ export function SignInModal({
                 required
               />
             </div>
-            
+
             <button
               className="w-full py-2 px-4 bg-primary hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed text-primary-foreground font-medium rounded-full shadow focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors"
               type="submit"
@@ -536,11 +573,11 @@ export function SignInModal({
                 "Send reset code"
               )}
             </button>
-            
+
             {error && (
               <div className={`p-4 rounded-lg border ${
-                errorInfo?.type === "verification" 
-                  ? "bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800" 
+                errorInfo?.type === "verification"
+                  ? "bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800"
                   : "bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800"
               }`}>
                 <div className="flex items-start">
@@ -559,8 +596,8 @@ export function SignInModal({
                   </div>
                   <div className="flex-1">
                     <p className={`text-sm font-medium ${
-                      errorInfo?.type === "verification" 
-                        ? "text-amber-800 dark:text-amber-200" 
+                      errorInfo?.type === "verification"
+                        ? "text-amber-800 dark:text-amber-200"
                         : "text-red-800 dark:text-red-300"
                     }`}>
                       {error}
@@ -569,7 +606,7 @@ export function SignInModal({
                 </div>
               </div>
             )}
-            
+
             <div className="text-center mt-4 text-sm text-gray-600 dark:text-gray-400">
               <button
                 type="button"
@@ -594,11 +631,11 @@ export function SignInModal({
               setIsSubmitting(true);
               setError(null);
               setErrorInfo(null);
-              
+
               const formData = new FormData(e.target as HTMLFormElement);
               formData.set("flow", "reset-verification");
               formData.set("email", step.resetEmail);
-              
+
               void signIn("password", formData)
                 .then(() => {
                   handleAuthSuccess();
@@ -618,7 +655,7 @@ export function SignInModal({
                 We've sent a reset code to <strong>{step.resetEmail}</strong>
               </p>
             </div>
-            
+
             <div>
               <label htmlFor="modal-reset-code" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Reset Code
@@ -639,7 +676,7 @@ export function SignInModal({
                 required
               />
             </div>
-            
+
             <div>
               <label htmlFor="modal-new-password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 New Password
@@ -656,7 +693,7 @@ export function SignInModal({
                 Must contain 8+ characters with uppercase, lowercase, number, and special character
               </p>
             </div>
-            
+
             <button
               className="w-full py-2 px-4 bg-primary hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed text-primary-foreground font-medium rounded-full shadow focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors"
               type="submit"
@@ -674,11 +711,11 @@ export function SignInModal({
                 "Reset password"
               )}
             </button>
-            
+
             {error && (
               <div className={`p-4 rounded-lg border ${
-                errorInfo?.type === "verification" 
-                  ? "bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800" 
+                errorInfo?.type === "verification"
+                  ? "bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800"
                   : "bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800"
               }`}>
                 <div className="flex items-start">
@@ -697,8 +734,8 @@ export function SignInModal({
                   </div>
                   <div className="flex-1">
                     <p className={`text-sm font-medium ${
-                      errorInfo?.type === "verification" 
-                        ? "text-amber-800 dark:text-amber-200" 
+                      errorInfo?.type === "verification"
+                        ? "text-amber-800 dark:text-amber-200"
                         : "text-red-800 dark:text-red-300"
                     }`}>
                       {error}
@@ -707,7 +744,7 @@ export function SignInModal({
                 </div>
               </div>
             )}
-            
+
             <div className="text-center mt-4 text-sm text-gray-600 dark:text-gray-400">
               <button
                 type="button"
@@ -732,12 +769,12 @@ export function SignInModal({
               setIsSubmitting(true);
               setError(null);
               setErrorInfo(null);
-              
+
               console.log("🔴 Verification form submitted");
               const formData = new FormData(e.target as HTMLFormElement);
               formData.set("flow", "email-verification");
               formData.set("email", step.email);
-              
+
               void signIn("password", formData)
                 .then(() => {
                   console.log("🔴 Email verification successful");
@@ -759,7 +796,7 @@ export function SignInModal({
                 We've sent a verification code to <strong>{step.email}</strong>
               </p>
             </div>
-            
+
             <div>
               <label htmlFor="modal-code" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Verification Code
@@ -780,7 +817,7 @@ export function SignInModal({
                 required
               />
             </div>
-            
+
             <button
               className="w-full py-2 px-4 bg-primary hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed text-primary-foreground font-medium rounded-full shadow focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors"
               type="submit"
@@ -798,11 +835,11 @@ export function SignInModal({
                 "Verify Email"
               )}
             </button>
-            
+
             {error && (
               <div className={`p-4 rounded-lg border ${
-                errorInfo?.type === "verification" 
-                  ? "bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800" 
+                errorInfo?.type === "verification"
+                  ? "bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800"
                   : "bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800"
               }`}>
                 <div className="flex items-start">
@@ -821,8 +858,8 @@ export function SignInModal({
                   </div>
                   <div className="flex-1">
                     <p className={`text-sm font-medium ${
-                      errorInfo?.type === "verification" 
-                        ? "text-amber-800 dark:text-amber-200" 
+                      errorInfo?.type === "verification"
+                        ? "text-amber-800 dark:text-amber-200"
                         : "text-red-800 dark:text-red-300"
                     }`}>
                       {error}
@@ -831,7 +868,7 @@ export function SignInModal({
                 </div>
               </div>
             )}
-            
+
             <div className="text-center mt-4 text-sm text-gray-600 dark:text-gray-400">
               <button
                 type="button"
@@ -847,7 +884,7 @@ export function SignInModal({
             </div>
           </form>
         )}
-        
+
         {(step === "signIn" || step === "signUp") && (
           <div className="mt-6">
             <div className="relative">
@@ -860,17 +897,17 @@ export function SignInModal({
                 </span>
               </div>
             </div>
-            
+
             <div className="mt-6">
               <button
                 onClick={async (e) => {
                   e.preventDefault(); // Prevent any default behavior
                   setError(null);
                   setErrorInfo(null);
-                  
+
                   console.log("🔴 GitHub button clicked!"); // Basic click detection
                   console.log("🔴 signIn function:", typeof signIn, signIn); // Check if signIn exists
-                  
+
                   try {
                     console.log("🔴 Attempting GitHub sign-in...");
                     // Let Convex Auth handle redirects automatically
@@ -898,4 +935,4 @@ export function SignInModal({
       </div>
     </div>
   );
-} 
+}

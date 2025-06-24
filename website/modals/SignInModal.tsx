@@ -71,13 +71,22 @@ export function SignInModal({
     showSwitchButton: boolean;
     type: "verification" | "auth" | "general" | "password";
   } => {
-    const errorMessage = error instanceof Error
-      ? error.message
-      : typeof error === 'object' && error && 'message' in error
-        ? String((error as { message: unknown }).message)
-        : typeof error === 'string'
-          ? error
-          : "An error occurred";
+    // Enhanced error message extraction to handle various error formats
+    let errorMessage: string;
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    } else if (typeof error === 'string') {
+      errorMessage = error;
+    } else if (typeof error === 'object' && error && 'message' in error) {
+      errorMessage = String((error as { message: unknown }).message);
+    } else if (typeof error === 'object' && error && 'toString' in error) {
+      errorMessage = String(error);
+    } else {
+      errorMessage = "An error occurred";
+    }
+
+    // Log the actual error for debugging
+    console.log("🔴 SignInModal error:", { error, errorMessage, currentStep });
 
     // Check for password validation errors
     if (errorMessage.includes("Password validation failed:")) {
@@ -123,8 +132,35 @@ export function SignInModal({
       'sign in failed',
       'signin failed',
       'invalidsecret', // Convex Auth specific error for wrong password
-      'invalid secret'
+      'invalid secret',
+      'InvalidSecret', // Case-sensitive version
+      'INVALID_SECRET', // Uppercase version
+      'invalid_secret', // Underscore version
+      'auth failed',
+      'password mismatch',
+      'credentials invalid'
     ];
+
+    // Check for generic Convex server errors during sign-in (likely wrong password)
+    const isGenericServerError = errorMessage.includes('[Request ID:') && errorMessage.includes('Server Error');
+    if (isGenericServerError && currentStep === "signIn") {
+      return {
+        message: "Incorrect password. Please check your password and try again.",
+        suggestionAction: null,
+        showSwitchButton: false,
+        type: "auth" as const
+      };
+    }
+
+    // Check for generic Convex server errors during sign-up (likely account already exists)
+    if (isGenericServerError && currentStep === "signUp") {
+      return {
+        message: "An account with this email already exists. Would you like to sign in instead?",
+        suggestionAction: "switch-to-signin",
+        showSwitchButton: true,
+        type: "auth" as const
+      };
+    }
 
     const isWrongPassword = wrongPasswordPatterns.some(pattern =>
       errorMessage.toLowerCase().includes(pattern)
@@ -375,15 +411,22 @@ export function SignInModal({
               <div className={`p-4 rounded-lg border ${
                 errorInfo?.type === "verification"
                   ? "bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800"
+                  : errorInfo?.type === "password"
+                  ? "bg-orange-50 dark:bg-orange-900/20 border-orange-200 dark:border-orange-800"
                   : "bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800"
               }`}>
                 <div className="flex items-start">
                   <div className={`flex-shrink-0 mr-3 mt-0.5 ${
-                    errorInfo?.type === "verification" ? "text-amber-600" : "text-red-600"
+                    errorInfo?.type === "verification" ? "text-amber-600" :
+                    errorInfo?.type === "password" ? "text-orange-600" : "text-red-600"
                   }`}>
                     {errorInfo?.type === "verification" ? (
                       <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                      </svg>
+                    ) : errorInfo?.type === "password" ? (
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M18 8a6 6 0 01-7.743 5.743L10 14l-1 1-1 1H6v2H2v-4l4.257-4.257A6 6 0 1118 8zm-6-4a1 1 0 100 2 2 2 0 012 2 1 1 0 102 0 4 4 0 00-4-4z" clipRule="evenodd" />
                       </svg>
                     ) : (
                       <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -392,9 +435,11 @@ export function SignInModal({
                     )}
                   </div>
                   <div className="flex-1">
-                    <p className={`text-sm font-medium ${
+                    <p className={`text-sm font-medium whitespace-pre-line ${
                       errorInfo?.type === "verification"
                         ? "text-amber-800 dark:text-amber-200"
+                        : errorInfo?.type === "password"
+                        ? "text-orange-800 dark:text-orange-200"
                         : "text-red-800 dark:text-red-300"
                     }`}>
                       {error}
@@ -414,6 +459,8 @@ export function SignInModal({
                         className={`mt-2 px-3 py-1 text-xs font-medium rounded border transition-colors ${
                           errorInfo?.type === "verification"
                             ? "bg-amber-100 dark:bg-amber-800 hover:bg-amber-200 dark:hover:bg-amber-700 text-amber-800 dark:text-amber-200 border-amber-300 dark:border-amber-600"
+                            : errorInfo?.type === "password"
+                            ? "bg-orange-100 dark:bg-orange-800 hover:bg-orange-200 dark:hover:bg-orange-700 text-orange-800 dark:text-orange-200 border-orange-300 dark:border-orange-600"
                             : "bg-red-100 dark:bg-red-800 hover:bg-red-200 dark:hover:bg-red-700 text-red-800 dark:text-red-200 border-red-300 dark:border-red-600"
                         }`}
                       >
@@ -523,15 +570,22 @@ export function SignInModal({
               <div className={`p-4 rounded-lg border ${
                 errorInfo?.type === "verification"
                   ? "bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800"
+                  : errorInfo?.type === "password"
+                  ? "bg-orange-50 dark:bg-orange-900/20 border-orange-200 dark:border-orange-800"
                   : "bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800"
               }`}>
                 <div className="flex items-start">
                   <div className={`flex-shrink-0 mr-3 mt-0.5 ${
-                    errorInfo?.type === "verification" ? "text-amber-600" : "text-red-600"
+                    errorInfo?.type === "verification" ? "text-amber-600" :
+                    errorInfo?.type === "password" ? "text-orange-600" : "text-red-600"
                   }`}>
                     {errorInfo?.type === "verification" ? (
                       <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                      </svg>
+                    ) : errorInfo?.type === "password" ? (
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M18 8a6 6 0 01-7.743 5.743L10 14l-1 1-1 1H6v2H2v-4l4.257-4.257A6 6 0 1118 8zm-6-4a1 1 0 100 2 2 2 0 012 2 1 1 0 102 0 4 4 0 00-4-4z" clipRule="evenodd" />
                       </svg>
                     ) : (
                       <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -540,9 +594,11 @@ export function SignInModal({
                     )}
                   </div>
                   <div className="flex-1">
-                    <p className={`text-sm font-medium ${
+                    <p className={`text-sm font-medium whitespace-pre-line ${
                       errorInfo?.type === "verification"
                         ? "text-amber-800 dark:text-amber-200"
+                        : errorInfo?.type === "password"
+                        ? "text-orange-800 dark:text-orange-200"
                         : "text-red-800 dark:text-red-300"
                     }`}>
                       {error}
@@ -562,6 +618,8 @@ export function SignInModal({
                         className={`mt-2 px-3 py-1 text-xs font-medium rounded border transition-colors ${
                           errorInfo?.type === "verification"
                             ? "bg-amber-100 dark:bg-amber-800 hover:bg-amber-200 dark:hover:bg-amber-700 text-amber-800 dark:text-amber-200 border-amber-300 dark:border-amber-600"
+                            : errorInfo?.type === "password"
+                            ? "bg-orange-100 dark:bg-orange-800 hover:bg-orange-200 dark:hover:bg-orange-700 text-orange-800 dark:text-orange-200 border-orange-300 dark:border-orange-600"
                             : "bg-red-100 dark:bg-red-800 hover:bg-red-200 dark:hover:bg-red-700 text-red-800 dark:text-red-200 border-red-300 dark:border-red-600"
                         }`}
                       >
