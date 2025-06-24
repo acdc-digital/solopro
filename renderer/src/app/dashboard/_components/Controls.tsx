@@ -263,17 +263,29 @@ export default function Controls({
       {/* Spacer div to push the Tabs to the right */}
       <div className="flex-grow"></div>
 
-      {/* ----- Rightmost: Tabs for Right Sidebar View ----- */}
-      <Tabs value={activeTab} onValueChange={handleTabChange} className="w-[150px] flex-shrink-0">
-        <TabsList className="grid w-full grid-cols-2 h-9">
-          <TabsTrigger value="log" className="text-xs h-7">
-            Log
-          </TabsTrigger>
-          <TabsTrigger value="feed" className="text-xs h-7">
-            Feed
-          </TabsTrigger>
-        </TabsList>
-      </Tabs>
+      {/* ----- Rightmost: Clean Toggle for Right Sidebar View ----- */}
+      <div className="flex bg-zinc-100 rounded-lg p-1 gap-1">
+        <button
+          onClick={() => handleTabChange("log")}
+          className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 ${
+            activeTab === "log"
+              ? "bg-white text-zinc-900 shadow-sm"
+              : "text-zinc-600 hover:text-zinc-900 hover:bg-zinc-200"
+          }`}
+        >
+          Log
+        </button>
+        <button
+          onClick={() => handleTabChange("feed")}
+          className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 ${
+            activeTab === "feed"
+              ? "bg-white text-zinc-900 shadow-sm"
+              : "text-zinc-600 hover:text-zinc-900 hover:bg-zinc-200"
+          }`}
+        >
+          Feed
+        </button>
+      </div>
     </div>
   );
 }
