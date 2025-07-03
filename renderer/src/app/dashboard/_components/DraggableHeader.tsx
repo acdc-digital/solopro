@@ -25,7 +25,7 @@ const DraggableHeader: React.FC = () => {
 
   return (
     <div
-      className="flex h-9 items-center justify-between px-3 bg-zinc-50 dark:bg-zinc-800 select-none"
+      className="flex h-9 items-center justify-between px-3 bg-zinc-50 dark:bg-zinc-800 select-none border-b border-zinc-200 dark:border-zinc-700"
       style={{
         WebkitAppRegion: 'drag',
         userSelect: 'none'

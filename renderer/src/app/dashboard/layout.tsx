@@ -49,7 +49,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     <div className="flex flex-col h-screen overflow-hidden">
       {/* Header - fixed height - Only show in Electron mode */}
       {!isBrowser && (
-        <div className="flex-shrink-0 border-b border-gray-200 dark:border-gray-800">
+        <div className="flex-shrink-0 dark:border-gray-800">
           <DraggableHeader />
         </div>
       )}
