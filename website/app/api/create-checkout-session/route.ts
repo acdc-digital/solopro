@@ -105,6 +105,19 @@ export async function POST(request: Request) {
       },
     };
 
+    // Add subscription data with trial period for subscription mode
+    if (paymentMode === "subscription") {
+      sessionParams.subscription_data = {
+        trial_period_days: 14, // 14-day free trial
+        // Optional: Configure what happens if trial ends without payment method
+        trial_settings: {
+          end_behavior: {
+            missing_payment_method: 'create_invoice' // Will create an invoice if no payment method is provided
+          }
+        }
+      };
+    }
+
     if (embeddedCheckout) {
       // For embedded checkout, we use ui_mode: 'embedded' and return_url
       sessionParams.ui_mode = 'embedded';

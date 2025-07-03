@@ -92,7 +92,7 @@ export default function LandingPage() {
 
   if (isLoading) {
     content = (
-      <Card className="w-full max-w-md shadow-lg">
+      <Card className="w-full max-w-md shadow-lg backdrop-blur-sm bg-white/80 dark:bg-zinc-900/80 border-zinc-200/50 dark:border-zinc-800/50">
         <CardContent className="flex justify-center p-8">
           <div className="flex items-center space-x-2">
             <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
@@ -105,7 +105,7 @@ export default function LandingPage() {
     if (hasActiveSubscription === undefined) {
       // Still waiting for subscription status
       content = (
-        <Card className="w-full max-w-md shadow-lg">
+        <Card className="w-full max-w-md shadow-lg backdrop-blur-sm bg-white/80 dark:bg-zinc-900/80 border-zinc-200/50 dark:border-zinc-800/50">
           <CardContent className="flex justify-center p-8">
             <div className="flex items-center space-x-2">
               <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-orange-600"></div>
@@ -117,7 +117,7 @@ export default function LandingPage() {
     } else {
       // User is authenticated - redirect to dashboard
       content = (
-        <Card className="w-full max-w-md shadow-lg">
+        <Card className="w-full max-w-md shadow-lg backdrop-blur-sm bg-white/80 dark:bg-zinc-900/80 border-zinc-200/50 dark:border-zinc-800/50">
           <CardContent className="flex justify-center p-8">
             <div className="flex items-center space-x-2">
               <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-green-600"></div>
@@ -131,44 +131,36 @@ export default function LandingPage() {
     // Not authenticated - show sign-in form
     content = (
       <>
-        <Card className="w-full max-w-md shadow-lg">
-          <CardHeader className="text-center">
-            <CardTitle className="text-2xl font-bold">Welcome</CardTitle>
-            <CardDescription>Sign in to access your dashboard</CardDescription>
+        <Card className="w-full max-w-sm shadow-lg">
+          <CardHeader className="space-y-1">
+            <CardTitle className="text-2xl font-bold text-center">Welcome to Soloist</CardTitle>
+            <CardDescription className="text-center">
+              Sign in to your account or create a new one
+            </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="space-y-4">
             <Button
               onClick={handleSignInClick}
               className="w-full"
+              variant="default"
             >
-              Sign In
+              Sign in
             </Button>
             <Button
               onClick={handleSignUpClick}
               variant="outline"
               className="w-full"
             >
-              Create Account
+              Create account
             </Button>
           </CardContent>
-          <CardFooter className="flex flex-col text-center text-sm text-muted-foreground space-y-2">
-            <p>Secured authentication with Convex Auth</p>
-          </CardFooter>
         </Card>
-
-        {/* Sign In Modal */}
-        <SignInModal
-          isOpen={isSignInModalOpen}
-          onClose={() => setIsSignInModalOpen(false)}
-          initialFlow={signInFlow}
-          onAuthSuccess={handleAuthSuccess}
-        />
       </>
     );
   }
 
-  return (
-    <div className="flex flex-col h-screen bg-background">
+    return (
+    <div className="flex flex-col h-screen bg-white dark:bg-black">
       {/* Show different headers based on environment */}
       {isBrowser === true ? (
         <BrowserNavbar />
@@ -182,6 +174,14 @@ export default function LandingPage() {
       
       {/* Browser Footer - Only show when confirmed browser mode */}
       {isBrowser === true && <BrowserFooter />}
+      
+      {/* Sign In Modal */}
+      <SignInModal
+        isOpen={isSignInModalOpen}
+        onClose={() => setIsSignInModalOpen(false)}
+        initialFlow={signInFlow}
+        onAuthSuccess={handleAuthSuccess}
+      />
     </div>
   );
 }

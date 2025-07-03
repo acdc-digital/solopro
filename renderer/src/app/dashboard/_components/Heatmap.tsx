@@ -175,7 +175,7 @@ export default function Heatmap({ year: y, onSelectDate }: HeatmapProps) {
       )}
 
       {/* Header badges */}
-      <div className="flex-shrink-0 flex items-center justify-between mb-2 px-3 pt-2">
+      <div className="flex-shrink-0 flex items-center justify-between mb-2 px-0 pt-2">
         <div className="flex items-center gap-2 text-sm">
           <Badge variant="outline" className="border-zinc-700 text-zinc-600 dark:text-zinc-300">
             {totalLogs} Logs
@@ -199,7 +199,7 @@ export default function Heatmap({ year: y, onSelectDate }: HeatmapProps) {
       </div>
 
       {/* Calendar grid */}
-      <div className="flex-1 min-h-0 border border-zinc-200 dark:border-zinc-700 bg-zinc-50/70 dark:bg-zinc-900/50 rounded-md mx-0">
+      <div className="flex-1 px-0 min-h-0 border border-zinc-200 dark:border-zinc-700 bg-zinc-50/70 dark:bg-zinc-900/50 rounded-md mx-0">
         <ScrollArea className="h-full">
           <div className="flex flex-wrap gap-1 p-3">
             {allDates.map((d) => {
@@ -238,7 +238,7 @@ export default function Heatmap({ year: y, onSelectDate }: HeatmapProps) {
       </div>
 
       {/* Legend */}
-      <div className="flex-shrink-0 mt-2 mb-2 px-4 text-xs text-zinc-500 dark:text-zinc-400">
+      <div className="flex-shrink-0 mt-2 mb-2 px-0 text-xs text-zinc-500 dark:text-zinc-400">
         <div className="mb-2">Score legend:</div>
         <div className="flex flex-wrap gap-2">
           {LEGEND.map((l) => (

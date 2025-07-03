@@ -84,7 +84,7 @@ export function RightSidebar({
       {/* Drag handle */}
       {open && (
         <div 
-          className="absolute left-0 top-1/2 -translate-y-1/2 z-50 -translate-x-[6px]"
+          className="absolute left-0 top-1/3 z-50 -translate-x-[6px]"
           aria-hidden="true"
           onMouseEnter={() => setIsResizeHovered(true)}
           onMouseLeave={() => setIsResizeHovered(false)}

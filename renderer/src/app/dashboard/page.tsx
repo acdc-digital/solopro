@@ -53,7 +53,10 @@ export default function Dashboard() {
   const { isAuthenticated, isLoading, userId: convexUserId } = useConvexUser();
   const router = useRouter();
   const setStoreUser = useUserStore((state) => state.setUser);
-  const { setCollapsed, currentView, setView } = useSidebarStore();
+  const { collapsed, setCollapsed, currentView, setView } = useSidebarStore();
+
+  // Dynamic margin class based on sidebar state
+  const sidebarMargin = collapsed ? "ml-12" : "ml-52";
   const isBrowser = useBrowserEnvironment();
 
   // Check subscription status (now works for both browser and desktop mode)
@@ -329,9 +332,11 @@ export default function Dashboard() {
 
   if (isBrowser === false && currentView === "dashboard" && !dailyLogs) {
     return (
-      <div className="flex flex-col h-full bg-white dark:bg-zinc-900">
+      <div className="flex flex-col h-full bg-zinc-50 dark:bg-zinc-900">
         <div className="flex flex-1 overflow-hidden">
-          <Sidebar />
+          <Sidebar
+            className="backdrop-blur-md supports-[backdrop-filter]:bg-white/6"
+          />
           
           <main className="flex-1 flex items-center justify-center bg-zinc-50 dark:bg-zinc-900">
             <div className="flex flex-col items-center">
@@ -446,18 +451,20 @@ export default function Dashboard() {
   /*  Render                                       */
   /* ───────────────────────────────────────────── */
   return (
-    <div className="flex flex-col h-full bg-white dark:bg-zinc-900">
+    <div className="flex flex-col h-full bg-zinc-50 dark:bg-zinc-900">
       {/* Browser Navbar - Only show when confirmed browser mode */}
       {isBrowser === true && <BrowserNavbar />}
       
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 overflow-hidden relative">
         {/* Left sidebar - Always show in both browser and Electron modes */}
-        <Sidebar />
+        <div className="absolute left-0 top-0 bottom-0 z-20">
+          <Sidebar />
+        </div>
 
         {/* Main content */}
         {currentView === "dashboard" ? (
           <>
-            <main className="flex-1 flex flex-col relative">
+            <main className={`flex-1 flex flex-col relative ${sidebarMargin}`}>
 
               {/* Year controls */}
               <div className="sticky top-0 z-10 px-4 mt-2">
@@ -484,7 +491,7 @@ export default function Dashboard() {
               </div>
 
               {/* Heatmap */}
-              <div className="flex-1 overflow-auto px-3 pb-2">
+              <div className="flex-1 overflow-auto px-4 pb-2">
                 <Heatmap
                   year={parseInt(selectedYear)}
                   onSelectDate={handleSelectDate}
@@ -554,12 +561,12 @@ export default function Dashboard() {
           </>
         ) : currentView === "soloist" ? (
           /* Soloist view */
-          <main className="flex-1 overflow-hidden">
+          <main className={`flex-1 overflow-hidden ${sidebarMargin}`}>
             <SoloistPage />
           </main>
         ) : (
           /* Testing view */
-          <main className="flex-1 overflow-hidden">
+          <main className={`flex-1 overflow-hidden ${sidebarMargin}`}>
             <TestingPage />
           </main>
         )}

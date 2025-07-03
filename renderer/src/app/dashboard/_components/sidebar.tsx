@@ -1,6 +1,9 @@
 // NAVIGATION SIDEBAR
 // /Users/matthewsimon/Documents/Github/electron-nextjs/renderer/src/app/dashboard/_components/sidebar.tsx
 
+// NAVIGATION SIDEBAR
+// /Users/matthewsimon/Documents/Github/electron-nextjs/renderer/src/app/dashboard/_components/sidebar.tsx
+
 "use client";
 import React from "react";
 import { cn } from "@/lib/utils";
@@ -240,9 +243,13 @@ export function Sidebar({ className }: SidebarProps) {
     <div className={cn("relative h-screen", className)}>
       <div
         className={cn(
-          "flex flex-col justify-between h-full border-r border-zinc-300/30 bg-white dark:border-zinc-700/30 dark:bg-zinc-950/40",
-          "backdrop-blur-xl overflow-hidden transition-[width] duration-300 ease-in-out",
-          collapsed ? "w-13" : "w-64"
+          "flex flex-col justify-between h-full",
+          // Glass morphism effect with stronger blur and transparency
+          "bg-zinc-50 dark:bg-gray-900/5 backdrop-blur-xl",
+          // Very subtle border for definition
+          "border-r border-white/10 dark:border-white/5",
+          "overflow-hidden transition-[width] duration-300 ease-in-out",
+          collapsed ? "w-12" : "w-52"
         )}
       >
         {/* TOP SECTION */}
@@ -252,7 +259,7 @@ export function Sidebar({ className }: SidebarProps) {
             variant="ghost"
             size="icon"
             onClick={toggleCollapsed}
-            className="rounded-md hover:bg-zinc-200/60 dark:hover:bg-zinc-800/60 m-2"
+            className="rounded-md hover:bg-white/10 dark:hover:bg-white/5 m-2"
           >
             {collapsed ? (
               <ArrowRightToLine className="h-4 w-4" />
@@ -266,13 +273,13 @@ export function Sidebar({ className }: SidebarProps) {
               {/* APPLICATION - Only show for browser mode users */}
               {isBrowser === true && (
                 <div>
-                  <p className="px-1 pl-3 pr-2 p-2 mb-0 text-[10px] font-medium uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+                  <p className="px-1 pl-3 pr-2 p-2 mb-0 text-[10px] font-medium uppercase tracking-wider text-zinc-600 dark:text-zinc-400">
                     Application
                   </p>
                   <div className="relative pl-2 pr-4">
                     <Button
                       onClick={handleDownload}
-                      className="w-full h-9 justify-start px-3 text-sm font-normal bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-600 dark:border-emerald-700 hover:bg-emerald-100 dark:hover:bg-emerald-800/30 text-emerald-700 dark:text-emerald-300"
+                      className="w-full h-9 justify-start px-3 text-sm font-normal bg-emerald-600/10 dark:bg-emerald-600/10 border border-emerald-600/20 dark:border-emerald-700/20 hover:bg-emerald-600/15 dark:hover:bg-emerald-600/15 text-emerald-700 dark:text-emerald-300 backdrop-blur-sm"
                       variant="outline"
                     >
                       <Download className="mr-3 h-4 w-4 flex-shrink-0" />
@@ -281,16 +288,16 @@ export function Sidebar({ className }: SidebarProps) {
                   </div>
                 </div>
               )}
-              {isBrowser === true && <Separator className="bg-zinc-300/40 dark:bg-zinc-700/40" />}
+              {isBrowser === true && <Separator className="bg-white/10 dark:bg-white/5" />}
               
               {/* SUBSCRIPTION STATUS (for non-subscribers) */}
               {effectiveSubscription === false && (
                 <>
                 <div>
-                  <p className="px-1 pl-3 pr-2 p-2 mb-0 text-[10px] font-medium uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+                  <p className="px-1 pl-3 pr-2 p-2 mb-0 text-[10px] font-medium uppercase tracking-wider text-zinc-600 dark:text-zinc-400">
                     Access
                   </p>
-                    <div className="px-3 py-2 ml-2 mr-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-md">
+                    <div className="px-3 py-2 ml-2 mr-3 bg-amber-600/10 dark:bg-amber-600/10 border border-amber-600/20 dark:border-amber-600/20 rounded-md backdrop-blur-sm">
                       <p className="text-xs font-medium text-amber-800 dark:text-amber-200 mb-1">
                         Limited Access
                       </p>
@@ -299,13 +306,13 @@ export function Sidebar({ className }: SidebarProps) {
                       </p>
                     </div>
                   </div>
-                  <Separator className="bg-zinc-300/40 dark:bg-zinc-700/40" />
+                  <Separator className="bg-white/10 dark:bg-white/5" />
                 </>
               )}
               
               {/* ACTIONS */}
               <div>
-                <p className="px-2 pl-3 p-2 mb-0 text-[10px] font-medium uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+                <p className="px-2 pl-3 p-2 mb-0 text-[10px] font-medium uppercase tracking-wider text-zinc-600 dark:text-zinc-400">
                   Actions
                 </p>
                 {mainActions.map((item) => (
@@ -315,18 +322,26 @@ export function Sidebar({ className }: SidebarProps) {
                     onClick={item.disabled ? undefined : item.action}
                     disabled={item.disabled}
                     className={cn(
-                      "w-[90%] h-9 justify-start px-3 text-sm font-normal hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50 rounded-lg ml-2 mb-1",
-                      item.active && !item.disabled && "bg-zinc-200/80 dark:bg-zinc-800/80",
-                      item.disabled && "opacity-50 cursor-not-allowed hover:bg-transparent dark:hover:bg-transparent"
+                      "w-[90%] h-9 justify-start px-3 text-sm font-normal rounded-lg ml-2 mb-1",
+                      // Border and transparent background
+                      "border border-transparent bg-transparent",
+                      // Hover states with blue border only (no background)
+                      "hover:border-blue-500/60 dark:hover:border-blue-50/50 hover:bg-transparent",
+                      // Active states - blue border to show selected state
+                      item.active && !item.disabled && "border-blue-500/70 dark:border-blue-400/60 bg-transparent",
+                      // Disabled states
+                      item.disabled && "opacity-50 cursor-not-allowed hover:border-transparent hover:bg-transparent"
                     )}
                   >
                     <item.icon className={cn(
                       "mr-3 h-4 w-4 flex-shrink-0",
                       item.disabled 
                         ? "text-zinc-400 dark:text-zinc-600" 
-                        : "text-zinc-600 dark:text-zinc-400"
+                        : "text-zinc-700 dark:text-zinc-300"
                     )} />
-                    <span className={item.disabled ? "text-zinc-400 dark:text-zinc-600" : ""}>
+                    <span className={cn(
+                      item.disabled ? "text-zinc-400 dark:text-zinc-600" : "text-zinc-700 dark:text-zinc-300"
+                    )}>
                       {item.label}
                     </span>
                   </Button>
@@ -339,33 +354,28 @@ export function Sidebar({ className }: SidebarProps) {
         {/* FOOTER SECTION */}
         <div className="relative">
           {!collapsed && isAuthenticated && effectiveUser && (
-            <div className="border-t border-zinc-300/30 dark:border-zinc-700/30 p-3 mb-5">
+            <div className="border-t border-white/10 dark:border-white/5 p-3 mb-5">
               <DropdownMenu onOpenChange={setIsDropdownOpen}>
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="footer"
-                    className="w-full h-auto p-2 justify-start"
+                    className="w-full h-auto p-2 justify-start hover:bg-white/10 dark:hover:bg-white/5"
                   >
-                    <div className="flex items-center gap-3 w-full">
+                    <div className="flex items-center gap-1 w-full">
                       <Avatar className="h-8 w-8 flex-shrink-0">
                         <AvatarImage src={effectiveUser.image || undefined} alt={effectiveUser.name || "User"} />
-                        <AvatarFallback className="text-xs bg-zinc-200 dark:bg-zinc-700 text-zinc-700 dark:text-zinc-300">
+                        <AvatarFallback className="text-xs bg-white/20 dark:bg-white/10 text-zinc-700 dark:text-zinc-300">
                           {userInitials}
                         </AvatarFallback>
                       </Avatar>
-                      <div className="flex flex-col items-start min-w-0 flex-1 hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50 rounded-lg transition-colors pt-2 pb-2 pr-2">
+                      <div className="flex flex-col items-start min-w-0 flex-1 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors pt-2 pb-2 pr-2">
                         <span className="text-sm font-medium text-zinc-900 dark:text-zinc-100 truncate text-left px-2 py-0">
                           {effectiveUser.name || "User"}
                         </span>
-                        <span className="text-xs text-zinc-500 dark:text-zinc-400 truncate text-left px-2 py-0">
+                        <span className="text-xs text-zinc-600 dark:text-zinc-400 truncate text-left px-2 py-0">
                           {effectiveUser.email || ""}
                         </span>
                       </div>
-                      {isDropdownOpen ? (
-                        <ChevronDown className="h-4 w-4 text-zinc-500 dark:text-zinc-400 flex-shrink-0" />
-                      ) : (
-                        <ChevronUp className="h-4 w-4 text-zinc-500 dark:text-zinc-400 flex-shrink-0" />
-                      )}
                     </div>
                   </Button>
                 </DropdownMenuTrigger>
@@ -404,17 +414,17 @@ export function Sidebar({ className }: SidebarProps) {
             </div>
           )}
           {collapsed && isAuthenticated && effectiveUser && (
-            <div className="border-t border-zinc-300/30 dark:border-zinc-700/30 p-2 flex justify-center">
+            <div className="border-t border-white/10 dark:border-white/5 p-2 flex justify-center">
               <DropdownMenu onOpenChange={setIsDropdownOpen}>
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="footer"
                     size="icon"
-                    className="h-10 w-10 rounded-full mb-6"
+                    className="h-10 w-10 rounded-full mb-9 pb-1 pl-4 hover:bg-white/10 dark:hover:bg-white/5"
                   >
                     <Avatar className="h-8 w-8">
                       <AvatarImage src={effectiveUser.image || undefined} alt={effectiveUser.name || "User"} />
-                      <AvatarFallback className="text-xs bg-zinc-200 dark:bg-zinc-700 text-zinc-700 dark:text-zinc-300">
+                      <AvatarFallback className="text-xs bg-white/20 dark:bg-white/10 text-zinc-700 dark:text-zinc-300">
                         {userInitials}
                       </AvatarFallback>
                     </Avatar>
