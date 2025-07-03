@@ -1,8 +1,12 @@
- ____        _       _     _     
-/ ___|  ___ | | ___ (_)___| |_   
-\___ \ / _ \| |/ _ \| / __| __|  
- ___) | (_) | | (_) | \__ \ |_ _ 
+ <details>
+<summary>Correct way to embed your “soloist” banner</summary>
+ ____        _       _     _
+/ ___|  ___ | | ___ (_)___| |_
+\___ \ / _ \| |/ _ \| / __| __|
+ ___) | (_) | | (_) | \__ \ |_ _
 |____/ \___/|_|\___/|_|___/\__(_)
+
+</details>
 
 ## <img src="public/solologo.png" alt="Soloist Logo" height="28" style="vertical-align:bottom; margin-right:6px;"> Soloist
 
