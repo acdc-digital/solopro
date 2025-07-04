@@ -1,3 +1,6 @@
+![Repository views](https://hits.dwyl.com/acdc-digital/solopro.svg?style=flat-square)   
+
+
 ```text
  ____        _       _     _     
 / ___|  ___ | | ___ (_)___| |_   

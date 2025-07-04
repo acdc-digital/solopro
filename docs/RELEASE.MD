@@ -107,10 +107,10 @@ Update hardcoded version references in:
    ```bash
    # Test renderer
    pnpm dev:renderer
-   
+
    # Test website
    pnpm dev:website
-   
+
    # Test electron
    pnpm dev:electron
    ```
@@ -118,9 +118,9 @@ Update hardcoded version references in:
 3. **Build Production Assets**
    ```bash
    # Build electron distributables
-   pnpm --filter electron run build:mac
-   pnpm --filter electron run build:win
-   pnpm --filter electron run build:linux
+   pnpm --filter solopro-electron run build:mac
+   pnpm --filter solopro-electron run build:win
+   pnpm --filter solopro-electron run build:linux
    ```
 
 ### Step 5: Git Operations
@@ -304,8 +304,6 @@ For issues with the release process:
 - Check existing GitHub issues
 - Review build logs
 - Contact maintainer: msimon@acdc.digital
-
----
 
 © 2025 ACDC.digital • Release Process v1.0
 
