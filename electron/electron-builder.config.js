@@ -6,7 +6,7 @@ module.exports = {
   publish: null,
   files: [
     "index.js",
-    "preload.js", 
+    "preload.js",
     "index.html",
     "node_modules/**/*"
   ],
@@ -113,23 +113,23 @@ module.exports = {
   },
   afterPack: async context => {
     const { electronPlatformName, appOutDir } = context;
-    
+
     // Only run macOS-specific cleanup on macOS builds
     if (electronPlatformName === 'darwin') {
       const { execSync } = require('child_process');
       const appPath = `${appOutDir}/Soloist Pro.app`;
-      
+
       console.log('Cleaning extended attributes and dot-underscore files...');
-      
+
       try {
         // 1. Strip all extended attributes recursively
         execSync(`xattr -cr "${appPath}"`, { stdio: 'inherit' });
         console.log('✅ Stripped extended attributes');
-        
+
         // 2. Delete dot-underscore resource fork files
         execSync(`find "${appPath}" -name '._*' -delete`, { stdio: 'inherit' });
         console.log('✅ Removed dot-underscore files');
-        
+
         console.log('Successfully cleaned app bundle for code signing');
       } catch (error) {
         console.error('❌ Failed to clean app bundle:', error.message);
@@ -150,7 +150,7 @@ module.exports = {
 
     // Check if notarization credentials are properly set
     const appleApiIssuer = process.env.APPLE_API_ISSUER;
-    
+
     if (!appleApiIssuer || appleApiIssuer === 'YOUR_ISSUER_ID') {
       console.log('⚠️  Skipping notarization - APPLE_API_ISSUER not set');
       console.log('   To enable notarization, set: export APPLE_API_ISSUER="your-issuer-id"');
@@ -171,8 +171,26 @@ module.exports = {
 
       console.log('✅ Notarization completed successfully!');
     } catch (error) {
-      console.error('❌ Notarization failed:', error);
+      console.error('❌ Notarization failed:', error.message);
+
+      // Check for specific API errors
+      if (error.message.includes('403') || error.message.includes('agreement')) {
+        console.error('');
+        console.error('🚨 APPLE DEVELOPER AGREEMENT ISSUE:');
+        console.error('   Please sign into App Store Connect: https://appstoreconnect.apple.com/');
+        console.error('   Check for any pending agreements that need to be signed.');
+        console.error('   Look for red banners or notifications about expired agreements.');
+        console.error('');
+      }
+
+      // For now, we'll continue the build without notarization
+      // Remove this in production - notarization should be required
+      if (process.env.SKIP_NOTARIZATION === 'true') {
+        console.log('⚠️  Continuing build without notarization (SKIP_NOTARIZATION=true)');
+        return;
+      }
+
       throw error;
     }
   }
-}; 
+};
