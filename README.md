@@ -1,4 +1,5 @@
-## <img src="public/solologo.png" alt="Soloist Logo" height="28" style="vertical-align:bottom; margin-right:6px;"> Soloist
+<img src="public/solologo.png" alt="Soloist Logo" style="vertical-align:middle; margin-right:6px; width:24px; height:24px;"> Soloist
+
 ```text
  ____        _       _     _     
 / ___|  ___ | | ___ (_)___| |_   
@@ -148,3 +149,5 @@ Contributions are welcome! Please read our [CONTRIBUTING.md](docs/CONTRIBUTING.m
 ---
 
 © 2025 ACDC.digital • Maintainer: msimon@acdc.digital
+
+Contributions are welcome! Please read our [CONTRIBUTING.md](docs/CONTRIBUTING.md) for guidelines.
