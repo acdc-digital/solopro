@@ -1,4 +1,4 @@
-## <img src="public/solologo.png" alt="Soloist Logo" height="18" style="vertical-align:bottom; margin-right:6px;"> Soloist
+## <img src="public/solologo.png" alt="Soloist Logo" style="vertical-align:bottom; margin-right:6px;"> Soloist
 
 **Version:** `1.6.5` | **License:** For-Profit Open Source | **Status:** Active Development
 
