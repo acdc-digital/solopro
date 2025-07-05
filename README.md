@@ -9,7 +9,7 @@
 |____/ \___/|_|\___/|_|___/\__(_)
 ```
 
-## <img src="public/solologo.png" alt="Soloist Logo" height="28" style="vertical-align:bottom; margin-right:6px;"> Soloist
+<img src="public/solologo.png" alt="Soloist Logo" height="28" style="vertical-align:bottom; margin-right:6px;"> Soloist
 
 **Version:** `1.6.6` | **License:** For-Profit Open Source | **Status:** Active Development
 
