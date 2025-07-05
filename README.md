@@ -1,4 +1,4 @@
-<img src="public/solologo.png" alt="Soloist Logo" width="24" height="24">  Soloist
+<img src="public/solologo.png" alt="Soloist Logo" width="24" height="24">  **Soloist**
 ```text
  ____        _       _     _     
 / ___|  ___ | | ___ (_)___| |_   
@@ -6,7 +6,6 @@
  ___) | (_) | | (_) | \__ \ |_ _ 
 |____/ \___/|_|\___/|_|___/\__(_)
 ```
-## <img src="public/solologo.png" alt="Soloist Logo" height="28" style="vertical-align:bottom; margin-right:6px;"> Soloist
 
 **Version:** `1.6.5` | **License:** For-Profit Open Source | **Status:** Active Development
 
