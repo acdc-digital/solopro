@@ -1,13 +1,8 @@
----
-description: 
-globs: 
-alwaysApply: false
----
 # Soloist Pro - Core Development Rules
 
 ## 🏗️ PROJECT OVERVIEW
 
-Soloist is a dynamic personal analytics platform that transforms daily experiences into actionable insights through intelligent mood tracking and predictive analysis. This is the core architectural guide that complements the specialized rules files (convex_rules.mdc, authentication_rules.mdc, stripe_rules.mdc).
+Soloist is a dynamic personal analytics platform that transforms daily experiences into actionable insights through intelligent mood tracking and predictive analysis. This is the core architectural guide that complements the specialized rules files (convex_rules.md, authentication_rules.md, stripe_rules.md).
 
 ## 🎯 ARCHITECTURE PRINCIPLES
 
@@ -31,9 +26,9 @@ solopro/
 - **Forms**: React Hook Form with proper validation
 - **Charts**: Recharts for data visualization
 - **Dates**: date-fns (NOT moment.js or other libraries)
-- **Backend**: Convex serverless (see convex_rules.mdc)
-- **Auth**: Convex Auth (see authentication_rules.mdc)
-- **Payments**: Stripe (see stripe_rules.mdc)
+- **Backend**: Convex serverless (see convex_rules.md)
+- **Auth**: Convex Auth (see authentication_rules.md)
+- **Payments**: Stripe (see stripe_rules.md)
 
 ## 🎨 COMPONENT ARCHITECTURE
 
