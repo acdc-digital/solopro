@@ -1,8 +1,3 @@
----
-description: 
-globs: 
-alwaysApply: false
----
 # Authentication Implementation Rules for New Modules
 
 ## Overview
