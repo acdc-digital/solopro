@@ -10,7 +10,7 @@
 |____/ \___/|_|\___/|_|___/\__(_)
 ```
 
-**Version:** `1.6.5` | **License:** For-Profit Open Source | **Status:** Active Development
+**Version:** `1.6.6` | **License:** For-Profit Open Source | **Status:** Active Development
 
 ---
 
@@ -54,11 +54,11 @@ Built for individuals seeking deeper self-understanding, Soloist combines intell
 
 | Platform | File | Direct Link |
 |----------|------|-------------|
-| macOS (Intel) | `Soloist.Pro-1.6.5-x64.dmg` | [Download](https://github.com/acdc-digital/solopro/releases/download/v1.6.5/Soloist.Pro-1.6.5-x64.dmg) |
-| macOS (Apple Silicon) | `Soloist.Pro-1.6.5-arm64.dmg` | [Download](https://github.com/acdc-digital/solopro/releases/download/v1.6.5/Soloist.Pro-1.6.5-arm64.dmg) |
-| Windows | `Soloist.Pro-Setup-1.6.5.exe` | [Download](https://github.com/acdc-digital/solopro/releases/download/v1.6.5/Soloist.Pro-Setup-1.6.5.exe) |
-| Linux (AppImage) | `Soloist.Pro-1.6.5.AppImage` | [Download](https://github.com/acdc-digital/solopro/releases/download/v1.6.5/Soloist.Pro-1.6.5.AppImage) |
-| Linux (Deb) | `solopro-electron-1.6.5.deb` | [Download](https://github.com/acdc-digital/solopro/releases/download/v1.6.5/solopro-electron-1.6.5.deb) |
+| macOS (Intel) | `Soloist.Pro-1.6.6-x64.dmg` | [Download](https://github.com/acdc-digital/solopro/releases/download/v1.6.6/Soloist.Pro-1.6.6-x64.dmg) |
+| macOS (Apple Silicon) | `Soloist.Pro-1.6.6-arm64.dmg` | [Download](https://github.com/acdc-digital/solopro/releases/download/v1.6.6/Soloist.Pro-1.6.6-arm64.dmg) |
+| Windows | `Soloist.Pro-Setup-1.6.6.exe` | [Download](https://github.com/acdc-digital/solopro/releases/download/v1.6.6/Soloist.Pro-Setup-1.6.6.exe) |
+| Linux (AppImage) | `Soloist.Pro-1.6.6.AppImage` | [Download](https://github.com/acdc-digital/solopro/releases/download/v1.6.6/Soloist.Pro-1.6.6.AppImage) |
+| Linux (Deb) | `solopro-electron-1.6.6.deb` | [Download](https://github.com/acdc-digital/solopro/releases/download/v1.6.6/solopro-electron-1.6.6.deb) |
 
 **System Requirements**: All platforms require 4GB RAM minimum, 500MB storage space. Internet connection required for AI features.
 
@@ -197,7 +197,8 @@ User trust is paramount in personal analytics:
 
 | Version | Date | Notes |
 |---------|------|-------|
-| **v1.6.5** | 2025-01-22 | 💰 OpenAI cost tracking & analytics, real-time usage monitoring, admin dashboard |
+| **v1.6.6** | 2025-07-13 | Latest release with enhanced features and improvements |
+| **v1.6.5** | 2025-01-22 | Real-time usage monitoring, admin dashboard |
 | **v1.6.4** | 2025-01-29 | Enhanced security & authentication, email verification, password management |
 | **v1.6.2** | 2025-02-01 | Guided journaling starter kit, social platform integration preview, refined macOS dock icon |
 | **v1.6.1** | 2025-01-17 | Build & notarisation improvements |
