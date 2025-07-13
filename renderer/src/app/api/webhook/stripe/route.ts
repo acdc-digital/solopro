@@ -4,9 +4,9 @@ import { ConvexHttpClient } from "convex/browser";
 import { api } from "@/convex/_generated/api";
 
 // Initialize Stripe with your secret key
-const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
-const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
-const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL;
+const stripeSecretKey = process.env.STRIPE_SECRET_KEY || '';
+const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET || '';
+const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL || '';
 
 console.log("Stripe webhook config:", {
   hasSecretKey: !!stripeSecretKey,
@@ -14,24 +14,13 @@ console.log("Stripe webhook config:", {
   convexUrl
 });
 
-if (!stripeSecretKey) {
-  console.error("Missing STRIPE_SECRET_KEY environment variable");
-}
-
-if (!webhookSecret) {
-  console.error("Missing STRIPE_WEBHOOK_SECRET environment variable");
-}
-
-if (!convexUrl) {
-  console.error("Missing NEXT_PUBLIC_CONVEX_URL environment variable");
-}
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2025-04-30.basil" as any,
-});
+// Initialize Stripe only if we have the secret key
+const stripe = stripeSecretKey ? new Stripe(stripeSecretKey, {
+  apiVersion: "2025-06-30.basil",
+}) : null;
 
 // Initialize Convex client
-const convex = new ConvexHttpClient(convexUrl || "");
+const convex = convexUrl ? new ConvexHttpClient(convexUrl) : null;
 
 export async function POST(request: Request) {
   try {
@@ -56,6 +45,14 @@ export async function POST(request: Request) {
       );
     }
 
+    if (!stripe) {
+      console.error("Stripe not initialized - missing API key");
+      return NextResponse.json(
+        { error: "Stripe not configured" },
+        { status: 500 }
+      );
+    }
+
     // Verify the webhook signature
     let event: Stripe.Event;
     try {
@@ -71,6 +68,14 @@ export async function POST(request: Request) {
     }
 
     console.log(`Received Stripe webhook event: ${event.type}`);
+
+    if (!convex) {
+      console.error("Convex not initialized - missing URL");
+      return NextResponse.json(
+        { error: "Convex not configured" },
+        { status: 500 }
+      );
+    }
 
     // Process the webhook event using our Convex function
     const eventData = event.data.object;

@@ -12,8 +12,8 @@ async function testWebhook() {
   try {
     console.log('Testing webhook endpoint...');
     
-    // Get your ngrok URL
-    const webhookUrl = 'https://8baab56f32dd.ngrok-free.app/api/webhook/stripe';
+    // Production webhook URL
+    const webhookUrl = 'https://soloist-pi2a8i47j-acdcdigitals-projects.vercel.app/api/webhook/stripe';
     
     console.log('Webhook URL:', webhookUrl);
     console.log('Webhook Secret:', process.env.STRIPE_WEBHOOK_SECRET ? 'Set' : 'Missing');
