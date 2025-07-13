@@ -1,6 +1,3 @@
-// STRIPE WEBHOOK
-// /Users/matthewsimon/Documents/Github/soloist_pro/website/app/api/webhook/stripe/route.ts
-
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { ConvexHttpClient } from "convex/browser";
@@ -30,27 +27,18 @@ if (!convexUrl) {
 }
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2025-05-28.basil" as any,
+  apiVersion: "2025-04-30.basil" as any,
 });
 
 // Initialize Convex client
 const convex = new ConvexHttpClient(convexUrl || "");
 
 export async function POST(request: Request) {
-  console.log("=== WEBHOOK REQUEST RECEIVED ===");
-  console.log("Timestamp:", new Date().toISOString());
-  console.log("Request URL:", request.url);
-  console.log("Request method:", request.method);
-  
   try {
     console.log("Webhook request received");
     const body = await request.text();
-    console.log("Body length:", body.length);
-    console.log("Body preview:", body.substring(0, 100) + "...");
-    
     const signature = request.headers.get("stripe-signature");
     console.log("Webhook signature:", !!signature);
-    console.log("Signature value:", signature?.substring(0, 20) + "...");
 
     if (!signature) {
       console.error("Missing Stripe signature");
@@ -83,8 +71,6 @@ export async function POST(request: Request) {
     }
 
     console.log(`Received Stripe webhook event: ${event.type}`);
-    console.log("Event ID:", event.id);
-    console.log("Event data keys:", Object.keys(event.data.object));
 
     // Process the webhook event using our Convex function
     const eventData = event.data.object;
@@ -112,4 +98,4 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
-} 
+}

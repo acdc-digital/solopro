@@ -4,7 +4,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useQuery } from "convex/react";
+import { useQuery, useAction } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { parseISO, format } from "date-fns";
 import { useRouter } from "next/navigation";
@@ -59,11 +59,17 @@ export default function Dashboard() {
   const sidebarMargin = collapsed ? "ml-12" : "ml-52";
   const isBrowser = useBrowserEnvironment();
 
+  // Add a state to force refresh subscription status
+  const [refreshSubscription, setRefreshSubscription] = useState(false);
+
   // Check subscription status (now works for both browser and desktop mode)
   const hasActiveSubscription = useQuery(
     api.userSubscriptions.hasActiveSubscription,
     isAuthenticated && convexUserId ? {} : "skip"
   );
+
+  // Test function for simulating successful checkout
+  const simulateCheckout = useAction(api.stripe.simulateSuccessfulCheckout);
 
   // Redirect unauthenticated users to landing page (Electron mode only)
   useEffect(() => {
@@ -72,6 +78,40 @@ export default function Dashboard() {
       router.push("/");
     }
   }, [isBrowser, isAuthenticated, isLoading, router]);
+
+  // Handle payment success from Stripe
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const paymentStatus = urlParams.get('payment');
+    const sessionId = urlParams.get('session_id');
+    
+    if (paymentStatus === 'success' && sessionId) {
+      console.log('Payment successful, session ID:', sessionId);
+      
+      // Simulate the webhook processing for local development
+      simulateCheckout({ sessionId })
+        .then(() => {
+          console.log('Successfully simulated checkout completion');
+          // Show success message
+          alert('Payment successful! Your subscription has been activated.');
+          
+          // Force a refresh of the subscription status by triggering a re-render
+          setRefreshSubscription(prev => !prev);
+          
+          // Refresh the page after a short delay to allow the database to update
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
+        })
+        .catch((error) => {
+          console.error('Error simulating checkout:', error);
+          alert('Payment was successful, but there was an issue activating your subscription. Please contact support.');
+        });
+      
+      // Remove the URL parameters to clean up the URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, [simulateCheckout]);
 
   // Redirect non-subscribers away from testing view
   useEffect(() => {

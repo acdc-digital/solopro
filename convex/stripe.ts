@@ -75,20 +75,44 @@ export const handleWebhookEvent = internalAction({
  */
 async function handleCheckoutSessionCompleted(ctx: any, session: any) {
   console.log("Processing checkout.session.completed event");
+  console.log("Session object:", JSON.stringify(session, null, 2));
   
   try {
     // Extract customer information
     const customerId = session.customer;
     const customerEmail = session.customer_details?.email;
     
-    // Extract metadata from the session - we can set this in the client
-    const userId = session.client_reference_id;
+    // Extract the auth user ID from client_reference_id
+    const authUserId = session.client_reference_id;
     
-    if (!userId) {
-      console.error("No user ID in session metadata");
+    console.log("Extracted data:");
+    console.log("- customerId:", customerId);
+    console.log("- customerEmail:", customerEmail);
+    console.log("- authUserId:", authUserId);
+    console.log("- session.mode:", session.mode);
+    
+    if (!authUserId) {
+      console.error("No auth user ID in session client_reference_id");
+      console.log("Available session metadata:", session.metadata);
       return;
     }
     
+    // Find the Convex user ID using the auth ID
+    // Don't create a new user - the user should already exist
+    const existingUser = await ctx.runQuery(internal.users.getUserByAuthId, {
+      authId: authUserId
+    });
+    
+    if (!existingUser) {
+      console.error("User not found for auth ID:", authUserId);
+      return;
+    }
+    
+    const convexUserId = existingUser._id;
+    
+    console.log("Found existing Convex user ID:", convexUserId);
+    
+    console.log("Updating payment status for session:", session.id);
     // Update payment record in database
     await ctx.runMutation(internal.payments.updatePaymentStatus, {
       sessionId: session.id,
@@ -100,18 +124,32 @@ async function handleCheckoutSessionCompleted(ctx: any, session: any) {
     if (session.mode === "subscription") {
       const subscriptionId = session.subscription;
       
+      console.log("Found subscription ID:", subscriptionId);
+      
       if (subscriptionId) {
+        console.log("Fetching subscription details from Stripe...");
         // Fetch full subscription details from Stripe
         const stripe = await getStripe();
         const subscription = await stripe.subscriptions.retrieve(subscriptionId);
         
-        // Update user subscription status
+        console.log("Subscription details:", {
+          id: subscription.id,
+          status: subscription.status,
+          current_period_end: (subscription as any).current_period_end
+        });
+        
+        console.log("Creating/updating user subscription in database...");
+        // Update user subscription status - use Convex user ID
         await ctx.runMutation(internal.userSubscriptions.createOrUpdate, {
-          userId,
+          userId: authUserId, // Still pass the auth user ID as the function expects it
           subscriptionId,
           status: subscription.status,
-          currentPeriodEnd: (subscription as any).current_period_end
+          currentPeriodEnd: (subscription as any).current_period_end * 1000 // Convert to milliseconds
         });
+        
+        console.log("Successfully created/updated subscription for user:", authUserId);
+      } else {
+        console.log("No subscription ID found in session");
       }
     }
   } catch (error) {
@@ -218,3 +256,45 @@ export const createPaymentRecord = action({
     return { success: true };
   }
 }); 
+
+/**
+ * Test function to simulate a successful checkout - FOR DEVELOPMENT ONLY
+ * This simulates what would happen when a webhook is received
+ */
+export const simulateSuccessfulCheckout = action({
+  args: { 
+    sessionId: v.string()
+  },
+  handler: async (ctx, { sessionId }) => {
+    const identity = await ctx.auth.getUserIdentity();
+    
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+    
+    const userId = identity.subject;
+    
+    try {
+      // First, update the payment status
+      await ctx.runMutation(internal.payments.updatePaymentStatus, {
+        sessionId,
+        status: "complete",
+        customerId: "test_customer"
+      });
+      
+      // Then create a subscription record
+      await ctx.runMutation(internal.userSubscriptions.createOrUpdate, {
+        userId,
+        subscriptionId: `sub_test_${Date.now()}`,
+        status: "active",
+        currentPeriodEnd: Date.now() + (30 * 24 * 60 * 60 * 1000) // 30 days from now
+      });
+      
+      console.log("Successfully simulated checkout completion for user:", userId);
+      return { success: true };
+    } catch (error) {
+      console.error("Error simulating checkout:", error);
+      throw error;
+    }
+  }
+});

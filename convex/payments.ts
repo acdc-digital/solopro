@@ -1,6 +1,20 @@
 import { v } from "convex/values";
-import { internalMutation, query, mutation } from "./_generated/server";
+import { internalMutation, internalQuery, query, mutation, action } from "./_generated/server";
 import { Id } from "./_generated/dataModel";
+import { getAuthUserId } from "@convex-dev/auth/server";
+
+/**
+ * Get payment by Stripe session ID (internal)
+ */
+export const getBySessionId = internalQuery({
+  args: { sessionId: v.string() },
+  handler: async (ctx, { sessionId }) => {
+    return await ctx.db
+      .query("payments")
+      .filter((q) => q.eq(q.field("stripeSessionId"), sessionId))
+      .first();
+  },
+});
 
 /**
  * Create a new payment record
@@ -236,5 +250,101 @@ export const getPaymentById = query({
     }
     
     return payment;
+  },
+});
+
+/**
+ * Create a Stripe checkout session for the authenticated user
+ */
+export const createCheckoutSession = action({
+  args: {
+    priceId: v.string(),
+    paymentMode: v.optional(v.string()),
+    embeddedCheckout: v.optional(v.boolean()),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    
+    if (!identity) {
+      throw new Error("Authentication required");
+    }
+
+    // Get the Convex user ID using the auth service
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
+      throw new Error("User not found in database");
+    }
+
+    const authId = identity.subject;
+    // Use the Convex deployment URL for internal API calls
+    const convexDeploymentUrl = 'https://sleek-swordfish-420.convex.site';
+    const apiUrl = `${convexDeploymentUrl}/api/create-checkout-session`;
+
+    try {
+      console.log("Creating checkout session for user:", userId);
+      console.log("API URL:", apiUrl);
+      console.log("Request payload:", {
+        priceId: args.priceId,
+        paymentMode: args.paymentMode || 'subscription',
+        embeddedCheckout: args.embeddedCheckout !== false,
+        userId: userId,
+      });
+      
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          priceId: args.priceId,
+          paymentMode: args.paymentMode || 'subscription',
+          embeddedCheckout: args.embeddedCheckout !== false, // Default to true
+          userId: authId, // Pass the auth ID for webhook metadata
+          convexUserId: userId, // Pass the Convex user ID for database operations
+        }),
+      });
+
+      console.log("Response status:", response.status);
+      console.log("Response content-type:", response.headers.get('content-type'));
+
+      if (!response.ok) {
+        const responseText = await response.text();
+        console.error("Error response text:", responseText);
+        
+        let errorData;
+        try {
+          errorData = JSON.parse(responseText);
+        } catch (e) {
+          throw new Error(`HTTP ${response.status}: ${responseText || 'Unknown error'}`);
+        }
+        
+        throw new Error(`Failed to create checkout session: ${errorData.error || 'Unknown error'}`);
+      }
+
+      const responseText = await response.text();
+      console.log("Response text:", responseText);
+      console.log("Response text length:", responseText.length);
+      
+      if (!responseText) {
+        throw new Error("Empty response from checkout session API");
+      }
+      
+      let result;
+      try {
+        result = JSON.parse(responseText);
+        console.log("Parsed result:", result);
+        console.log("Client secret from result:", result.clientSecret);
+        console.log("Client secret length:", result.clientSecret?.length);
+      } catch (e) {
+        throw new Error(`Invalid JSON response: ${responseText}`);
+      }
+      
+      console.log("Checkout session created successfully:", result);
+      
+      return result;
+    } catch (error) {
+      console.error("Error creating checkout session:", error);
+      throw new Error(error instanceof Error ? error.message : "Failed to create checkout session");
+    }
   },
 }); 

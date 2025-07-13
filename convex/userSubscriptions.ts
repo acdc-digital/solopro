@@ -2,24 +2,67 @@ import { v } from "convex/values";
 import { internalMutation, internalQuery, query } from "./_generated/server";
 import { Id } from "./_generated/dataModel";
 import { getAuthUserId } from "@convex-dev/auth/server";
+import { internal } from "./_generated/api";
 
 /**
  * Create or update a user subscription
  */
 export const createOrUpdate = internalMutation({
   args: {
-    userId: v.string(),
+    userId: v.string(), // This will be the auth user ID
     subscriptionId: v.string(),
     status: v.string(),
     currentPeriodEnd: v.optional(v.number())
   },
   handler: async (ctx, args) => {
-    const { userId, subscriptionId, status, currentPeriodEnd } = args;
+    const { userId: authUserId, subscriptionId, status, currentPeriodEnd } = args;
+    
+    // Find the Convex user by auth ID with fallback logic
+    let convexUser = await ctx.db
+      .query("users")
+      .withIndex("byAuthId", (q) => q.eq("authId", authUserId))
+      .first();
+    
+    // If not found and authId contains pipe, try with just the first part
+    if (!convexUser && authUserId.includes('|')) {
+      const baseAuthId = authUserId.split('|')[0];
+      convexUser = await ctx.db
+        .query("users")
+        .withIndex("byAuthId", (q) => q.eq("authId", baseAuthId))
+        .first();
+      
+      if (convexUser) {
+        // Update the user's authId to the full format for future lookups
+        await ctx.db.patch(convexUser._id, { authId: authUserId });
+      }
+    }
+    
+    // If still not found, try to find by user ID (in case authUserId is actually a document ID)
+    if (!convexUser) {
+      try {
+        const userById = await ctx.db.get(authUserId as Id<"users">);
+        if (userById) {
+          convexUser = userById;
+          // Set the authId if it's missing
+          if (!userById.authId) {
+            await ctx.db.patch(userById._id, { authId: authUserId });
+          }
+        }
+      } catch (e) {
+        // Ignore invalid ID format errors
+      }
+    }
+    
+    if (!convexUser) {
+      throw new Error(`User not found for auth ID: ${authUserId}`);
+    }
+    
+    const convexUserId = convexUser._id;
     
     // Check if a subscription record already exists
     const existing = await ctx.db
       .query("userSubscriptions")
-      .withIndex("by_userId", (q) => q.eq("userId", userId as Id<"users">))
+      .withIndex("by_userId", (q) => q.eq("userId", convexUserId))
       .first();
     
     const now = Date.now();
@@ -36,7 +79,7 @@ export const createOrUpdate = internalMutation({
     } else {
       // Create new subscription record
       return await ctx.db.insert("userSubscriptions", {
-        userId: userId as Id<"users">,
+        userId: convexUserId,
         subscriptionId,
         status,
         currentPeriodEnd,
@@ -62,7 +105,9 @@ export const createOrUpdateFromStripe = internalMutation({
   handler: async (ctx, args) => {
     let userId: Id<"users"> | null = null;
     
-    // First try to find user by auth ID
+    console.log("Looking for user with identifier:", args.userIdOrEmail);
+    
+    // First try to find user by exact auth ID match
     const userByAuthId = await ctx.db
       .query("users")
       .withIndex("byAuthId", q => q.eq("authId", args.userIdOrEmail))
@@ -70,24 +115,52 @@ export const createOrUpdateFromStripe = internalMutation({
     
     if (userByAuthId) {
       userId = userByAuthId._id;
-      console.log("Found user by auth ID:", userId);
+      console.log("Found user by exact auth ID:", userId);
     }
     
-    // If not found by auth ID, try to find by email
-    if (!userId && args.customerEmail) {
-      const userByEmail = await ctx.db
-        .query("users")
-        .withIndex("email", q => q.eq("email", args.customerEmail))
-        .first();
-      
-      if (userByEmail) {
-        userId = userByEmail._id;
-        console.log("Found user by customer email:", userId);
+    // If not found, try interpreting the identifier as a Convex document ID
+    // (this handles the case where the auth ID is just the user ID)
+    if (!userId) {
+      try {
+        const userById = await ctx.db.get(args.userIdOrEmail as Id<"users">);
+        if (userById) {
+          userId = userById._id;
+          console.log("Found user by Convex document ID:", userId);
+          // Update the user's authId to match for future lookups
+          if (userById.authId !== args.userIdOrEmail) {
+            await ctx.db.patch(userById._id, { authId: args.userIdOrEmail });
+            console.log("Updated user's authId to:", args.userIdOrEmail);
+          }
+        }
+      } catch (e) {
+        // Ignore invalid ID format errors
+        console.log("Not a valid Convex document ID");
       }
     }
     
-    // If still not found, try the userIdOrEmail as email
-    if (!userId) {
+    // If still not found and identifier contains pipe, try with just the first part
+    // (for backwards compatibility with old auth ID format)
+    if (!userId && args.userIdOrEmail.includes('|')) {
+      const baseAuthId = args.userIdOrEmail.split('|')[0];
+      console.log("Trying base auth ID:", baseAuthId);
+      
+      const userByBaseAuthId = await ctx.db
+        .query("users")
+        .withIndex("byAuthId", q => q.eq("authId", baseAuthId))
+        .first();
+      
+      if (userByBaseAuthId) {
+        userId = userByBaseAuthId._id;
+        console.log("Found user by base auth ID:", userId);
+        // Update the user's authId to the current format for future lookups
+        await ctx.db.patch(userByBaseAuthId._id, { authId: args.userIdOrEmail });
+        console.log("Updated user's authId from base to full format");
+      }
+    }
+    
+    // Only as last resort, if identifier looks like an email, try email lookup
+    if (!userId && args.userIdOrEmail.includes('@')) {
+      console.log("Falling back to email lookup for:", args.userIdOrEmail);
       const userByEmail = await ctx.db
         .query("users")
         .withIndex("email", q => q.eq("email", args.userIdOrEmail))
@@ -95,20 +168,7 @@ export const createOrUpdateFromStripe = internalMutation({
       
       if (userByEmail) {
         userId = userByEmail._id;
-        console.log("Found user by userIdOrEmail as email:", userId);
-      }
-    }
-    
-    // Fallback: try interpreting userIdOrEmail as a Convex document ID
-    if (!userId) {
-      try {
-        const userById = await ctx.db.get(args.userIdOrEmail as Id<"users">);
-        if (userById) {
-          userId = userById._id;
-          console.log("Found user by Convex document ID:", userId);
-        }
-      } catch (e) {
-        // Ignore invalid ID format errors (means string wasn't a valid Id)
+        console.log("Found user by email fallback:", userId);
       }
     }
     
@@ -250,46 +310,70 @@ export const getUserIdBySubscriptionId = internalQuery({
 export const hasActiveSubscription = query({
   args: {},
   handler: async (ctx) => {
-    // Use getAuthUserId to get the correct user ID format
-    const userId = await getAuthUserId(ctx);
+    // Use getAuthUserId to get the Convex user ID
+    const convexUserId = await getAuthUserId(ctx);
 
-    console.log("hasActiveSubscription - userId from getAuthUserId:", userId);
+    console.log("hasActiveSubscription - convexUserId from getAuthUserId:", convexUserId);
 
-    if (!userId) {
-      console.log("hasActiveSubscription - No userId, returning false");
+    if (!convexUserId) {
+      console.log("hasActiveSubscription - No convexUserId, returning false");
       return false;
     }
 
-    const subscription = await ctx.db
+    // First, let's find subscriptions using the Convex user ID
+    let subscription = await ctx.db
       .query("userSubscriptions")
-      .withIndex("by_userId", (q) => q.eq("userId", userId as Id<"users">))
+      .withIndex("by_userId", (q) => q.eq("userId", convexUserId))
       .first();
 
-    console.log("hasActiveSubscription - subscription found:", subscription);
+    console.log("hasActiveSubscription - subscription found by convex user ID:", subscription);
 
+    // If no subscription found by Convex user ID, try to find by auth user ID
+    // by looking up the user's auth ID first
     if (!subscription) {
-      console.log("hasActiveSubscription - No subscription found, returning false");
-      return false;
+      const user = await ctx.db.get(convexUserId);
+      if (user?.authId) {
+        console.log("hasActiveSubscription - trying to find subscription by auth ID:", user.authId);
+        
+        // Look for subscription records that might have been stored with auth ID
+        subscription = await ctx.db
+          .query("userSubscriptions")
+          .filter((q) => q.eq(q.field("userId"), user.authId as any))
+          .first();
+        
+        console.log("hasActiveSubscription - subscription found by auth ID:", subscription);
+      }
+      
+      if (!subscription) {
+        console.log("hasActiveSubscription - No subscription found anywhere, returning false");
+        return false;
+      }
     }
 
-    // Check if status is active
-    const isActive = subscription.status === "active" ||
-                    subscription.status === "trialing";
-
-    // Check if subscription is not expired (if there's an end date)
-    const currentTime = Date.now() / 1000;
-    const isNotExpired = !subscription.currentPeriodEnd ||
-                        subscription.currentPeriodEnd > currentTime;
-
-    console.log("hasActiveSubscription - isActive:", isActive, "isNotExpired:", isNotExpired);
-    console.log("hasActiveSubscription - currentTime:", currentTime, "currentPeriodEnd:", subscription.currentPeriodEnd);
-
-    const result = isActive && isNotExpired;
-    console.log("hasActiveSubscription - final result:", result);
-
-    return result;
+    return checkSubscriptionActive(subscription);
   }
 });
+
+// Helper function to check if subscription is active
+function checkSubscriptionActive(subscription: any) {
+  // Check if status is active
+  const isActive = subscription.status === "active" ||
+                  subscription.status === "trialing";
+
+  // Check if subscription is not expired (if there's an end date)
+  // Note: currentPeriodEnd is stored in seconds, but Date.now() returns milliseconds
+  const currentTimeSeconds = Math.floor(Date.now() / 1000);
+  const isNotExpired = !subscription.currentPeriodEnd ||
+                      subscription.currentPeriodEnd > currentTimeSeconds;
+
+  console.log("checkSubscriptionActive - isActive:", isActive, "isNotExpired:", isNotExpired);
+  console.log("checkSubscriptionActive - currentTimeSeconds:", currentTimeSeconds, "currentPeriodEnd:", subscription.currentPeriodEnd);
+
+  const result = isActive && isNotExpired;
+  console.log("checkSubscriptionActive - final result:", result);
+
+  return result;
+}
 
 /**
  * Get current user's subscription details

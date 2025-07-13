@@ -17,7 +17,8 @@ import {
   X,
   HomeIcon,
   Shield,
-  LogOut
+  LogOut,
+  Crown
 } from "lucide-react";
 import { useConvexUser } from "@/hooks/useConvexUser";
 import { useQuery } from "convex/react";
@@ -33,6 +34,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ProfileModal } from "@/components/ProfileModal";
+import { PricingModal } from "@/components/PricingModal";
 
 export function BrowserNavbar() {
   const { isAuthenticated, userId } = useConvexUser();
@@ -40,6 +42,7 @@ export function BrowserNavbar() {
   const { currentView, setView } = useSidebarStore();
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = React.useState(false);
+  const [isPricingModalOpen, setIsPricingModalOpen] = React.useState(false);
 
   // Get user details
   const user = useQuery(
@@ -96,6 +99,10 @@ export function BrowserNavbar() {
     setIsProfileModalOpen(false);
   };
 
+  const handleSubscribeClick = () => {
+    setIsPricingModalOpen(true);
+  };
+
   if (!isAuthenticated) {
     return null; // Don't show navbar if not authenticated
   }
@@ -125,6 +132,18 @@ export function BrowserNavbar() {
 
           {/* Right side actions */}
           <div className="flex items-center gap-3">
+            {/* Upgrade Button for non-subscribers */}
+            {hasActiveSubscription === false && (
+              <Button
+                onClick={handleSubscribeClick}
+                size="sm"
+                className="h-8 px-6 text-xs bg-gradient-to-r from-emerald-500 to-emerald-500 hover:from-emerald-600 hover:to-emerald-700 text-white border-0 shadow-[0_2px_8px_rgba(16,185,129,0.25)] hover:shadow-[0_4px_12px_rgba(16,185,129,0.35)] transition-all duration-200"
+              >
+                <Crown className="w-3 h-3 mr-1" />
+                Upgrade
+              </Button>
+            )}
+
             {/* User Menu */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -198,6 +217,12 @@ export function BrowserNavbar() {
       <ProfileModal
         open={isProfileModalOpen}
         onOpenChange={setIsProfileModalOpen}
+      />
+
+      {/* Pricing Modal */}
+      <PricingModal
+        open={isPricingModalOpen}
+        onOpenChange={setIsPricingModalOpen}
       />
     </div>
   );

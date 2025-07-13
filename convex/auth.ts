@@ -2,6 +2,7 @@ import { convexAuth } from "@convex-dev/auth/server";
 import { query } from "./_generated/server";
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { internal } from "./_generated/api";
+import { Id } from "./_generated/dataModel";
 import { CustomPassword } from "./CustomPassword";
 import { ResendOTPPasswordReset } from "./ResendOTPPasswordReset";
 
@@ -15,6 +16,13 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
       if (!existingUserId) {
         // Set default role to "user" for new users only
         await ctx.runMutation(internal.admin.setDefaultRole, { userId });
+        
+        // Set the authId for the new user
+        // The userId here is the auth ID that Convex Auth generates
+        await ctx.runMutation(internal.users.setUserAuthId, {
+          userId: userId as Id<"users">,
+          authId: userId
+        });
       }
     },
   },

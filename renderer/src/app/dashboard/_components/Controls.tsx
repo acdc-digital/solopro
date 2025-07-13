@@ -67,6 +67,7 @@ export default function Controls({
   // --- State from Feed Store ---
   const activeTab = useFeedStore((state) => state.activeTab);
   const setActiveTab = useFeedStore((state) => state.setActiveTab);
+  const setSidebarOpen = useFeedStore((state) => state.setSidebarOpen);
 
   // Define your year range however you like
   const minYear = 1970;
@@ -90,6 +91,8 @@ export default function Controls({
   const handleTabChange = (value: string) => {
     if (value === "log" || value === "feed") {
       setActiveTab(value as RightSidebarTab);
+      // Always open the sidebar when switching tabs
+      setSidebarOpen(true);
     }
   };
 

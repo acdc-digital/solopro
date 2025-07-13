@@ -137,15 +137,41 @@ export const processStripeWebhook = mutation({
         
         case "customer.subscription.updated":
         case "customer.subscription.created": {
-          const { id, status, current_period_end, metadata, customer_email } = data;
+          console.log("Full subscription event data:", JSON.stringify(data, null, 2));
           
-          // Get user identifier from metadata or customer email
-          const userIdentifier = metadata?.userId || customer_email;
+          const { id, status, current_period_end, metadata, customer, customer_email } = data;
+          
+          console.log("Subscription event data:", { id, status, metadata, customer, customer_email });
+          
+          // Get user identifier from multiple sources in order of preference
+          let userIdentifier = metadata?.userId ||
+                              metadata?.user_id ||
+                              customer_email;
+          
+          // If we have a customer ID but no user identifier yet, we'll need to get it from the customer
+          // For now, let's try to get it from the customer email
+          if (!userIdentifier && customer) {
+            // The customer field should contain the customer ID, we might need customer_email
+            console.log("No user identifier in metadata, trying customer email");
+            userIdentifier = customer_email;
+          }
           
           if (!userIdentifier) {
-            console.error("No user identifier found in subscription event");
-            return { success: false, error: "No user identifier found" };
+            console.error("No user identifier found in subscription event", {
+              metadata,
+              customer,
+              customer_email,
+              available_fields: Object.keys(data),
+              full_data: data
+            });
+            
+            // For now, let's continue and not fail the webhook
+            // The subscription should have been created by the checkout.session.completed event
+            console.log("Allowing subscription event to pass without processing");
+            return { success: true, message: "Subscription event acknowledged but not processed due to missing user identifier" };
           }
+          
+          console.log(`Processing subscription ${id} for user: ${userIdentifier}`);
           
           try {
             await ctx.runMutation(internal.userSubscriptions.createOrUpdateFromStripe, {

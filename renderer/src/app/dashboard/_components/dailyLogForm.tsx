@@ -630,7 +630,7 @@ export default function DailyLogForm({ onClose, date, hasActiveSubscription, sho
       </div>
 
       {/* Enhanced Footer with better save button */}
-      <div className="sticky bottom-0 w-full border-t border-zinc-200 bg-white px-4 py-4">
+      <div className="sticky bottom-0 w-full border-t border-zinc-200 bg-white px-4 py-3">
         {error && (
           <div className="flex items-center space-x-2 mb-3 p-3 bg-red-50 border border-red-200 rounded-md text-red-700">
             <AlertCircle size={16} />
@@ -645,7 +645,7 @@ export default function DailyLogForm({ onClose, date, hasActiveSubscription, sho
             className={`${
               showSuccess
                 ? "bg-emerald-600 shadow-[0_4px_12px_rgba(16,185,129,0.4)]"
-                : "bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 shadow-[0_4px_12px_rgba(16,185,129,0.25)] hover:shadow-[0_6px_16px_rgba(16,185,129,0.35)] hover:scale-105"
+                : "bg-gradient-to-r from-emerald-500 to-emerald-500 hover:from-emerald-600 hover:to-emerald-700 shadow-[0_4px_12px_rgba(16,185,129,0.25)] hover:shadow-[0_6px_16px_rgba(16,185,129,0.35)] hover:scale-105"
             } text-white px-6 py-2.5 rounded-md transition-all duration-200 font-medium`}
           >
             {showSuccess ? (

@@ -3,15 +3,17 @@
 
 'use client'
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
-import { Download, ChevronRight } from "lucide-react";
+import { Download, ChevronRight, Sparkles } from "lucide-react";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useConvexUser } from "@/lib/hooks/useConvexUser";
 import { HeroFeature } from "./HeroFeature";
 import { DocsModal } from "./Docs";
 import { DownloadModal } from "./DownloadModal";
+import { StripeCheckoutModal } from "@/modals/StripeCheckoutModal";
+import { SignInModal } from "@/modals/SignInModal";
 
 type ButtonProps = {
   children: React.ReactNode;
@@ -52,8 +54,47 @@ export const Hero = () => {
     isAuthenticated && userId ? {} : "skip"
   );
 
-  // Determine if downloads should be enabled
-  const downloadsEnabled = isAuthenticated && hasActiveSubscription === true;
+  // Modal states
+  const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
+  const [isSignInModalOpen, setIsSignInModalOpen] = useState(false);
+
+  // Determine button behavior based on auth and subscription status
+  const isSignedInAndSubscribed = isAuthenticated && hasActiveSubscription === true;
+  const shouldShowStartNow = !isSignedInAndSubscribed;
+
+  // Pro tier configuration (matching Pricing component)
+  const proTierConfig = {
+    name: "Pro",
+    priceId: "price_1RYaXeD4wGLfhDePZlRBINbJ",
+    paymentMode: "subscription" as const
+  };
+
+  const handleStartNowClick = () => {
+    if (!isAuthenticated) {
+      // Show sign-in modal for unauthenticated users
+      setIsSignInModalOpen(true);
+    } else if (hasActiveSubscription === false) {
+      // Show checkout modal for authenticated users without subscription
+      setIsCheckoutModalOpen(true);
+    }
+  };
+
+  const handleAuthSuccess = () => {
+    // Hide sign-in modal and show checkout modal after successful sign-in
+    setIsSignInModalOpen(false);
+    // Small delay to ensure UI state is updated
+    setTimeout(() => {
+      setIsCheckoutModalOpen(true);
+    }, 100);
+  };
+
+  const handleCloseCheckoutModal = () => {
+    setIsCheckoutModalOpen(false);
+  };
+
+  const handleCloseSignInModal = () => {
+    setIsSignInModalOpen(false);
+  };
 
   return (
     <section className="py-4 md:py-6 container mx-auto px-4">
@@ -72,12 +113,26 @@ export const Hero = () => {
             </p>
             
             <div className="flex flex-wrap gap-4">
-              <DownloadModal>
-                <Button variant="emerald" className="h-12 flex items-center gap-2 opacity-95" disabled={!downloadsEnabled}>
-                  <Download size={18} aria-hidden="true" />
-                  Download App
+              {shouldShowStartNow ? (
+                // Show "Start Now" for non-subscribers
+                <Button
+                  variant="emerald"
+                  className="h-12 flex items-center gap-2 opacity-95 pr-8 pl-6"
+                  onClick={handleStartNowClick}
+                >
+                  <Sparkles size={18} aria-hidden="true" />
+                  Start Now
                 </Button>
-              </DownloadModal>
+              ) : (
+                // Show "Download App" for subscribed users
+                <DownloadModal>
+                  <Button variant="emerald" className="h-12 flex items-center gap-2 opacity-95">
+                    <Download size={18} aria-hidden="true" />
+                    Download App
+                  </Button>
+                </DownloadModal>
+              )}
+              
               <DocsModal>
                 <Button 
                   variant="light-emerald" 
@@ -86,15 +141,6 @@ export const Hero = () => {
                   Learn More <ChevronRight size={18} aria-hidden="true" />
                 </Button>
               </DocsModal>
-              {/* <DemoModal>
-                <Button 
-                  variant="light-emerald" 
-                  className="h-12 flex items-center gap-2"
-                  // onClick={() => console.log("Demo button clicked!")}
-                >
-                  Get Started <ChevronRight size={16} aria-hidden="true" />
-                </Button>
-              </DemoModal> */}
             </div>
             
             <p className="text-sm text-gray-900 pt-4">
@@ -111,6 +157,23 @@ export const Hero = () => {
           <HeroFeature />
         </div>
       </div>
+
+      {/* Stripe Checkout Modal */}
+      <StripeCheckoutModal
+        isOpen={isCheckoutModalOpen}
+        onClose={handleCloseCheckoutModal}
+        priceId={proTierConfig.priceId}
+        productName={proTierConfig.name}
+        paymentMode={proTierConfig.paymentMode}
+      />
+
+      {/* Sign In Modal */}
+      <SignInModal
+        isOpen={isSignInModalOpen}
+        onClose={handleCloseSignInModal}
+        onAuthSuccess={handleAuthSuccess}
+        initialFlow="signIn"
+      />
     </section>
   );
 };

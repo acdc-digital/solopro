@@ -188,8 +188,16 @@ export function Sidebar({ className }: SidebarProps) {
   };
   
   const handleDownload = () => {
-    // Open the main website in a new tab/window for downloads
-    window.open(process.env.NEXT_PUBLIC_WEBSITE_URL || "https://www.acdc.digital", "_blank");
+    // Direct download for the desktop application
+    const downloadUrl = 'https://github.com/acdc-digital/solopro/releases/download/v1.6.6/Soloist.Pro-1.6.6-x64.dmg';
+
+    // Create a temporary link and trigger download
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.download = 'Soloist.Pro-1.6.6-x64.dmg';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
   
   const handleProfileClick = () => {
@@ -278,13 +286,26 @@ export function Sidebar({ className }: SidebarProps) {
                   </p>
                   <div className="relative pl-2 pr-4">
                     <Button
-                      onClick={handleDownload}
-                      className="w-full h-9 justify-start px-3 text-sm font-normal bg-emerald-600/10 dark:bg-emerald-600/10 border border-emerald-600/20 dark:border-emerald-700/20 hover:bg-emerald-600/15 dark:hover:bg-emerald-600/15 text-emerald-700 dark:text-emerald-300 backdrop-blur-sm"
+                      onClick={effectiveSubscription ? handleDownload : undefined}
+                      disabled={!effectiveSubscription}
+                      className={cn(
+                        "w-full h-9 justify-start px-3 text-sm font-normal backdrop-blur-sm",
+                        effectiveSubscription
+                          ? "bg-emerald-600/10 dark:bg-emerald-600/10 border border-emerald-600/20 dark:border-emerald-700/20 hover:bg-emerald-600/15 dark:hover:bg-emerald-600/15 text-emerald-700 dark:text-emerald-300"
+                          : "bg-zinc-400/15 dark:bg-zinc-700/20 border border-zinc-400/40 dark:border-zinc-600/50 text-zinc-500 dark:text-zinc-400 cursor-not-allowed opacity-70"
+                      )}
                       variant="outline"
                     >
                       <Download className="mr-3 h-4 w-4 flex-shrink-0" />
-                      Download Desktop App
+                      <span className="truncate">Download App</span>
                     </Button>
+                    {!effectiveSubscription && (
+                      <div className="mt-1 ml-1">
+                        <span className="inline-block px-2 py-0.5 text-[10px] font-medium bg-red-600/90 text-white rounded-full">
+                          Subscribe to download
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}

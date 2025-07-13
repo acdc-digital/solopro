@@ -31,7 +31,7 @@
     "@stripe/stripe-js": "^7.3.0",
     "convex": "^1.24.1",
     "date-fns": "^4.1.0",
-    "dotenv": "^16.5.0",
+    "dotenv": "^16.6.1",
     "lucide-react": "^0.511.0",
     "oslo": "1.2.1",
     "resend": "^4.6.0",

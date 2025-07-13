@@ -1,5 +1,5 @@
 import { ConvexError, v } from "convex/values";
-import { internalMutation, query, QueryCtx, mutation } from "./_generated/server";
+import { internalMutation, internalQuery, query, QueryCtx, mutation } from "./_generated/server";
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { Id } from "./_generated/dataModel";
 
@@ -28,6 +28,33 @@ export const currentUser = query({
       return null;
     }
     return await getUserById(ctx, userId);
+  },
+});
+
+/**
+ * Get user by email (internal function)
+ */
+export const getUserByEmail = internalQuery({
+  args: { email: v.string() },
+  handler: async (ctx, { email }) => {
+    const user = await ctx.db
+      .query("users")
+      .withIndex("email", (q) => q.eq("email", email))
+      .first();
+    
+    if (!user) {
+      return null;
+    }
+    
+    return {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      image: user.image,
+      emailVerificationTime: user.emailVerificationTime,
+      phone: user.phone,
+      isAnonymous: user.isAnonymous,
+    };
   },
 });
 
@@ -140,9 +167,9 @@ export const deleteAccount = internalMutation({
 });
 
 /**
- * Check if user exists by email
+ * Check if user exists by email (public query)
  */
-export const getUserByEmail = query({
+export const getUserByEmailPublic = query({
   args: {
     email: v.string(),
   },
@@ -268,6 +295,434 @@ export const createUserFromAuth = internalMutation({
     });
     return userId;
   },
+});
+
+/**
+ * Internal query to get user by auth ID
+ */
+export const getUserByAuthId = internalQuery({
+  args: { authId: v.string() },
+  handler: async (ctx, { authId }) => {
+    // First try exact match
+    let user = await ctx.db
+      .query("users")
+      .withIndex("byAuthId", q => q.eq("authId", authId))
+      .first();
+    
+    if (user) {
+      return user;
+    }
+    
+    // If no exact match and authId contains pipe, try with just the first part
+    if (authId.includes('|')) {
+      const baseAuthId = authId.split('|')[0];
+      user = await ctx.db
+        .query("users")
+        .withIndex("byAuthId", q => q.eq("authId", baseAuthId))
+        .first();
+      
+      if (user) {
+        // Update the user's authId to the full format for future lookups
+        await ctx.db.patch(user._id, { authId });
+        return { ...user, authId };
+      }
+    }
+    
+    return null;
+  }
+});
+
+/**
+ * Internal mutation to clear all authentication data for an email
+ * This helps when authentication is cached but user data is deleted
+ */
+export const clearAuthenticationData = internalMutation({
+  args: { 
+    email: v.string()
+  },
+  handler: async (ctx, { email }) => {
+    console.log(`Clearing authentication data for email: ${email}`);
+    
+    // Check if there are any remaining auth-related records
+    // Note: Convex Auth manages internal tables we can't directly access
+    
+    // Check for any remaining user records with this email
+    const users = await ctx.db
+      .query("users")
+      .withIndex("email", q => q.eq("email", email))
+      .collect();
+    
+    console.log(`Found ${users.length} remaining user records`);
+    
+    // Also check for users that might have different case variations
+    const allUsers = await ctx.db.query("users").collect();
+    const emailVariations = allUsers.filter(user => 
+      user.email && user.email.toLowerCase() === email.toLowerCase()
+    );
+    
+    console.log(`Found ${emailVariations.length} users with email variations`);
+    
+    // Delete any remaining user records
+    for (const user of emailVariations) {
+      console.log(`Deleting user: ${user._id}, email: ${user.email}, authId: ${user.authId}`);
+      await ctx.db.delete(user._id);
+    }
+    
+    return {
+      deletedUsers: emailVariations.length,
+      message: "Cleared remaining user data. For complete auth cleanup, user should clear browser storage and cookies."
+    };
+  }
+});
+
+/**
+ * Internal query to debug authentication issues
+ */
+export const debugAuthenticationData = internalQuery({
+  args: { 
+    email: v.string()
+  },
+  handler: async (ctx, { email }) => {
+    // Get all users to check for any matches
+    const allUsers = await ctx.db.query("users").collect();
+    
+    const exactMatches = allUsers.filter(user => user.email === email);
+    const caseInsensitiveMatches = allUsers.filter(user => 
+      user.email && user.email.toLowerCase() === email.toLowerCase()
+    );
+    const authIdMatches = allUsers.filter(user => 
+      user.authId && user.authId.includes(email)
+    );
+    
+    return {
+      searchEmail: email,
+      exactMatches: exactMatches.map(u => ({ _id: u._id, email: u.email, authId: u.authId })),
+      caseInsensitiveMatches: caseInsensitiveMatches.map(u => ({ _id: u._id, email: u.email, authId: u.authId })),
+      authIdMatches: authIdMatches.map(u => ({ _id: u._id, email: u.email, authId: u.authId })),
+      totalUsers: allUsers.length,
+      hint: "If no matches found but auth still recognizes user, clear browser storage and cookies"
+    };
+  }
+});
+
+/**
+ * Internal mutation to completely delete a user and all associated data
+ */
+export const completeUserDeletion = internalMutation({
+  args: { 
+    email: v.string()
+  },
+  handler: async (ctx, { email }) => {
+    console.log(`Starting complete deletion for email: ${email}`);
+    
+    // Find all users with this email
+    const users = await ctx.db
+      .query("users")
+      .withIndex("email", q => q.eq("email", email))
+      .collect();
+    
+    console.log(`Found ${users.length} user(s) with email ${email}`);
+    
+    let deletionSummary = {
+      usersDeleted: 0,
+      subscriptionsDeleted: 0,
+      paymentsDeleted: 0,
+      logsDeleted: 0,
+      forecastsDeleted: 0,
+      feedDeleted: 0,
+      attributesDeleted: 0,
+      randomizerDeleted: 0,
+      feedTagsDeleted: 0
+    };
+    
+    for (const user of users) {
+      console.log(`Deleting data for user: ${user._id}, authId: ${user.authId}`);
+      
+      // Delete subscriptions
+      const subscriptions = await ctx.db
+        .query("userSubscriptions")
+        .withIndex("by_userId", q => q.eq("userId", user._id))
+        .collect();
+      
+      for (const subscription of subscriptions) {
+        await ctx.db.delete(subscription._id);
+        deletionSummary.subscriptionsDeleted++;
+      }
+      
+      // Delete payments
+      const payments = await ctx.db
+        .query("payments")
+        .withIndex("by_userId", q => q.eq("userId", user._id))
+        .collect();
+      
+      for (const payment of payments) {
+        await ctx.db.delete(payment._id);
+        deletionSummary.paymentsDeleted++;
+      }
+      
+      // Delete logs
+      const logs = await ctx.db
+        .query("logs")
+        .withIndex("byUserDate", q => q.eq("userId", user._id))
+        .collect();
+      
+      for (const log of logs) {
+        await ctx.db.delete(log._id);
+        deletionSummary.logsDeleted++;
+      }
+      
+      // Delete forecasts
+      const forecasts = await ctx.db
+        .query("forecast")
+        .withIndex("byUserDate", q => q.eq("userId", user._id))
+        .collect();
+      
+      for (const forecast of forecasts) {
+        await ctx.db.delete(forecast._id);
+        deletionSummary.forecastsDeleted++;
+      }
+      
+      // Delete feed entries
+      const feedEntries = await ctx.db
+        .query("feed")
+        .filter(q => q.eq(q.field("userId"), user._id))
+        .collect();
+      
+      for (const feedEntry of feedEntries) {
+        await ctx.db.delete(feedEntry._id);
+        deletionSummary.feedDeleted++;
+      }
+      
+      // Delete user attributes
+      const attributes = await ctx.db
+        .query("userAttributes")
+        .withIndex("byUserId", q => q.eq("userId", user._id))
+        .collect();
+      
+      for (const attribute of attributes) {
+        await ctx.db.delete(attribute._id);
+        deletionSummary.attributesDeleted++;
+      }
+      
+      // Delete randomizer entries
+      const randomizers = await ctx.db
+        .query("randomizer")
+        .withIndex("byUserId", q => q.eq("userId", user._id))
+        .collect();
+      
+      for (const randomizer of randomizers) {
+        await ctx.db.delete(randomizer._id);
+        deletionSummary.randomizerDeleted++;
+      }
+      
+      // Delete feed tags
+      const feedTags = await ctx.db
+        .query("feedTags")
+        .withIndex("byUserId", q => q.eq("userId", user._id))
+        .collect();
+      
+      for (const feedTag of feedTags) {
+        await ctx.db.delete(feedTag._id);
+        deletionSummary.feedTagsDeleted++;
+      }
+      
+      // Finally, delete the user
+      await ctx.db.delete(user._id);
+      deletionSummary.usersDeleted++;
+    }
+    
+    // Also check for auth session records in auth tables
+    // Note: Convex Auth manages these internally, but let's log what we find
+    console.log(`Deletion summary:`, deletionSummary);
+    
+    return deletionSummary;
+  }
+});
+
+/**
+ * Internal query to find all data associated with an email
+ */
+export const findAllUserData = internalQuery({
+  args: { 
+    email: v.string()
+  },
+  handler: async (ctx, { email }) => {
+    // Find all users with this email
+    const users = await ctx.db
+      .query("users")
+      .withIndex("email", q => q.eq("email", email))
+      .collect();
+    
+    let summary = {
+      users: users.length,
+      subscriptions: 0,
+      payments: 0,
+      logs: 0,
+      forecasts: 0,
+      feed: 0,
+      attributes: 0,
+      randomizer: 0,
+      feedTags: 0,
+      userDetails: users.map(u => ({
+        _id: u._id,
+        email: u.email,
+        authId: u.authId,
+        _creationTime: u._creationTime
+      }))
+    };
+    
+    for (const user of users) {
+      // Count subscriptions
+      const subscriptions = await ctx.db
+        .query("userSubscriptions")
+        .withIndex("by_userId", q => q.eq("userId", user._id))
+        .collect();
+      summary.subscriptions += subscriptions.length;
+      
+      // Count payments
+      const payments = await ctx.db
+        .query("payments")
+        .withIndex("by_userId", q => q.eq("userId", user._id))
+        .collect();
+      summary.payments += payments.length;
+      
+      // Count logs
+      const logs = await ctx.db
+        .query("logs")
+        .withIndex("byUserDate", q => q.eq("userId", user._id))
+        .collect();
+      summary.logs += logs.length;
+      
+      // Count forecasts
+      const forecasts = await ctx.db
+        .query("forecast")
+        .withIndex("byUserDate", q => q.eq("userId", user._id))
+        .collect();
+      summary.forecasts += forecasts.length;
+      
+      // Count feed entries
+      const feedEntries = await ctx.db
+        .query("feed")
+        .filter(q => q.eq(q.field("userId"), user._id))
+        .collect();
+      summary.feed += feedEntries.length;
+      
+      // Count attributes
+      const attributes = await ctx.db
+        .query("userAttributes")
+        .withIndex("byUserId", q => q.eq("userId", user._id))
+        .collect();
+      summary.attributes += attributes.length;
+      
+      // Count randomizer
+      const randomizers = await ctx.db
+        .query("randomizer")
+        .withIndex("byUserId", q => q.eq("userId", user._id))
+        .collect();
+      summary.randomizer += randomizers.length;
+      
+      // Count feed tags
+      const feedTags = await ctx.db
+        .query("feedTags")
+        .withIndex("byUserId", q => q.eq("userId", user._id))
+        .collect();
+      summary.feedTags += feedTags.length;
+    }
+    
+    return summary;
+  }
+});
+
+/**
+ * Internal query to find duplicate users created during payment
+ */
+export const findDuplicateUsers = internalQuery({
+  args: {},
+  handler: async (ctx) => {
+    const allUsers = await ctx.db.query("users").collect();
+    
+    // Find users with authId containing pipe character (indicating duplicate)
+    const duplicateUsers = allUsers.filter(user => 
+      user.authId && user.authId.includes('|') && user.authId.split('|').length > 2
+    );
+    
+    return duplicateUsers.map(user => ({
+      _id: user._id,
+      authId: user.authId,
+      email: user.email,
+      _creationTime: user._creationTime
+    }));
+  }
+});
+
+/**
+ * Internal mutation to clean up duplicate users
+ */
+export const cleanupDuplicateUser = internalMutation({
+  args: { 
+    duplicateUserId: v.id("users"),
+    originalAuthId: v.string()
+  },
+  handler: async (ctx, { duplicateUserId, originalAuthId }) => {
+    // Find the original user
+    const originalUser = await ctx.db
+      .query("users")
+      .withIndex("byAuthId", q => q.eq("authId", originalAuthId))
+      .first();
+    
+    if (!originalUser) {
+      throw new Error(`Original user not found for auth ID: ${originalAuthId}`);
+    }
+    
+    // Move any subscriptions from duplicate user to original user
+    const subscriptions = await ctx.db
+      .query("userSubscriptions")
+      .withIndex("by_userId", q => q.eq("userId", duplicateUserId))
+      .collect();
+    
+    for (const subscription of subscriptions) {
+      // Check if original user already has a subscription
+      const existingSubscription = await ctx.db
+        .query("userSubscriptions")
+        .withIndex("by_userId", q => q.eq("userId", originalUser._id))
+        .first();
+      
+      if (existingSubscription) {
+        // Update existing subscription with newer data
+        await ctx.db.patch(existingSubscription._id, {
+          subscriptionId: subscription.subscriptionId,
+          status: subscription.status,
+          currentPeriodEnd: subscription.currentPeriodEnd,
+          updatedAt: Date.now()
+        });
+        
+        // Delete the duplicate subscription
+        await ctx.db.delete(subscription._id);
+      } else {
+        // Move subscription to original user
+        await ctx.db.patch(subscription._id, {
+          userId: originalUser._id
+        });
+      }
+    }
+    
+    // Move any payments from duplicate user to original user
+    const payments = await ctx.db
+      .query("payments")
+      .withIndex("by_userId", q => q.eq("userId", duplicateUserId))
+      .collect();
+    
+    for (const payment of payments) {
+      await ctx.db.patch(payment._id, {
+        userId: originalUser._id
+      });
+    }
+    
+    // Delete the duplicate user
+    await ctx.db.delete(duplicateUserId);
+    
+    return { success: true, movedSubscriptions: subscriptions.length, movedPayments: payments.length };
+  }
 });
 
 /**
@@ -435,5 +890,43 @@ export const exportUserData = query({
       exportedAt: new Date().toISOString(),
       totalLogs: dailyLogs.length,
     };
+  },
+});
+
+/**
+ * Internal query to find subscription data for debugging
+ */
+export const debugSubscriptionData = internalQuery({
+  args: {
+    userId: v.id("users")
+  },
+  handler: async (ctx, { userId }) => {
+    // Get subscription for this user
+    const subscription = await ctx.db
+      .query("userSubscriptions")
+      .withIndex("by_userId", q => q.eq("userId", userId))
+      .first();
+    
+    return {
+      userId,
+      subscription,
+      hasSubscription: !!subscription,
+      subscriptionStatus: subscription?.status || null
+    };
+  }
+});
+
+/**
+ * Internal mutation to set user's auth ID when created
+ */
+export const setUserAuthId = internalMutation({
+  args: {
+    userId: v.id("users"),
+    authId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.userId, {
+      authId: args.authId
+    });
   },
 });

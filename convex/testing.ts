@@ -1,6 +1,126 @@
-import { query } from "./_generated/server";
+import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
 import { isSameDay, differenceInCalendarDays } from 'date-fns';
+import { getAuthUserId } from "@convex-dev/auth/server";
+
+// Function to fix subscription ownership
+export const fixSubscriptionOwnership = mutation({
+  args: {
+    subscriptionId: v.id("userSubscriptions"),
+    correctUserId: v.id("users")
+  },
+  handler: async (ctx, args) => {
+    console.log(`Moving subscription ${args.subscriptionId} to user ${args.correctUserId}`);
+    
+    await ctx.db.patch(args.subscriptionId, {
+      userId: args.correctUserId,
+      updatedAt: Date.now()
+    });
+    
+    return { success: true };
+  }
+});
+
+// Debug function to check user subscription state
+export const debugUserSubscriptions = query({
+  args: {},
+  handler: async (ctx) => {
+    // Get current user ID
+    const userId = await getAuthUserId(ctx);
+    console.log("Current user ID from getAuthUserId:", userId);
+    
+    // Get all users
+    const allUsers = await ctx.db.query("users").collect();
+    console.log("All users:");
+    allUsers.forEach(user => {
+      console.log(`- User ID: ${user._id}, Auth ID: ${user.authId}, Email: ${user.email}`);
+    });
+    
+    // Get all subscriptions
+    const allSubscriptions = await ctx.db.query("userSubscriptions").collect();
+    console.log("All subscriptions:");
+    allSubscriptions.forEach(sub => {
+      console.log(`- Sub ID: ${sub._id}, User ID: ${sub.userId}, Subscription ID: ${sub.subscriptionId}, Status: ${sub.status}`);
+    });
+    
+    if (userId) {
+      // Check if current user has a subscription
+      const userSubscription = await ctx.db
+        .query("userSubscriptions")
+        .withIndex("by_userId", (q) => q.eq("userId", userId))
+        .first();
+      console.log("Current user subscription:", userSubscription);
+      
+      // Also try to find user record
+      const userRecord = await ctx.db.get(userId);
+      console.log("Current user record:", userRecord);
+    }
+    
+    return {
+      currentUserId: userId,
+      users: allUsers.length,
+      subscriptions: allSubscriptions.length
+    };
+  }
+});
+
+// Simulate calling hasActiveSubscription with specific user context
+export const debugHasActiveSubscription = query({
+  args: { testUserId: v.optional(v.string()) },
+  handler: async (ctx, { testUserId }) => {
+    console.log("=== DEBUG hasActiveSubscription ===");
+    
+    // Get current user ID from auth
+    const authUserId = await getAuthUserId(ctx);
+    console.log("Auth user ID from getAuthUserId:", authUserId);
+    
+    // If testUserId provided, use that instead
+    const userId = testUserId ? (testUserId as any) : authUserId;
+    console.log("Using user ID for subscription check:", userId);
+    
+    if (!userId) {
+      console.log("No user ID available, returning false");
+      return { hasSubscription: false, reason: "No user ID" };
+    }
+
+    // First, let's find subscriptions using the user ID
+    let subscription = await ctx.db
+      .query("userSubscriptions")
+      .withIndex("by_userId", (q) => q.eq("userId", userId))
+      .first();
+
+    console.log("Subscription found by user ID:", subscription);
+
+    // Check user record for debugging
+    const user = await ctx.db.get(userId);
+    console.log("User record:", user);
+      
+    if (!subscription) {
+      console.log("No subscription found anywhere");
+      return { hasSubscription: false, reason: "No subscription found" };
+    }
+
+    // Check if subscription is active
+    const isActive = subscription.status === "active" || subscription.status === "trialing";
+    const currentTime = Date.now();
+    const isNotExpired = !subscription.currentPeriodEnd || subscription.currentPeriodEnd > currentTime;
+    
+    console.log("Subscription status:", subscription.status);
+    console.log("Is active:", isActive);
+    console.log("Current time:", currentTime);
+    console.log("Period end:", subscription.currentPeriodEnd);
+    console.log("Is not expired:", isNotExpired);
+    
+    const hasActiveSubscription = isActive && isNotExpired;
+    console.log("Final result:", hasActiveSubscription);
+    
+    return {
+      hasSubscription: hasActiveSubscription,
+      subscription,
+      checks: { isActive, isNotExpired }
+    };
+  }
+});
 
 // Helper function to get ISO date string (YYYY-MM-DD) for a given Date - Copied from forecast.ts
 const getISODateString = (date: Date): string => {
