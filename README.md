@@ -1,16 +1,4 @@
-<img src="```
-
-**Version:** `1.6.6` | **License:** For-Profit Open Source | **Status:** Active Development" alt="Soloist Logo" width="24" height="24">  **Soloist**
-
-![Repository Views Since Release](https://visitor-badge.laobi.icu/badge?page_id=acdc-digital.Soloist)
-
-```text
- ____        _       _     _     
-/ ___|  ___ | | ___ (_)___| |_   
-\___ \ / _ \| |/ _ \| / __| __|  
- ___) | (_) | | (_) | \__ \ |_ _ 
-|____/ \___/|_|\___/|_|___/\__(_)
-```solologo.png" alt="Soloist Logo" width="24" height="24">  **Soloist**
+<img src="public/solologo.png" alt="Soloist Logo" width="24" height="24">  **Soloist**
 
 ![Repository Views Since Release](https://visitor-badge.laobi.icu/badge?page_id=acdc-digital.Soloist)
 
