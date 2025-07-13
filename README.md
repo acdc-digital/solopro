@@ -1,10 +1,4 @@
-<img src="public/solologo.png" alt="Soloist Logo" width="24" height="24">  **Soloist**
-
-![Repository Views Since Release](https://visitor-badge.laobi.icu/badge?page_id=acdc-digital.Soloist)
-
-```textc="public/solologo.png" alt="Soloist Logo" width="24" height="24">  **Soloist**
-
-![Repository Views Since Release](https://visitor-badge.laobi.icu/badge?page_id=acdc-digital.Soloist)g src="public/solologo.png" alt="Soloist Logo" width="24" height="24">  **Soloist**
+<img src="public/solologo.png" alt="Soloist Logo" width="24" height="24">  **Soloist**
 
 ![Repository Views Since Release](https://visitor-badge.laobi.icu/badge?page_id=acdc-digital.solopro)
 
@@ -60,11 +54,11 @@ Built for individuals seeking deeper self-understanding, Soloist combines intell
 
 | Platform | File | Direct Link |
 |----------|------|-------------|
-| macOS (Intel) | `Soloist.Pro-1.6.6-x64.dmg` | [Download](https://github.com/acdc-digital/Soloist/releases/download/v1.6.6/Soloist.Pro-1.6.6-x64.dmg) |
-| macOS (Apple Silicon) | `Soloist.Pro-1.6.6-arm64.dmg` | [Download](https://github.com/acdc-digital/Soloist/releases/download/v1.6.6/Soloist.Pro-1.6.6-arm64.dmg) |
-| Windows | `Soloist.Pro-Setup-1.6.6.exe` | [Download](https://github.com/acdc-digital/Soloist/releases/download/v1.6.6/Soloist.Pro-Setup-1.6.6.exe) |
-| Linux (AppImage) | `Soloist.Pro-1.6.6.AppImage` | [Download](https://github.com/acdc-digital/Soloist/releases/download/v1.6.6/Soloist.Pro-1.6.6.AppImage) |
-| Linux (Deb) | `solopro-electron-1.6.6.deb` | [Download](https://github.com/acdc-digital/Soloist/releases/download/v1.6.6/solopro-electron-1.6.6.deb) |
+| macOS (Intel) | `Soloist.Pro-1.6.6-x64.dmg` | [Download](https://github.com/acdc-digital/solopro/releases/download/v1.6.6/Soloist.Pro-1.6.6-x64.dmg) |
+| macOS (Apple Silicon) | `Soloist.Pro-1.6.6-arm64.dmg` | [Download](https://github.com/acdc-digital/solopro/releases/download/v1.6.6/Soloist.Pro-1.6.6-arm64.dmg) |
+| Windows | `Soloist.Pro-Setup-1.6.6.exe` | [Download](https://github.com/acdc-digital/solopro/releases/download/v1.6.6/Soloist.Pro-Setup-1.6.6.exe) |
+| Linux (AppImage) | `Soloist.Pro-1.6.6.AppImage` | [Download](https://github.com/acdc-digital/solopro/releases/download/v1.6.6/Soloist.Pro-1.6.6.AppImage) |
+| Linux (Deb) | `solopro-electron-1.6.6.deb` | [Download](https://github.com/acdc-digital/solopro/releases/download/v1.6.6/solopro-electron-1.6.6.deb) |
 
 **System Requirements**: All platforms require 4GB RAM minimum, 500MB storage space. Internet connection required for AI features.
 
@@ -81,8 +75,8 @@ Built for individuals seeking deeper self-understanding, Soloist combines intell
 **For Developers:**
 ```bash
 # Clone
-git clone https://github.com/acdc-digital/Soloist.git
-cd Soloist
+git clone https://github.com/acdc-digital/solopro.git
+cd solopro
 
 # Install dependencies (pnpm recommended)
 pnpm install
@@ -145,7 +139,7 @@ git checkout v1.6.5
 
 | Purpose | Command | Notes |
 |---------|---------|-------|
-| Clone repository | `git clone https://github.com/acdc-digital/Soloist.git` | Creates local copy of remote repo |
+| Clone repository | `git clone https://github.com/acdc-digital/solopro.git` | Creates local copy of remote repo |
 | List branches | `git branch -a` | `-a` shows local & remote |
 | Create feature branch | `git checkout -b feature/<name>` | Based off current branch (usually `main`) |
 | Stage all changes | `git add .` | Use `git add <file>` for single files |
