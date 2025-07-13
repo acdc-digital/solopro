@@ -1,4 +1,4 @@
-<img src="public/solologo.png" alt="Soloist Logo" width="24" height="24" style="vertical-align: middle;">  **Soloist**
+<img src="public/solologo.png" alt="Soloist Logo" width="24" height="24" align="absmiddle">  **Soloist. | Take control of tomorrow, today.**
 
 ![Repository Views Since Release](https://visitor-badge.laobi.icu/badge?page_id=acdc-digital.solopro)
 
