@@ -142,26 +142,15 @@ git checkout v1.6.5
 | Clone repository | `git clone https://github.com/acdc-digital/solopro.git` | Creates local copy of remote repo |
 | List branches | `git branch -a` | `-a` shows local & remote |
 | Create feature branch | `git checkout -b feature/<name>` | Based off current branch (usually `main`) |
-| Stage all changes | `git add .` | Use `git add <file>` for single files |
-| Amend staged file list | `git restore --staged <file>` | Unstage a file before commit |
-| Commit staged changes | `git commit -m "feat: concise message"` | Conventional commits recommended |
 | Push branch to origin | `git push -u origin feature/<name>` | `-u` sets upstream for future `git push` |
 | Fetch & merge remote main | `git pull origin main` | Keeps branch up-to-date before PR |
-| Rebase onto main | `git fetch origin && git rebase origin/main` | Cleaner history (resolve conflicts if any) |
-| Squash last N commits | `git rebase -i HEAD~N` | Use interactive rebase; replace `pick` with `squash` |
 | Switch branches | `git checkout <branch>` | Or `git switch <branch>` |
 | Delete local branch | `git branch -d feature/<name>` | Use `-D` to force delete |
 | Create version tag | `git tag v1.6.5` | Lightweight tag |
 | Annotated version tag | `git tag -a v1.6.5 -m "Soloist v1.6.5"` | Preferred for releases |
 | Push single tag | `git push origin v1.6.5` | Uploads tag to remote |
-| Push all tags | `git push --tags` | After multiple new tags |
-| Remove remote tag | `git push --delete origin v1.6.1` | Keep history tidy |
-| Stash work-in-progress | `git stash push -m "wip"` | Temporarily save uncommitted work |
-| List stashes | `git stash list` | Shows stash stack |
-| Apply & keep stash | `git stash apply stash@{0}` | Use `pop` to apply & drop |
 | View commit history | `git log --oneline --graph --decorate --all` | Compact visual graph |
 | Undo local commit (keep changes) | `git reset --soft HEAD~1` | Moves `HEAD` back one commit |
-| Hard reset to origin | `git reset --hard origin/main` | **Destroys** local changes |
 
 > Tip: configure aliases in `~/.gitconfig` to speed up frequent commands.
 
