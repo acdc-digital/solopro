@@ -8,6 +8,7 @@ module.exports = {
     "index.js",
     "preload.js",
     "index.html",
+    "dock-icon-padded56.png",
     "node_modules/**/*"
   ],
   extraResources: [

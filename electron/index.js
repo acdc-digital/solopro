@@ -242,7 +242,7 @@ ipcMain.on('get-app-version', (event) => {
 });
 
 app.whenReady().then(() => {
-  // Set dock icon explicitly for macOS - PNG works better than .icns for dock icons
+  // Set dock icon explicitly for macOS - maintain 56x56 size for consistency
   if (process.platform === 'darwin') {
     const dockIconPath = path.join(__dirname, "dock-icon-padded56.png");
     if (fs.existsSync(dockIconPath)) {
