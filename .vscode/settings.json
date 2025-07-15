@@ -3,7 +3,8 @@
     ".copilot": "config",
     ".trunk": "tools",
     "convex": "database",
-    "electron": "app"
+    "electron": "app",
+    "renderer": "app"
   },
   "material-icon-theme.folders.color": "#90CAF9",
   "material-icon-theme.folders.theme": "specific",
