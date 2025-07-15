@@ -1,8 +1,12 @@
 {
   "material-icon-theme.folders.associations": {
-    ".copilot": "tools"
+    ".copilot": "config",
+    ".trunk": "tools",
+    "convex": "database",
+    "electron": "app"
   },
-  "material-icon-theme.folders.color": "#00D8FF",
+  "material-icon-theme.folders.color": "#90CAF9",
   "material-icon-theme.folders.theme": "specific",
+  "material-icon-theme.hidesExplorerArrows": false,
   "workbench.iconTheme": "material-icon-theme"
 }
