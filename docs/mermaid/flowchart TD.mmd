@@ -1,0 +1,102 @@
+flowchart TD
+    %% Main LLM Prompts
+    SCORING_PROMPT["🎯 SCORING_PROMPT<br/>Temperature: 0.3<br/>Max Tokens: 500<br/>Model: gpt-4o-mini"]
+    FORECASTING_PROMPT["🔮 FORECASTING_PROMPT<br/>Temperature: 0.7<br/>Max Tokens: 1000<br/>Model: gpt-4o-mini"]
+    CONSULTATION_PROMPT["💬 DAILY_CONSULTATION_PROMPT<br/>Temperature: 0.7<br/>Max Tokens: 1000<br/>Model: gpt-4o-mini"]
+    INSIGHTS_PROMPT["📊 WEEKLY_INSIGHTS_PROMPT<br/>Temperature: 0.7<br/>Max Tokens: 1000<br/>Model: gpt-4o-mini"]
+    RANDOM_LOG_PROMPT["🎲 RANDOM_LOG_PROMPT<br/>Temperature: 0.8<br/>Max Tokens: 800<br/>Model: gpt-4o-mini"]
+    FEED_SUMMARY_PROMPT["📱 FEED_SUMMARY_PROMPT<br/>Temperature: 0.6<br/>Max Tokens: 600<br/>Model: gpt-4o-mini"]
+
+    %% Data Sources
+    DAILY_LOGS[("📅 Daily Logs<br/>- Mood scores<br/>- Work satisfaction<br/>- Personal life ratings<br/>- Activities & notes")]
+    USER_ANSWERS[("📝 User Answers<br/>- JSON structured data<br/>- Ratings & reflections<br/>- Daily entries")]
+    HISTORICAL_DATA[("📈 Historical Data<br/>- Past 4+ days of logs<br/>- Pattern analysis<br/>- Trend identification")]
+    SOCIAL_MEDIA[("📲 Social Media<br/>- Posts & content<br/>- Digital consumption<br/>- Emotional influences")]
+    USER_INSTRUCTIONS[("⚙️ User Instructions<br/>- Custom preferences<br/>- Personalization settings<br/>- Demo parameters")]
+
+    %% Core Application Functions
+    SCORE_DAILY_LOG["scoreDailyLog()<br/>📊 Generate 1-10 mood scores"]
+    GENERATE_FORECAST["generateForecast()<br/>🔮 3-day emotional predictions"]
+    DAILY_CONSULTATION["generateDailyConsultation()<br/>💬 Personalized daily insights"]
+    WEEKLY_INSIGHTS["generateWeeklyInsights()<br/>📊 7-day pattern analysis"]
+    RANDOM_LOG_GEN["generateRandomLog()<br/>🎲 Demo log creation"]
+    FEED_GENERATION["generateFeedSummary()<br/>📱 Social content analysis"]
+
+    %% Database Effects
+    DAILY_LOGS_DB[("🗄️ dailyLogs Table<br/>- Updated scores<br/>- Enhanced data")]
+    FORECAST_DB[("🗄️ forecast Table<br/>- Future predictions<br/>- Confidence levels")]
+    FEED_DB[("🗄️ feed Table<br/>- Content summaries<br/>- Emotional insights")]
+    OPENAI_USAGE_DB[("💰 openaiUsage Table<br/>- Cost tracking<br/>- Token consumption<br/>- Feature analytics")]
+
+    %% UI Components
+    MOOD_HEATMAP["🌡️ Mood Heatmap<br/>- Color-coded days<br/>- Visual patterns<br/>- 365-day view"]
+    FORECAST_CARDS["🃏 Forecast Cards<br/>- 3-day predictions<br/>- Confidence scores<br/>- Trend indicators"]
+    CONSULTATION_PANEL["💭 Daily Consultation<br/>- AI insights<br/>- Contextual analysis<br/>- Wellness coaching"]
+    INSIGHTS_DASHBOARD["📈 Weekly Dashboard<br/>- Pattern recognition<br/>- Trend analysis<br/>- Recommendations"]
+    DEMO_INTERFACE["🎭 Demo Mode<br/>- Sample data<br/>- Testing environment<br/>- User onboarding"]
+    FEED_TIMELINE["📰 Social Feed<br/>- Content curation<br/>- Emotional impact<br/>- Digital wellness"]
+
+    %% Admin & Analytics
+    ADMIN_DASHBOARD["👑 Admin Dashboard<br/>- Cost monitoring<br/>- Usage analytics<br/>- Model performance"]
+    COST_TRACKING["💹 Cost Analytics<br/>- Feature breakdown<br/>- User consumption<br/>- Budget alerts"]
+
+    %% Data Flow Connections
+    DAILY_LOGS --> SCORING_PROMPT
+    USER_ANSWERS --> SCORING_PROMPT
+    SCORING_PROMPT --> SCORE_DAILY_LOG
+    SCORE_DAILY_LOG --> DAILY_LOGS_DB
+    DAILY_LOGS_DB --> MOOD_HEATMAP
+
+    HISTORICAL_DATA --> FORECASTING_PROMPT
+    FORECASTING_PROMPT --> GENERATE_FORECAST
+    GENERATE_FORECAST --> FORECAST_DB
+    FORECAST_DB --> FORECAST_CARDS
+
+    DAILY_LOGS --> CONSULTATION_PROMPT
+    HISTORICAL_DATA --> CONSULTATION_PROMPT
+    CONSULTATION_PROMPT --> DAILY_CONSULTATION
+    DAILY_CONSULTATION --> CONSULTATION_PANEL
+
+    HISTORICAL_DATA --> INSIGHTS_PROMPT
+    INSIGHTS_PROMPT --> WEEKLY_INSIGHTS
+    WEEKLY_INSIGHTS --> INSIGHTS_DASHBOARD
+
+    USER_INSTRUCTIONS --> RANDOM_LOG_PROMPT
+    RANDOM_LOG_PROMPT --> RANDOM_LOG_GEN
+    RANDOM_LOG_GEN --> DEMO_INTERFACE
+
+    SOCIAL_MEDIA --> FEED_SUMMARY_PROMPT
+    FEED_SUMMARY_PROMPT --> FEED_GENERATION
+    FEED_GENERATION --> FEED_DB
+    FEED_DB --> FEED_TIMELINE
+
+    %% Cost Tracking Effects
+    SCORE_DAILY_LOG --> OPENAI_USAGE_DB
+    GENERATE_FORECAST --> OPENAI_USAGE_DB
+    DAILY_CONSULTATION --> OPENAI_USAGE_DB
+    WEEKLY_INSIGHTS --> OPENAI_USAGE_DB
+    RANDOM_LOG_GEN --> OPENAI_USAGE_DB
+    FEED_GENERATION --> OPENAI_USAGE_DB
+    
+    OPENAI_USAGE_DB --> ADMIN_DASHBOARD
+    OPENAI_USAGE_DB --> COST_TRACKING
+
+    %% Feedback Loops
+    FORECAST_CARDS -.->|"User feedback<br/>(👍/👎)"| FORECAST_DB
+    CONSULTATION_PANEL -.->|"Pattern validation"| HISTORICAL_DATA
+    INSIGHTS_DASHBOARD -.->|"Behavioral changes"| DAILY_LOGS
+
+    %% Styling
+    classDef promptNode fill:#e1f5fe,stroke:#01579b,stroke-width:3px,color:#000
+    classDef dataSource fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000
+    classDef function fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px,color:#000
+    classDef database fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000
+    classDef ui fill:#fce4ec,stroke:#880e4f,stroke-width:2px,color:#000
+    classDef admin fill:#f1f8e9,stroke:#33691e,stroke-width:2px,color:#000
+
+    class SCORING_PROMPT,FORECASTING_PROMPT,CONSULTATION_PROMPT,INSIGHTS_PROMPT,RANDOM_LOG_PROMPT,FEED_SUMMARY_PROMPT promptNode
+    class DAILY_LOGS,USER_ANSWERS,HISTORICAL_DATA,SOCIAL_MEDIA,USER_INSTRUCTIONS dataSource
+    class SCORE_DAILY_LOG,GENERATE_FORECAST,DAILY_CONSULTATION,WEEKLY_INSIGHTS,RANDOM_LOG_GEN,FEED_GENERATION function
+    class DAILY_LOGS_DB,FORECAST_DB,FEED_DB,OPENAI_USAGE_DB database
+    class MOOD_HEATMAP,FORECAST_CARDS,CONSULTATION_PANEL,INSIGHTS_DASHBOARD,DEMO_INTERFACE,FEED_TIMELINE ui
+    class ADMIN_DASHBOARD,COST_TRACKING admin

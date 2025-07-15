@@ -134,187 +134,41 @@ export const testRecordPayment = mutation({
   },
 });
 
-export const processWebhookEvent = mutation({
+export const createTestUserOnly = mutation({
   args: {
-    eventType: v.string(),
-    data: v.any(),
+    email: v.optional(v.string()),
+    name: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const { eventType, data } = args;
-    console.log(`Processing webhook event: ${eventType}`);
-    
     try {
-      // Handle different event types
-      switch (eventType) {
-        case "checkout.session.completed": {
-          // Extract data from the checkout session
-          const { client_reference_id, customer, subscription, mode, amount_total, currency } = data;
-          const userId = client_reference_id || data.metadata?.userId;
-          
-          if (!userId) {
-            console.error("No user ID found in session metadata");
-            return { success: false, error: "No user ID found" };
-          }
-          
-          console.log(`Processing checkout.session.completed for user: ${userId}`);
-          
-          // First, record the payment
-          try {
-            // Find the user in our database
-            const users = await ctx.db.query("users").collect();
-            
-            if (users.length === 0) {
-              console.error("No users found in database");
-              return { success: false, error: "No users found" };
-            }
-            
-            // For simplicity, use the first user if userId doesn't match any user
-            let userRecord = users.find(u => u._id === userId) || users[0];
-            
-            // Record the payment
-            const paymentId = await ctx.db.insert("payments", {
-              userId: userRecord._id,
-              stripeSessionId: data.id,
-              status: "complete",
-              amount: amount_total || 0,
-              currency: currency || "usd",
-              paymentMode: mode || "payment",
-              productName: "SoloPro Subscription",
-              customerId: customer,
-              customerEmail: data.customer_details?.email,
-              createdAt: Date.now()
-            });
-            
-            console.log(`Payment record created with ID: ${paymentId}`);
-            
-            // If this is a subscription, record the subscription too
-            if (mode === "subscription" && subscription) {
-              await ctx.db.insert("userSubscriptions", {
-                userId: userRecord._id,
-                subscriptionId: subscription,
-                status: "active",
-                currentPeriodEnd: Math.floor(Date.now() / 1000) + (30 * 24 * 60 * 60), // 30 days from now
-                createdAt: Date.now(),
-                updatedAt: Date.now()
-              });
-              
-              console.log(`Subscription record created for subscription: ${subscription}`);
-            }
-            
-            return { success: true, paymentId };
-          } catch (error) {
-            console.error("Error recording payment:", error);
-            return { success: false, error: String(error) };
-          }
-        }
-        
-        case "customer.subscription.updated":
-        case "customer.subscription.created": {
-          // Extract data from the subscription
-          const { id, status, current_period_end, metadata } = data;
-          const userId = metadata?.userId;
-          
-          if (!userId) {
-            console.error("No user ID found in subscription metadata");
-            return { success: false, error: "No user ID found" };
-          }
-          
-          console.log(`Processing subscription event for user: ${userId}`);
-          
-          try {
-            // Find the user in our database
-            const users = await ctx.db.query("users").collect();
-            
-            if (users.length === 0) {
-              console.error("No users found in database");
-              return { success: false, error: "No users found" };
-            }
-            
-            // For simplicity, use the first user if userId doesn't match any user
-            let userRecord = users.find(u => u._id === userId) || users[0];
-            
-            // Find existing subscription
-            const existingSubscription = await ctx.db
-              .query("userSubscriptions")
-              .withIndex("by_userId", q => q.eq("userId", userRecord._id))
-              .first();
-            
-            if (existingSubscription) {
-              // Update existing subscription
-              await ctx.db.patch(existingSubscription._id, {
-                status,
-                currentPeriodEnd: current_period_end,
-                updatedAt: Date.now()
-              });
-              
-              console.log(`Subscription updated: ${existingSubscription._id}`);
-              return { success: true, subscriptionId: existingSubscription._id };
-            } else {
-              // Create new subscription
-              const subscriptionId = await ctx.db.insert("userSubscriptions", {
-                userId: userRecord._id,
-                subscriptionId: id,
-                status,
-                currentPeriodEnd: current_period_end,
-                createdAt: Date.now(),
-                updatedAt: Date.now()
-              });
-              
-              console.log(`New subscription created: ${subscriptionId}`);
-              return { success: true, subscriptionId };
-            }
-          } catch (error) {
-            console.error("Error updating subscription:", error);
-            return { success: false, error: String(error) };
-          }
-        }
-        
-        case "customer.subscription.deleted": {
-          // Extract data from the subscription
-          const { id, current_period_end, metadata } = data;
-          const userId = metadata?.userId;
-          
-          if (!userId) {
-            console.error("No user ID found in subscription metadata");
-            return { success: false, error: "No user ID found" };
-          }
-          
-          console.log(`Processing subscription cancellation for user: ${userId}`);
-          
-          try {
-            // Find existing subscription
-            const existingSubscription = await ctx.db
-              .query("userSubscriptions")
-              .filter(q => q.eq(q.field("subscriptionId"), id))
-              .first();
-            
-            if (existingSubscription) {
-              // Update subscription to cancelled
-              await ctx.db.patch(existingSubscription._id, {
-                status: "canceled",
-                currentPeriodEnd: current_period_end,
-                updatedAt: Date.now()
-              });
-              
-              console.log(`Subscription cancelled: ${existingSubscription._id}`);
-              return { success: true, subscriptionId: existingSubscription._id };
-            } else {
-              console.warn(`No subscription found for ID: ${id}`);
-              return { success: false, error: "Subscription not found" };
-            }
-          } catch (error) {
-            console.error("Error cancelling subscription:", error);
-            return { success: false, error: String(error) };
-          }
-        }
-        
-        default:
-          console.log(`Unhandled event type: ${eventType}`);
-          return { success: false, error: "Unhandled event type" };
-      }
+      const timestamp = Date.now();
+      const email = args.email || `testuser_${timestamp}@example.com`;
+      const name = args.name || `Test User ${timestamp}`;
+      
+      // Create a test user directly in the users table with minimal fields
+      const userId = await ctx.db.insert("users", {
+        email,
+        name,
+        isAnonymous: false,
+      });
+      
+      console.log(`Created test user with ID: ${userId}, email: ${email}, name: ${name}`);
+      
+      // Fetch the created user to return full details
+      const createdUser = await ctx.db.get(userId);
+      
+      return {
+        success: true,
+        userId,
+        user: createdUser,
+        message: `Test user created successfully with email: ${email}`
+      };
     } catch (error) {
-      console.error("Error processing webhook:", error);
-      return { success: false, error: String(error) };
+      console.error("Error creating test user:", error);
+      return {
+        success: false,
+        error: String(error)
+      };
     }
-  }
+  },
 });

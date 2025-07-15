@@ -1,9 +1,17 @@
 {
   "servers": {
-    "convex-mcp": {
+    "convex-mcp-dev": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "convex@latest", "mcp", "start"]
+      "args": [
+        "-y", 
+        "convex@latest", 
+        "mcp", 
+        "start", 
+        "--project-dir", 
+        "${workspaceFolder}",
+        "--disable-production-deployments"
+      ]
     }
   }
 }

@@ -1,0 +1,8 @@
+{
+  "material-icon-theme.folders.associations": {
+    ".copilot": "tools"
+  },
+  "material-icon-theme.folders.color": "#00D8FF",
+  "material-icon-theme.folders.theme": "specific",
+  "workbench.iconTheme": "material-icon-theme"
+}
