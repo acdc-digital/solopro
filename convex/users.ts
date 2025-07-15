@@ -322,13 +322,26 @@ export const getUserByAuthId = internalQuery({
         .first();
       
       if (user) {
-        // Update the user's authId to the full format for future lookups
-        await ctx.db.patch(user._id, { authId });
-        return { ...user, authId };
+        // Don't update here in query context - return the user as-is
+        return user;
       }
     }
     
     return null;
+  }
+});
+
+/**
+ * Internal mutation to update a user's auth ID for webhook processing
+ */
+export const updateUserAuthIdForWebhook = internalMutation({
+  args: { 
+    userId: v.id("users"),
+    authId: v.string()
+  },
+  handler: async (ctx, { userId, authId }) => {
+    await ctx.db.patch(userId, { authId });
+    return { success: true };
   }
 });
 

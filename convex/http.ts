@@ -106,7 +106,9 @@ http.route({
           );
         }
         
+        // Validate that we have a proper users table ID
         userDocumentId = existingUser._id;
+        console.log("User ID found:", userDocumentId, "from table:", existingUser._id.split("_")[0]);
       }
 
       // Initialize Stripe
@@ -134,6 +136,7 @@ http.route({
       });
 
       // Create initial payment record
+      console.log("Creating payment record with userId:", userDocumentId);
       await ctx.runMutation(internal.payments.create, {
         userId: userDocumentId,
         stripeSessionId: session.id,

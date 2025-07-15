@@ -2,6 +2,8 @@ import { v } from "convex/values";
 import { internalMutation, internalQuery, query, mutation, action } from "./_generated/server";
 import { Id } from "./_generated/dataModel";
 import { getAuthUserId } from "@convex-dev/auth/server";
+import { internal } from "./_generated/api";
+import Stripe from "stripe";
 
 /**
  * Get payment by Stripe session ID (internal)
@@ -276,72 +278,61 @@ export const createCheckoutSession = action({
     }
 
     const authId = identity.subject;
-    // Use the Convex deployment URL for internal API calls
-    const convexDeploymentUrl = 'https://sleek-swordfish-420.convex.site';
-    const apiUrl = `${convexDeploymentUrl}/api/create-checkout-session`;
+    
+    // Initialize Stripe directly
+    const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
+    console.log("Stripe secret key starts with:", stripeSecretKey ? stripeSecretKey.substring(0, 8) + "..." : "UNDEFINED");
+    
+    if (!stripeSecretKey) {
+      throw new Error("STRIPE_SECRET_KEY environment variable is not set");
+    }
+    
+    if (stripeSecretKey.startsWith("pk_")) {
+      throw new Error("STRIPE_SECRET_KEY appears to be a publishable key (starts with pk_), not a secret key");
+    }
+    
+    const stripe = new Stripe(stripeSecretKey, {
+      apiVersion: "2025-04-30.basil",
+    });
 
     try {
       console.log("Creating checkout session for user:", userId);
-      console.log("API URL:", apiUrl);
-      console.log("Request payload:", {
-        priceId: args.priceId,
-        paymentMode: args.paymentMode || 'subscription',
-        embeddedCheckout: args.embeddedCheckout !== false,
-        userId: userId,
-      });
       
-      const response = await fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      // Create checkout session
+      const session = await stripe.checkout.sessions.create({
+        payment_method_types: ["card"],
+        line_items: [
+          {
+            price: args.priceId,
+            quantity: 1,
+          },
+        ],
+        mode: (args.paymentMode || "subscription") as Stripe.Checkout.SessionCreateParams.Mode,
+        client_reference_id: authId, // This is what the webhook handler expects
+        metadata: {
+          userId: authId,
         },
-        body: JSON.stringify({
-          priceId: args.priceId,
-          paymentMode: args.paymentMode || 'subscription',
-          embeddedCheckout: args.embeddedCheckout !== false, // Default to true
-          userId: authId, // Pass the auth ID for webhook metadata
-          convexUserId: userId, // Pass the Convex user ID for database operations
-        }),
+        ui_mode: "embedded",
+        // Disable redirects - we handle completion via events in the modal
+        redirect_on_completion: "never",
       });
 
-      console.log("Response status:", response.status);
-      console.log("Response content-type:", response.headers.get('content-type'));
+      // Create initial payment record
+      console.log("Creating payment record with userId:", userId);
+      await ctx.runMutation(internal.payments.create, {
+        userId: userId,
+        stripeSessionId: session.id,
+        priceId: args.priceId,
+        status: "pending",
+        productName: "Pro Plan",
+        paymentMode: args.paymentMode || "subscription",
+        createdAt: Date.now()
+      });
 
-      if (!response.ok) {
-        const responseText = await response.text();
-        console.error("Error response text:", responseText);
-        
-        let errorData;
-        try {
-          errorData = JSON.parse(responseText);
-        } catch (e) {
-          throw new Error(`HTTP ${response.status}: ${responseText || 'Unknown error'}`);
-        }
-        
-        throw new Error(`Failed to create checkout session: ${errorData.error || 'Unknown error'}`);
-      }
-
-      const responseText = await response.text();
-      console.log("Response text:", responseText);
-      console.log("Response text length:", responseText.length);
-      
-      if (!responseText) {
-        throw new Error("Empty response from checkout session API");
-      }
-      
-      let result;
-      try {
-        result = JSON.parse(responseText);
-        console.log("Parsed result:", result);
-        console.log("Client secret from result:", result.clientSecret);
-        console.log("Client secret length:", result.clientSecret?.length);
-      } catch (e) {
-        throw new Error(`Invalid JSON response: ${responseText}`);
-      }
-      
-      console.log("Checkout session created successfully:", result);
-      
-      return result;
+      return {
+        clientSecret: session.client_secret,
+        sessionId: session.id
+      };
     } catch (error) {
       console.error("Error creating checkout session:", error);
       throw new Error(error instanceof Error ? error.message : "Failed to create checkout session");

@@ -8,7 +8,7 @@ import { internal } from "./_generated/api";
 async function getStripe() {
   const Stripe = (await import("stripe")).default;
   return new Stripe(process.env.STRIPE_SECRET_KEY || "", {
-    apiVersion: "2025-05-28.basil" as any,
+    apiVersion: "2025-04-30.basil" as any,
   });
 }
 
@@ -97,6 +97,8 @@ async function handleCheckoutSessionCompleted(ctx: any, session: any) {
       return;
     }
     
+    console.log("Looking for user with authId:", authUserId);
+    
     // Find the Convex user ID using the auth ID
     // Don't create a new user - the user should already exist
     const existingUser = await ctx.runQuery(internal.users.getUserByAuthId, {
@@ -105,11 +107,70 @@ async function handleCheckoutSessionCompleted(ctx: any, session: any) {
     
     if (!existingUser) {
       console.error("User not found for auth ID:", authUserId);
-      return;
+      
+      // Try to find users with partial matches
+      const baseAuthId = authUserId.split('|')[0];
+      console.log("Trying to find user with base auth ID:", baseAuthId);
+      
+      const userWithBaseId = await ctx.runQuery(internal.users.getUserByAuthId, {
+        authId: baseAuthId
+      });
+      
+      if (userWithBaseId) {
+        console.log("Found user with base auth ID:", userWithBaseId._id);
+        // Use this user
+        const convexUserId = userWithBaseId._id;
+        
+        console.log("Found existing Convex user ID:", convexUserId);
+        
+        console.log("Updating payment status for session:", session.id);
+        // Update payment record in database
+        await ctx.runMutation(internal.payments.updatePaymentStatus, {
+          sessionId: session.id,
+          status: "complete",
+          customerId
+        });
+        
+        // Continue with subscription creation...
+        if (session.mode === "subscription") {
+          const subscriptionId = session.subscription;
+          
+          console.log("Found subscription ID:", subscriptionId);
+          
+          if (subscriptionId) {
+            console.log("Fetching subscription details from Stripe...");
+            // Fetch full subscription details from Stripe
+            const stripe = await getStripe();
+            const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+            
+            console.log("Subscription details:", {
+              id: subscription.id,
+              status: subscription.status,
+              current_period_end: (subscription as any).current_period_end
+            });
+            
+            console.log("Creating/updating user subscription in database...");
+            // Update user subscription status - use the base auth ID
+            await ctx.runMutation(internal.userSubscriptions.createOrUpdate, {
+              userId: baseAuthId, // Use the base auth ID that matches the user
+              subscriptionId,
+              status: subscription.status,
+              currentPeriodEnd: (subscription as any).current_period_end * 1000 // Convert to milliseconds
+            });
+            
+            console.log("Successfully created/updated subscription for user:", baseAuthId);
+          } else {
+            console.log("No subscription ID found in session");
+          }
+        }
+        return;
+      } else {
+        console.error("No user found with base auth ID either:", baseAuthId);
+        return;
+      }
     }
     
     const convexUserId = existingUser._id;
-    
     console.log("Found existing Convex user ID:", convexUserId);
     
     console.log("Updating payment status for session:", session.id);
@@ -139,9 +200,9 @@ async function handleCheckoutSessionCompleted(ctx: any, session: any) {
         });
         
         console.log("Creating/updating user subscription in database...");
-        // Update user subscription status - use Convex user ID
+        // Update user subscription status - use auth user ID as function expects it
         await ctx.runMutation(internal.userSubscriptions.createOrUpdate, {
-          userId: authUserId, // Still pass the auth user ID as the function expects it
+          userId: authUserId, // Use the auth user ID as the function expects it
           subscriptionId,
           status: subscription.status,
           currentPeriodEnd: (subscription as any).current_period_end * 1000 // Convert to milliseconds
