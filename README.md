@@ -117,6 +117,12 @@ Soloist Pro is built as a sophisticated monorepo leveraging modern technologies:
 | `pnpm dev:renderer` | Next.js renderer only (port 3002) |
 | `pnpm dev:website` | Marketing site only (port 3004) |
 | `pnpm dev:electron` | Electron window with live-reload |
+| `pnpm build` | Build all projects (website, renderer, electron) |
+| `pnpm build:renderer` | Build Next.js renderer for production |
+| `pnpm build:website` | Build marketing website for production |
+| `pnpm --filter solopro-electron run build:mac` | Build macOS desktop app (.dmg) |
+| `pnpm --filter solopro-electron run build:win` | Build Windows desktop app (.exe) |
+| `pnpm --filter solopro-electron run build:linux` | Build Linux desktop app (AppImage + Deb) |
 
 ## Deployment Commands
 

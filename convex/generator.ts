@@ -43,8 +43,8 @@ const getISODateString = (date: Date): string => {
   return date.toISOString().split("T")[0];
 };
 
-// --- Internal Action to Generate Forecast using AI ---
-export const generateForecastWithAI = internalAction({
+// --- Action to Generate Forecast using AI (made public for retrospective analysis) ---
+export const generateForecastWithAI = action({
   args: {
     userId: v.string(),
     pastLogs: v.array(v.object({

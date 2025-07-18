@@ -27,6 +27,7 @@ import type * as feed from "../feed.js";
 import type * as feedback from "../feedback.js";
 import type * as forecast from "../forecast.js";
 import type * as generator from "../generator.js";
+import type * as historicalForecast from "../historicalForecast.js";
 import type * as http from "../http.js";
 import type * as manualSubscription from "../manualSubscription.js";
 import type * as myFunctions from "../myFunctions.js";
@@ -68,6 +69,7 @@ declare const fullApi: ApiFromModules<{
   feedback: typeof feedback;
   forecast: typeof forecast;
   generator: typeof generator;
+  historicalForecast: typeof historicalForecast;
   http: typeof http;
   manualSubscription: typeof manualSubscription;
   myFunctions: typeof myFunctions;

@@ -4,138 +4,225 @@ import { api } from "./_generated/api";
 import { SCORING_PROMPT } from "./prompts";
 
 /**
- * Action: scoreDailyLog
+ * Action: scoreDailyLogNew
  * Calculates an AI-generated score for a daily log entry
+ */
+export const scoreDailyLogNew = action({
+  args: {
+    userId: v.string(),
+    date: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const { userId, date } = args;
+    console.log("🔍 Starting scoreDailyLogNew for user:", userId, "date:", date);
+    
+    try {
+      // Get the daily log from the database
+      const dailyLog = await ctx.runQuery(api.dailyLogs.getDailyLog, {
+        userId,
+        date,
+      });
+
+      if (!dailyLog) {
+        throw new Error(`No daily log found for userId=${userId}, date=${date}`);
+      }
+
+      console.log("✅ Found daily log:", dailyLog._id);
+
+      // For now, let's just return a simple calculated score without OpenAI
+      // to test if the basic function works
+      const answers = dailyLog.answers;
+      
+      // Simple scoring algorithm
+      let score = 5; // base score
+      
+      if (answers.overallMood) {
+        score = answers.overallMood;
+      }
+      
+      // Add some basic adjustments
+      if (answers.exercise) {
+        score += 0.5;
+      }
+      
+      if (answers.workSatisfaction && answers.workSatisfaction > 7) {
+        score += 0.3;
+      }
+      
+      // Ensure score is between 1-10
+      score = Math.max(1, Math.min(10, score));
+      
+      console.log("🎯 Calculated simple score:", score);
+
+      // Update the score in the database
+      await ctx.runMutation(api.score.updateLogScore, {
+        logId: dailyLog._id,
+        newScore: score,
+      });
+
+      console.log("✅ Score updated successfully");
+
+      // Trigger feed generation for this scored log
+      try {
+        console.log("🔄 Generating feed entry for scored log...");
+        const feedResult = await ctx.runAction(api.feed.generateFeedForDailyLog, {
+          userId,
+          date,
+        });
+        console.log("✅ Feed entry generated successfully");
+      } catch (feedError) {
+        console.error("⚠️ Failed to generate feed entry:", feedError);
+        // Don't throw here - scoring was successful, feed generation is secondary
+      }
+
+      return { score: score };
+      
+    } catch (error) {
+      console.error("❌ Error in scoreDailyLogNew:", error);
+      throw error;
+    }
+  },
+});
+
+/**
+ * Action: scoreDailyLog
+ * Calculates an AI-generated score for a daily log entry using OpenAI
  */
 export const scoreDailyLog = action({
   args: {
     userId: v.string(),
     date: v.string(),
   },
-  handler: async (ctx, { userId, date }) => {
-    console.log("🔍 Starting scoreDailyLog for user:", userId, "date:", date);
+  handler: async (ctx, args) => {
+    const { userId, date } = args;
+    console.log("🔍 Starting AI-powered scoreDailyLog for user:", userId, "date:", date);
     
-    // Debug: Check if imports are working
-    console.log("📋 SCORING_PROMPT exists:", typeof SCORING_PROMPT !== 'undefined');
-    console.log("📋 SCORING_PROMPT length:", SCORING_PROMPT?.length || 0);
-    
-    // Get the daily log from the database
-    const dailyLog = await ctx.runQuery(api.dailyLogs.getDailyLog, {
-      userId,
-      date,
-    });
-
-    if (!dailyLog) {
-      throw new Error(`No daily log found for userId=${userId}, date=${date}`);
-    }
-
-    console.log("✅ Found daily log:", dailyLog._id);
-
-    // Prepare the content for OpenAI
-    const userContent = JSON.stringify(dailyLog.answers, null, 2);
-
-    // Get the OpenAI API key from environment variables
-    const openAiApiKey = process.env.OPENAI_API_KEY;
-    console.log("🔑 OpenAI API key check:", typeof openAiApiKey, openAiApiKey ? "exists" : "missing");
-    
-    if (!openAiApiKey) {
-      console.error("❌ Missing OPENAI_API_KEY in environment variables");
-      throw new Error("Missing OPENAI_API_KEY in environment!");
-    }
-
-    console.log("🔑 OpenAI API key found");
-
-    // Debug: Check SCORING_PROMPT before using
-    console.log("📋 About to use SCORING_PROMPT:", typeof SCORING_PROMPT, SCORING_PROMPT ? "exists" : "missing");
-    
-    // Prepare the request body for OpenAI API
-    console.log("📝 Creating requestBody object...");
-    
-    const requestBody = {
-      model: "gpt-4o-mini",
-      messages: [
-        { role: "system", content: SCORING_PROMPT },
-        {
-          role: "user",
-          content: `Here is the user's daily log in JSON:\n${userContent}`,
-        },
-      ],
-      temperature: 0.3,
-      max_tokens: 500,
-    };
-    
-    console.log("✅ RequestBody created successfully");
-
-    console.log("📝 Request body prepared, making API call to OpenAI...");
-
-    // Call OpenAI API with error handling
-    let response;
     try {
-      response = await fetch("https://api.openai.com/v1/chat/completions", {
+      // Get the daily log from the database
+      const dailyLog = await ctx.runQuery(api.dailyLogs.getDailyLog, {
+        userId,
+        date,
+      });
+
+      if (!dailyLog) {
+        throw new Error(`No daily log found for userId=${userId}, date=${date}`);
+      }
+
+      console.log("✅ Found daily log:", dailyLog._id);
+
+      // Prepare the content for OpenAI
+      const userContent = JSON.stringify(dailyLog.answers, null, 2);
+
+      // Get the OpenAI API key from environment variables
+      const apiKey = (process as any).env.OPENAI_API_KEY;
+      if (!apiKey) {
+        throw new Error("Missing OPENAI_API_KEY in environment!");
+      }
+
+      console.log("🔑 OpenAI API key found");
+
+      // Check SCORING_PROMPT
+      if (!SCORING_PROMPT) {
+        throw new Error("SCORING_PROMPT is not available");
+      }
+      
+      console.log("📋 SCORING_PROMPT available");
+      
+      // Create request body for OpenAI
+      const openAIRequest = {
+        model: "gpt-4o-mini",
+        messages: [
+          {
+            role: "system",
+            content: SCORING_PROMPT
+          },
+          {
+            role: "user",
+            content: `Here is the user's daily log in JSON:\n${userContent}`,
+          },
+        ],
+        temperature: 0.3,
+        max_tokens: 500,
+      };
+      
+      console.log("✅ OpenAI request body created");
+
+      // Call OpenAI API
+      const openAIResponse = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${openAiApiKey}`,
+          Authorization: `Bearer ${apiKey}`,
         },
-        body: JSON.stringify(requestBody),
+        body: JSON.stringify(openAIRequest),
       });
-    } catch (fetchError) {
-      console.error("❌ Network error calling OpenAI API:", fetchError);
-      throw new Error(`Network error: ${fetchError}`);
-    }
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("❌ OpenAI API error response:", response.status, errorText);
-      throw new Error(`OpenAI API error (${response.status}): ${errorText}`);
-    }
-
-    let completion;
-    try {
-      completion = await response.json();
-    } catch (parseError) {
-      console.error("❌ Failed to parse OpenAI response as JSON:", parseError);
-      throw new Error(`Failed to parse OpenAI response: ${parseError}`);
-    }
-
-    console.log("📊 OpenAI response received");
-
-    // Extract the score from the response
-    let assistantMessage = completion.choices?.[0]?.message?.content?.trim() || "";
-    let finalScore = parseInt(assistantMessage, 10);
-    
-    if (isNaN(finalScore) || finalScore < 0 || finalScore > 100) {
-      console.warn("⚠️ Invalid score from OpenAI, using default:", assistantMessage);
-      finalScore = 50; // default to 50 if invalid
-    }
-
-    console.log("🎯 Calculated score:", finalScore);
-
-    // Track usage if available
-    if (completion.usage) {
-      try {
-        await ctx.runMutation(api.openai.trackUsage, {
-          userId,
-          feature: "scoring",
-          model: "gpt-4o-mini",
-          promptTokens: completion.usage.prompt_tokens || 0,
-          completionTokens: completion.usage.completion_tokens || 0,
-          metadata: { date, score: finalScore }
-        });
-      } catch (trackingError) {
-        console.error("[scoreDailyLog] Failed to track usage:", trackingError);
+      if (!openAIResponse.ok) {
+        const errorText = await openAIResponse.text();
+        console.error("❌ OpenAI API error:", openAIResponse.status, errorText);
+        throw new Error(`OpenAI API error (${openAIResponse.status}): ${errorText}`);
       }
+
+      const completion = await openAIResponse.json();
+      console.log("📊 OpenAI response received");
+
+      // Extract the score from the response
+      const assistantMessage = completion.choices?.[0]?.message?.content?.trim() || "";
+      let aiScore = parseInt(assistantMessage, 10);
+      
+      if (isNaN(aiScore) || aiScore < 1 || aiScore > 10) {
+        console.warn("⚠️ Invalid score from OpenAI, using default:", assistantMessage);
+        aiScore = 5; // default to 5 (middle score) if invalid
+      }
+
+      // Convert from 1-10 scale to 1-100 scale for the heatmap
+      const finalScore = Math.round(aiScore * 10);
+
+      console.log(`🎯 AI-calculated score: ${aiScore}/10 -> converted to ${finalScore}/100`);
+
+      // Track usage if available
+      if (completion.usage) {
+        try {
+          await ctx.runMutation(api.openai.trackUsage, {
+            userId,
+            feature: "scoring",
+            model: "gpt-4o-mini",
+            promptTokens: completion.usage.prompt_tokens || 0,
+            completionTokens: completion.usage.completion_tokens || 0,
+            metadata: { date, score: finalScore, aiScore }
+          });
+        } catch (trackingError) {
+          console.error("[scoreDailyLog] Failed to track usage:", trackingError);
+        }
+      }
+
+      // Update the score in the database
+      await ctx.runMutation(api.score.updateLogScore, {
+        logId: dailyLog._id,
+        newScore: finalScore,
+      });
+
+      console.log("✅ AI score updated successfully");
+
+      // Trigger feed generation for this scored log
+      try {
+        console.log("🔄 Generating feed entry for scored log...");
+        const feedResult = await ctx.runAction(api.feed.generateFeedForDailyLog, {
+          userId,
+          date,
+        });
+        console.log("✅ Feed entry generated successfully");
+      } catch (feedError) {
+        console.error("⚠️ Failed to generate feed entry:", feedError);
+        // Don't throw here - scoring was successful, feed generation is secondary
+      }
+
+      return { score: finalScore };
+      
+    } catch (error) {
+      console.error("❌ Error in AI scoreDailyLog:", error);
+      throw error;
     }
-
-    // Update the score in the database
-    await ctx.runMutation(api.score.updateLogScore, {
-      logId: dailyLog._id,
-      newScore: finalScore,
-    });
-
-    console.log("✅ Score updated successfully");
-
-    return { score: finalScore };
   },
 });
 

@@ -33,6 +33,7 @@
     "react-day-picker": "^9.7.0",
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.56.4",
+    "react-markdown": "^10.1.0",
     "recharts": "^2.15.3",
     "resend": "^4.6.0",
     "stripe": "^18.3.0",

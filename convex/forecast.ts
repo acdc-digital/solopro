@@ -37,7 +37,7 @@ export const testDatabaseConnection = query({
 // You might already have this in logs.ts - if so, adjust the runQuery call below
 export const getLogsForUser = query({
   args: {
-    userId: v.string(),
+    userId: v.id("users"),
     endDate: v.string(),
   },
   handler: async (ctx, args) => {
@@ -58,7 +58,7 @@ export const getLogsForUser = query({
 // Query to get logs for a user in a date range (inclusive)
 export const getLogsForUserInRange = query({
   args: {
-    userId: v.string(),
+    userId: v.id("users"),
     startDate: v.string(),
     endDate: v.string(),
   },
@@ -80,7 +80,7 @@ export const getLogsForUserInRange = query({
 // Query to get logs for a user in a date range (inclusive, simple version for frontend existence check)
 export const getLogsForUserInRangeSimple = query({
   args: {
-    userId: v.string(),
+    userId: v.id("users"),
     startDate: v.string(),
     endDate: v.string(),
   },
@@ -101,7 +101,7 @@ export const getLogsForUserInRangeSimple = query({
 // Get the 7-day forecast data (UI query - keep as is)
 export const getSevenDayForecast = query({
   args: {
-    userId: v.string(),
+    userId: v.id("users"),
     startDate: v.optional(v.string()),
     endDate: v.optional(v.string()),
     today: v.optional(v.string()),
@@ -213,10 +213,134 @@ export const getSevenDayForecast = query({
 });
 
 
+// --- ACTION: Generate retrospective forecasts for historical analysis ---
+export const generateRetrospectiveForecastAnalysis = action({
+  args: {
+    userId: v.id("users"),
+    startDate: v.optional(v.string()),
+    endDate: v.optional(v.string()),
+  },
+  handler: async (ctx, args): Promise<{
+    success: boolean;
+    error?: string;
+    analysis?: {
+      totalForecasts: number;
+      avgAccuracy: number;
+      avgScoreDiff: number;
+      distribution: {
+        excellent: number;
+        good: number;
+        fair: number;
+        poor: number;
+      };
+      comparisons: Array<{
+        date: string;
+        predictedScore: number;
+        actualScore: number;
+        accuracy: number;
+        scoreDifference: number;
+      }>;
+    }
+  }> => {
+    const { userId, startDate, endDate } = args;
+
+    console.log("[generateRetrospectiveForecastAnalysis] Starting analysis for user:", userId);
+
+    try {
+      // Get all logs for the user in date range
+      const allLogsQuery = startDate && endDate
+        ? { userId, startDate, endDate }
+        : { userId, startDate: "2020-01-01", endDate: "2030-12-31" };
+
+      const allLogs = await ctx.runQuery(internal.forecast.getLogsForUserInRange, allLogsQuery);
+
+      if (!allLogs || allLogs.length < 5) {
+        return { success: false, error: `Need at least 5 logs for analysis, found ${allLogs?.length || 0}` };
+      }
+
+      // Sort logs by date
+      const sortedLogs = allLogs.sort((a: any, b: any) => a.date.localeCompare(b.date));
+      console.log(`[generateRetrospectiveForecastAnalysis] Processing ${sortedLogs.length} logs`);
+
+      const comparisons = [];
+
+      // For each log starting from the 5th day (need 4 prior days for forecast)
+      for (let i = 4; i < Math.min(sortedLogs.length, 50); i++) { // Limit to 50 for performance
+        const targetLog = sortedLogs[i];
+        const priorLogs = sortedLogs.slice(i - 4, i); // Get the 4 logs before this one
+
+        try {
+          // Generate forecast using the prior 4 days
+          const forecastResult = await ctx.runAction(internal.generator.generateForecastWithAI, {
+            userId,
+            pastLogs: priorLogs.map((log: any) => ({
+              date: log.date,
+              score: log.score ?? 0,
+              activities: (typeof log.answers === 'object' && log.answers?.activities) ? log.answers.activities : [],
+              notes: typeof log.answers === 'string' ? log.answers : JSON.stringify(log.answers ?? {}),
+            })),
+            targetDates: [targetLog.date],
+          });
+
+          if (forecastResult && forecastResult.length > 0) {
+            const forecast = forecastResult[0];
+            const scoreDifference = Math.abs((forecast.emotionScore || 0) - (targetLog.score || 0));
+            const accuracy = Math.max(0, 100 - scoreDifference);
+
+            comparisons.push({
+              date: targetLog.date,
+              predictedScore: forecast.emotionScore || 0,
+              actualScore: targetLog.score || 0,
+              scoreDifference,
+              accuracy,
+            });
+          }
+        } catch (error) {
+          console.log(`[generateRetrospectiveForecastAnalysis] Error processing ${targetLog.date}:`, error);
+        }
+      }
+
+      if (comparisons.length === 0) {
+        return { success: false, error: "No forecasts could be generated" };
+      }
+
+      // Calculate statistics
+      const avgAccuracy = comparisons.reduce((sum, c) => sum + c.accuracy, 0) / comparisons.length;
+      const avgScoreDiff = comparisons.reduce((sum, c) => sum + c.scoreDifference, 0) / comparisons.length;
+
+      const excellentForecasts = comparisons.filter(c => c.accuracy >= 90).length;
+      const goodForecasts = comparisons.filter(c => c.accuracy >= 70 && c.accuracy < 90).length;
+      const fairForecasts = comparisons.filter(c => c.accuracy >= 50 && c.accuracy < 70).length;
+      const poorForecasts = comparisons.filter(c => c.accuracy < 50).length;
+
+      const analysis = {
+        totalForecasts: comparisons.length,
+        avgAccuracy,
+        avgScoreDiff,
+        distribution: {
+          excellent: excellentForecasts,
+          good: goodForecasts,
+          fair: fairForecasts,
+          poor: poorForecasts,
+        },
+        comparisons,
+      };
+
+      console.log(`[generateRetrospectiveForecastAnalysis] Analysis complete: ${comparisons.length} forecasts, ${avgAccuracy.toFixed(1)}% avg accuracy`);
+
+      return { success: true, analysis };
+
+    } catch (error) {
+      console.error("[generateRetrospectiveForecastAnalysis] Error:", error);
+      return { success: false, error: error.message };
+    }
+  }
+});
+
 // --- ACTION: Generate forecast for a user ---
 export const generateForecast = action({
   args: {
-    userId: v.string(),
+    userId: v.id("users"),
     startDate: v.optional(v.string()),
     endDate: v.optional(v.string()),
   },
@@ -323,7 +447,7 @@ export const generateForecast = action({
 // --- Internal Helper Mutations ---
 
 export const deleteExistingForecast = internalMutation({
-   args: { userId: v.string(), date: v.string() },
+   args: { userId: v.id("users"), date: v.string() },
    handler: async (ctx, args) => {
       const existing = await ctx.db.query("forecast")
          .withIndex("byUserDate", q => q.eq("userId", args.userId).eq("date", args.date))
@@ -342,7 +466,7 @@ export const deleteExistingForecast = internalMutation({
 
 export const insertForecast = internalMutation({
    args: {
-      userId: v.string(),
+      userId: v.id("users"),
       date: v.string(),
       emotionScore: v.number(),
       description: v.string(),
@@ -420,7 +544,7 @@ function formatMonthDay(date: Date) {
 // --- Forecast Feedback ---
 export const submitForecastFeedback = mutation({
   args: {
-    userId: v.string(),
+    userId: v.id("users"),
     forecastDate: v.string(),
     feedback: v.union(v.literal("up"), v.literal("down")),
   },
@@ -453,7 +577,7 @@ export const submitForecastFeedback = mutation({
 
 export const getForecastFeedback = query({
   args: {
-    userId: v.string(),
+    userId: v.id("users"),
     forecastDates: v.array(v.string()),
   },
   handler: async (ctx, args) => {

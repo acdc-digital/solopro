@@ -1,0 +1,373 @@
+date,weekday,original_mood,form_overallMood,form_workSatisfaction,form_personalLifeSatisfaction,form_balanceRating,form_sleep,form_exercise,form_highlights,form_challenges,form_tomorrowGoal,average_score,forecast_emotion_score,forecast_confidence,db_date_format,has_forecast
+16/04/2021,Friday,Good,8,10,10,10,7.5,True,"Great day! Good Friday. I focused on spiritual practices, dove deep into learning, explored creative pursuits, ...",,,2021-04-16,unknown,,2021-04-16,no
+15/04/2021,Thursday,Good,8,10,10,10,7.5,True,"Great day! Good Thursday. I focused on spiritual practices, dove deep into learning, explored creative pursuits...",Overall positive day with minor challenges.,,,2021-04-15,unknown,2021-04-15,no
+14/04/2021,Wednesday,Normal,5,10,10,8,7.0,True,"Found positives: Reading, Learning, Prayer","Feeling confused,,,2021-04-14,unknown",,,,,2021-04-14,no
+13/04/2021,Tuesday,Normal,5,10,10,8,7.5,True,"Found positives: Reading, Learning, Art",Overall positive day with minor challenges.,,,2021-04-13,unknown,2021-04-13,no
+12/04/2021,Monday,Awful,1,8,3,6,7.5,True,"Found positives: Reading, Learning, Fasting","Feeling angry,,,2021-04-12,unknown",,,,,2021-04-12,no
+11/04/2021,Sunday,Normal,5,10,8,8,7.5,True,"Found positives: Reading, Learning, Prayer",Overall positive day with minor challenges.,,,2021-04-11,unknown,2021-04-11,no
+10/04/2021,Saturday,Good,8,10,10,10,7.5,True,"Great day! Good Saturday. I spent time in prayer and reflection, dove deep into learning, explored creative pur...",Overall positive day with minor challenges.,,,2021-04-10,unknown,2021-04-10,no
+09/04/2021,Friday,Good,8,10,10,10,7.5,True,"Great day! Good Friday. I focused on spiritual practices, dove deep into learning, explored creative pursuits, ...",,,2021-04-09,unknown,,2021-04-09,no
+08/04/2021,Thursday,Amazing,10,10,10,10,7.5,False,"Great day! Amazing Thursday! I engaged in mindful practices, dove deep into learning, explored creative pursuit...",Overall positive day with minor challenges.,,,2021-04-08,unknown,2021-04-08,no
+07/04/2021,Wednesday,Good,8,10,10,10,7.5,True,"Great day! Good Wednesday. I engaged in mindful practices, dove deep into learning, explored creative pursuits,...",,,2021-04-07,unknown,,2021-04-07,no
+06/04/2021,Tuesday,Good,8,10,10,10,7.0,True,"Great day! Good Tuesday. I focused on spiritual practices, dove deep into learning, explored creative pursuits,...",,,2021-04-06,unknown,,2021-04-06,no
+05/04/2021,Monday,Good,8,10,10,10,7.5,True,"Great day! Good Monday. I focused on spiritual practices, dove deep into learning, explored creative pursuits, ...",,,2021-04-05,unknown,,2021-04-05,no
+04/04/2021,Sunday,Good,8,10,10,10,7.5,True,"Great day! Good Sunday. I focused on spiritual practices, dove deep into learning, explored creative pursuits, ...",,,2021-04-04,unknown,,2021-04-04,no
+03/04/2021,Saturday,Good,8,10,10,10,7.5,True,"Great day! Good Saturday. I focused on spiritual practices, dove deep into learning, explored creative pursuits...",Overall positive day with minor challenges.,,,2021-04-03,unknown,2021-04-03,no
+02/04/2021,Friday,Amazing,10,10,10,10,7.5,True,"Great day! Amazing Friday! I focused on spiritual practices, dove deep into learning, explored creative pursuit...",Overall positive day with minor challenges.,,,2021-04-02,unknown,2021-04-02,no
+01/04/2021,Thursday,Good,8,10,10,10,7.5,True,"Great day! Good Thursday. I focused on spiritual practices, dove deep into learning, explored creative pursuits...",Overall positive day with minor challenges.,,,2021-04-01,unknown,2021-04-01,no
+31/03/2021,Wednesday,Good,8,10,10,10,7.0,True,"Great day! Good Wednesday. I focused on spiritual practices, dove deep into learning, explored creative pursuit...",Overall positive day with minor challenges.,,,2021-03-31,unknown,2021-03-31,no
+30/03/2021,Tuesday,Normal,5,10,10,8,7.5,True,"Found positives: Reading, Learning, Art",Overall positive day with minor challenges.,,,2021-03-30,unknown,2021-03-30,no
+29/03/2021,Monday,Good,8,10,10,10,7.5,True,"Great day! Good Monday. I focused on spiritual practices, dove deep into learning, explored creative pursuits, ...",,,2021-03-29,unknown,,2021-03-29,no
+28/03/2021,Sunday,Good,8,10,10,10,7.5,True,"Great day! Good Sunday. I focused on spiritual practices, dove deep into learning, explored creative pursuits, ...",,,2021-03-28,unknown,,2021-03-28,no
+27/03/2021,Saturday,Good,8,10,10,10,7.5,True,"Great day! Good Saturday. I engaged in mindful practices, dove deep into learning, explored creative pursuits, ...",,,2021-03-27,unknown,,2021-03-27,no
+26/03/2021,Friday,Amazing,10,10,10,10,7.5,True,"Great day! Amazing Friday! I focused on spiritual practices, dove deep into learning, explored creative pursuit...",Overall positive day with minor challenges.,,,2021-03-26,unknown,2021-03-26,no
+25/03/2021,Thursday,Normal,5,10,10,8,7.5,True,"Found positives: Reading, Learning, Art",Overall positive day with minor challenges.,,,2021-03-25,unknown,2021-03-25,no
+24/03/2021,Wednesday,Good,8,10,10,10,7.5,True,"Great day! Good Wednesday. I focused on spiritual practices, dove deep into learning, explored creative pursuit...",Overall positive day with minor challenges.,,,2021-03-24,unknown,2021-03-24,no
+23/03/2021,Tuesday,Good,8,10,10,10,7.5,True,"Great day! Good Tuesday. I focused on spiritual practices, dove deep into learning, explored creative pursuits,...",,,2021-03-23,unknown,,2021-03-23,no
+22/03/2021,Monday,Good,8,10,10,10,7.5,True,"Great day! Good Monday. I engaged in mindful practices, dove deep into learning, explored creative pursuits, pr...",,,2021-03-22,unknown,,2021-03-22,no
+21/03/2021,Sunday,Normal,5,10,8,8,7.5,True,"Found positives: Reading, Prayer, Fasting",Overall positive day with minor challenges.,,,2021-03-21,unknown,2021-03-21,no
+20/03/2021,Saturday,Good,8,10,10,10,7.5,True,"Great day! Good Saturday. I focused on spiritual practices, dove deep into learning, explored creative pursuits...",Overall positive day with minor challenges.,,,2021-03-20,unknown,2021-03-20,no
+19/03/2021,Friday,Good,8,10,10,10,7.5,True,"Great day! Good Friday. I focused on spiritual practices, dove deep into learning, explored creative pursuits, ...",,,2021-03-19,unknown,,2021-03-19,no
+18/03/2021,Thursday,Good,8,10,10,10,7.5,True,"Great day! Good Thursday. I focused on spiritual practices, dove deep into learning, engaged in writing, priori...",,,2021-03-18,unknown,,2021-03-18,no
+17/03/2021,Wednesday,Good,8,10,10,10,7.5,True,"Great day! Good Wednesday. I focused on spiritual practices, dove deep into learning, explored creative pursuit...",Overall positive day with minor challenges.,,,2021-03-17,unknown,2021-03-17,no
+16/03/2021,Tuesday,Normal,5,10,10,8,7.5,True,"Found positives: Reading, Learning, Art",Overall positive day with minor challenges.,,,2021-03-16,unknown,2021-03-16,no
+15/03/2021,Monday,Good,8,10,10,10,7.0,True,"Great day! Good Monday. I focused on spiritual practices, dove deep into learning, explored creative pursuits, ...",,,2021-03-15,unknown,,2021-03-15,no
+14/03/2021,Sunday,Good,8,10,10,10,7.5,True,"Great day! Good Sunday. I focused on spiritual practices, dove deep into learning, explored creative pursuits, ...",,,2021-03-14,unknown,,2021-03-14,no
+13/03/2021,Saturday,Good,8,10,10,10,7.5,True,"Great day! Good Saturday. I focused on spiritual practices, dove deep into learning, explored creative pursuits...",Overall positive day with minor challenges.,,,2021-03-13,unknown,2021-03-13,no
+12/03/2021,Friday,Good,8,10,10,10,7.5,True,"Great day! Good Friday. I focused on spiritual practices, dove deep into learning, explored creative pursuits, ...",,,2021-03-12,unknown,,2021-03-12,no
+11/03/2021,Thursday,Amazing,10,10,10,10,7.0,True,"Great day! Amazing Thursday! I focused on spiritual practices, dove deep into learning, explored creative pursu...",Overall positive day with minor challenges.,,,2021-03-11,unknown,2021-03-11,no
+10/03/2021,Wednesday,Good,8,10,10,10,7.5,True,"Great day! Good Wednesday. I spent time in prayer and reflection, dove deep into learning, explored creative pu...",Overall positive day with minor challenges.,,,2021-03-10,unknown,2021-03-10,no
+09/03/2021,Tuesday,Good,8,10,10,10,7.5,True,"Great day! Good Tuesday. I focused on spiritual practices, dove deep into learning, explored creative pursuits,...",,,2021-03-09,unknown,,2021-03-09,no
+08/03/2021,Monday,Normal,5,10,7,8,7.5,True,"Found positives: Learning, Prayer, Fasting",Overall positive day with minor challenges.,,,2021-03-08,unknown,2021-03-08,no
+07/03/2021,Sunday,Good,8,10,10,10,7.5,True,"Great day! Good Sunday. I focused on spiritual practices, dove deep into learning, explored creative pursuits, ...",,,2021-03-07,unknown,,2021-03-07,no
+06/03/2021,Saturday,Good,8,10,10,10,7.5,True,"Great day! Good Saturday. I focused on spiritual practices, dove deep into learning, explored creative pursuits...",Overall positive day with minor challenges.,,,2021-03-06,unknown,2021-03-06,no
+05/03/2021,Friday,Normal,5,6,7,8,7.5,True,"Found positives: Prayer, Walk, Meditation",Overall positive day with minor challenges.,,,2021-03-05,unknown,2021-03-05,no
+04/03/2021,Thursday,Good,8,10,10,10,7.5,True,"Great day! Good Thursday. I focused on spiritual practices, dove deep into learning, explored creative pursuits...",Overall positive day with minor challenges.,,,2021-03-04,unknown,2021-03-04,no
+03/03/2021,Wednesday,Good,8,10,10,10,7.5,False,"Great day! Good Wednesday. I focused on spiritual practices, dove deep into learning, explored creative pursuit...",Overall positive day with minor challenges.,,,2021-03-03,unknown,2021-03-03,no
+02/03/2021,Tuesday,Good,8,10,10,10,7.5,True,"Great day! Good Tuesday. I focused on spiritual practices, dove deep into learning, explored creative pursuits,...",,,2021-03-02,unknown,,2021-03-02,no
+01/03/2021,Monday,Awful,1,8,3,6,7.5,False,"Found positives: Reading, Learning, Fasting","Feeling awful,,,2021-03-01,unknown",,,,,2021-03-01,no
+28/02/2021,Sunday,Good,8,10,10,10,7.5,True,"Great day! Good Sunday. I engaged in mindful practices, dove deep into learning, explored creative pursuits, pr...",,,2021-02-28,unknown,,2021-02-28,no
+27/02/2021,Saturday,Good,8,10,10,10,7.0,True,"Great day! Good Saturday. I focused on spiritual practices, dove deep into learning, explored creative pursuits...",Overall positive day with minor challenges.,,,2021-02-27,unknown,2021-02-27,no
+26/02/2021,Friday,Good,8,10,10,10,7.5,True,"Great day! Good Friday. I focused on spiritual practices, dove deep into learning, explored creative pursuits, ...",,,2021-02-26,unknown,,2021-02-26,no
+25/02/2021,Thursday,Good,8,10,10,10,7.5,False,"Great day! Good Thursday. I focused on spiritual practices, dove deep into learning, explored creative pursuits...",Overall positive day with minor challenges.,,,2021-02-25,unknown,2021-02-25,no
+24/02/2021,Wednesday,Good,8,10,10,10,7.5,True,"Great day! Good Wednesday. I focused on spiritual practices, dove deep into learning, explored creative pursuit...",Overall positive day with minor challenges.,,,2021-02-24,unknown,2021-02-24,no
+23/02/2021,Tuesday,Normal,5,10,7,8,7.5,True,"Found positives: Reading, Learning, Fasting",Overall positive day with minor challenges.,,,2021-02-23,unknown,2021-02-23,no
+22/02/2021,Monday,Good,8,10,9,10,7.5,True,"Great day! Good Monday. I engaged in mindful practices, dove deep into learning, explored creative pursuits, pr...",,,2021-02-22,unknown,,2021-02-22,no
+21/02/2021,Sunday,Good,8,10,9,10,7.5,True,"Great day! Good Sunday. I engaged in mindful practices, dove deep into learning, explored creative pursuits, pr...",,,2021-02-21,unknown,,2021-02-21,no
+20/02/2021,Saturday,Normal,5,10,8,8,7.5,True,"Found positives: Reading, Prayer, Fasting",Overall positive day with minor challenges.,,,2021-02-20,unknown,2021-02-20,no
+19/02/2021,Friday,Amazing,10,10,10,10,7.5,True,"Great day! Amazing Friday! I spent time in prayer and reflection, dove deep into learning, explored creative pu...",Overall positive day with minor challenges.,,,2021-02-19,unknown,2021-02-19,no
+18/02/2021,Thursday,Normal,5,10,8,8,7.5,False,"Found positives: Learning, Art, Prayer",Overall positive day with minor challenges.,,,2021-02-18,unknown,2021-02-18,no
+17/02/2021,Wednesday,Amazing,10,10,10,10,7.5,False,"Great day! Amazing Wednesday! I engaged in mindful practices, dove deep into learning, engaged in cooking, prio...",,,2021-02-17,unknown,,2021-02-17,no
+16/02/2021,Tuesday,Normal,5,7,7,8,7.5,True,"Found positives: Reading, Learning, Walk",Overall positive day with minor challenges.,,,2021-02-16,unknown,2021-02-16,no
+15/02/2021,Monday,Amazing,10,10,10,10,7.5,True,"Great day! Amazing Monday! I engaged in mindful practices, dove deep into learning, explored creative pursuits,...",,,2021-02-15,unknown,,2021-02-15,no
+14/02/2021,Sunday,Bad,3,10,4,7,7.5,True,"Found positives: Reading, Learning, Fasting","Feeling worried,,,2021-02-14,unknown",,,,,2021-02-14,no
+13/02/2021,Saturday,Good,8,10,10,10,7.0,True,"Great day! Good Saturday. I focused on spiritual practices, dove deep into learning, explored creative pursuits...",Overall positive day with minor challenges.,,,2021-02-13,unknown,2021-02-13,no
+12/02/2021,Friday,Bad,3,8,6,7,7.5,True,"Found positives: Reading, Learning, Prayer","Feeling worried,,,2021-02-12,unknown",,,,,2021-02-12,no
+11/02/2021,Thursday,Amazing,10,10,10,10,7.5,True,"Great day! Amazing Thursday! I engaged in mindful practices, dove deep into learning, engaged in cooking, prior...",,,2021-02-11,unknown,,2021-02-11,no
+10/02/2021,Wednesday,Good,8,10,9,10,7.5,True,"Great day! Good Wednesday. I engaged in mindful practices, dove deep into learning, explored creative pursuits,...",,,2021-02-10,unknown,,2021-02-10,no
+09/02/2021,Tuesday,Good,8,10,10,10,7.5,True,"Great day! Good Tuesday. I engaged in mindful practices, dove deep into learning, explored creative pursuits, p...",,,2021-02-09,unknown,,2021-02-09,no
+08/02/2021,Monday,Good,8,10,9,10,7.5,True,"Great day! Good Monday. I engaged in mindful practices, dove deep into learning, explored creative pursuits, pr...",,,2021-02-08,unknown,,2021-02-08,no
+07/02/2021,Sunday,Good,8,10,9,10,7.5,True,"Great day! Good Sunday. I engaged in mindful practices, dove deep into learning, explored creative pursuits, pr...",,,2021-02-07,unknown,,2021-02-07,no
+06/02/2021,Saturday,Good,8,10,9,10,7.5,True,"Great day! Good Saturday. I engaged in mindful practices, dove deep into learning, explored creative pursuits, ...",,,2021-02-06,unknown,,2021-02-06,no
+05/02/2021,Friday,Good,8,10,10,10,7.5,True,"Great day! Good Friday. I focused on spiritual practices, dove deep into learning, explored creative pursuits, ...",,,2021-02-05,unknown,,2021-02-05,no
+04/02/2021,Thursday,Good,8,10,10,10,7.5,True,"Great day! Good Thursday. I engaged in mindful practices, dove deep into learning, explored creative pursuits, ...",,,2021-02-04,unknown,,2021-02-04,no
+03/02/2021,Wednesday,Good,8,10,10,10,7.5,True,"Great day! Good Wednesday. I engaged in mindful practices, dove deep into learning, explored creative pursuits,...",,,2021-02-03,unknown,,2021-02-03,no
+02/02/2021,Tuesday,Amazing,10,10,10,10,7.5,True,"Great day! Amazing Tuesday! I engaged in mindful practices, dove deep into learning, explored creative pursuits...",Overall positive day with minor challenges.,,,2021-02-02,unknown,2021-02-02,no
+01/02/2021,Monday,Amazing,10,10,10,10,7.5,True,"Great day! Amazing Monday! I focused on spiritual practices, dove deep into learning, explored creative pursuit...",Overall positive day with minor challenges.,,,2021-02-01,unknown,2021-02-01,no
+31/01/2021,Sunday,Normal,5,10,6,8,7.5,False,"Found positives: Reading, Learning, Fasting",Overall positive day with minor challenges.,,,2021-01-31,unknown,2021-01-31,no
+30/01/2021,Saturday,Good,8,10,10,10,7.5,True,"Great day! Good Saturday. I focused on spiritual practices, dove deep into learning, explored creative pursuits...",Overall positive day with minor challenges.,,,2021-01-30,unknown,2021-01-30,no
+29/01/2021,Friday,Normal,5,10,8,8,7.5,False,"Found positives: Reading, Learning, Fasting",Overall positive day with minor challenges.,,,2021-01-29,unknown,2021-01-29,no
+28/01/2021,Thursday,Good,8,10,9,10,7.5,False,"Great day! Good Thursday. I engaged in mindful practices, dove deep into learning, explored creative pursuits, ...",,,2021-01-28,unknown,,2021-01-28,no
+27/01/2021,Wednesday,Good,8,10,10,10,7.5,False,"Great day! Good Wednesday. I engaged in mindful practices, dove deep into learning, engaged in cooking, priorit...",,,2021-01-27,unknown,,2021-01-27,no
+26/01/2021,Tuesday,Amazing,10,10,10,10,7.5,True,"Great day! Amazing Tuesday! I focused on spiritual practices, dove deep into learning, explored creative pursui...",Overall positive day with minor challenges.,,,2021-01-26,unknown,2021-01-26,no
+25/01/2021,Monday,Amazing,10,10,10,10,7.5,True,"Great day! Amazing Monday! I engaged in mindful practices, dove deep into learning, explored creative pursuits,...",,,2021-01-25,unknown,,2021-01-25,no
+24/01/2021,Sunday,Good,8,10,9,10,7.5,True,"Great day! Good Sunday. I engaged in mindful practices, dove deep into learning, explored creative pursuits, pr...",,,2021-01-24,unknown,,2021-01-24,no
+23/01/2021,Saturday,Good,8,10,10,10,7.5,True,"Great day! Good Saturday. I spent time in prayer and reflection, dove deep into learning, explored creative pur...",Overall positive day with minor challenges.,,,2021-01-23,unknown,2021-01-23,no
+22/01/2021,Friday,Awful,1,8,3,6,7.5,True,"Found positives: Reading, Learning, Prayer","Feeling angry,,,2021-01-22,unknown",,,,,2021-01-22,no
+21/01/2021,Thursday,Good,8,10,10,10,7.5,True,"Great day! Good Thursday. I engaged in mindful practices, dove deep into learning, explored creative pursuits, ...",,,2021-01-21,unknown,,2021-01-21,no
+20/01/2021,Wednesday,Good,8,10,9,10,7.5,True,"Great day! Good Wednesday. I engaged in mindful practices, dove deep into learning, explored creative pursuits,...",,,2021-01-20,unknown,,2021-01-20,no
+19/01/2021,Tuesday,Normal,5,10,7,8,7.5,True,"Found positives: Reading, Learning, Fasting",Overall positive day with minor challenges.,,,2021-01-19,unknown,2021-01-19,no
+18/01/2021,Monday,Good,8,10,10,10,7.5,False,"Great day! Good Monday. I focused on spiritual practices, dove deep into learning, explored creative pursuits, ...",,,2021-01-18,unknown,,2021-01-18,no
+17/01/2021,Sunday,Good,8,10,9,10,7.5,False,"Great day! Good Sunday. I engaged in mindful practices, dove deep into learning, explored creative pursuits, pr...",,,2021-01-17,unknown,,2021-01-17,no
+16/01/2021,Saturday,Good,8,10,10,10,7.5,False,"Great day! Good Saturday. I focused on spiritual practices, dove deep into learning, explored creative pursuits...",Overall positive day with minor challenges.,,,2021-01-16,unknown,2021-01-16,no
+15/01/2021,Friday,Amazing,10,10,10,10,7.5,False,"Great day! Amazing Friday! I focused on spiritual practices, dove deep into learning, explored creative pursuit...",Overall positive day with minor challenges.,,,2021-01-15,unknown,2021-01-15,no
+14/01/2021,Thursday,Good,8,10,10,10,7.5,True,"Great day! Good Thursday. I focused on spiritual practices, dove deep into learning, explored creative pursuits...",Overall positive day with minor challenges.,,,2021-01-14,unknown,2021-01-14,no
+13/01/2021,Wednesday,Normal,5,10,8,8,7.5,False,"Found positives: Reading, Prayer, Meditation",Overall positive day with minor challenges.,,,2021-01-13,unknown,2021-01-13,no
+12/01/2021,Tuesday,Amazing,10,10,10,10,7.0,True,"Great day! Amazing Tuesday! I dove deep into learning, engaged in cooking, prioritized self-care, and enjoyed s...",,,2021-01-12,unknown,,2021-01-12,no
+11/01/2021,Monday,Amazing,10,10,10,10,7.5,False,"Great day! Amazing Monday! I engaged in mindful practices, dove deep into learning, engaged in writing, priorit...",,,2021-01-11,unknown,,2021-01-11,no
+10/01/2021,Sunday,Good,8,10,10,10,7.5,False,"Great day! Good Sunday. I focused on spiritual practices, dove deep into learning, explored creative pursuits, ...",,,2021-01-10,unknown,,2021-01-10,no
+09/01/2021,Saturday,Good,8,10,10,10,7.5,False,"Great day! Good Saturday. I engaged in mindful practices, dove deep into learning, explored creative pursuits, ...",,,2021-01-09,unknown,,2021-01-09,no
+08/01/2021,Friday,Amazing,10,10,10,10,7.5,True,"Great day! Amazing Friday! I focused on spiritual practices, dove deep into learning, explored creative pursuit...",Overall positive day with minor challenges.,,,2021-01-08,unknown,2021-01-08,no
+07/01/2021,Thursday,Amazing,10,10,10,10,7.5,True,"Great day! Amazing Thursday! I focused on spiritual practices, dove deep into learning, explored creative pursu...",Overall positive day with minor challenges.,,,2021-01-07,unknown,2021-01-07,no
+06/01/2021,Wednesday,Good,8,10,10,10,7.5,True,"Great day! Good Wednesday. I engaged in mindful practices, dove deep into learning, explored creative pursuits,...",,,2021-01-06,unknown,,2021-01-06,no
+05/01/2021,Tuesday,Normal,5,10,7,8,7.5,True,"Found positives: Reading, Learning, Art",Overall positive day with minor challenges.,,,2021-01-05,unknown,2021-01-05,no
+04/01/2021,Monday,Amazing,10,10,10,10,7.0,False,"Great day! Amazing Monday! I focused on spiritual practices, dove deep into learning, explored creative pursuit...",Overall positive day with minor challenges.,,,2021-01-04,unknown,2021-01-04,no
+03/01/2021,Sunday,Amazing,10,10,10,10,7.0,False,"Great day! Amazing Sunday! I focused on spiritual practices, dove deep into learning, explored creative pursuit...",Overall positive day with minor challenges.,,,2021-01-03,unknown,2021-01-03,no
+02/01/2021,Saturday,Good,8,10,10,10,7.5,True,"Great day! Good Saturday. I spent time in prayer and reflection, dove deep into learning, explored creative pur...",Overall positive day with minor challenges.,,,2021-01-02,unknown,2021-01-02,no
+01/01/2021,Friday,Good,8,10,10,10,7.5,True,"Great day! Good Friday. I focused on spiritual practices, dove deep into learning, explored creative pursuits, ...",,,2021-01-01,unknown,,2021-01-01,no
+31/12/2020,Thursday,Amazing,10,10,10,10,7.5,False,"Great day! Amazing Thursday! I focused on spiritual practices, dove deep into learning, explored creative pursu...",Overall positive day with minor challenges.,,,2020-12-31,unknown,2020-12-31,no
+30/12/2020,Wednesday,Normal,5,10,6,8,7.5,False,"Found positives: Reading, Learning, Fasting",Overall positive day with minor challenges.,,,2020-12-30,unknown,2020-12-30,no
+29/12/2020,Tuesday,Good,8,10,10,10,7.5,False,"Great day! Good Tuesday. I focused on spiritual practices, dove deep into learning, explored creative pursuits,...",,,2020-12-29,unknown,,2020-12-29,no
+28/12/2020,Monday,Good,8,10,9,10,7.5,False,"Great day! Good Monday. I engaged in mindful practices, dove deep into learning, explored creative pursuits, pr...",,,2020-12-28,unknown,,2020-12-28,no
+27/12/2020,Sunday,Good,8,10,10,10,7.5,True,"Great day! Good Sunday. I spent time in prayer and reflection, dove deep into learning, explored creative pursu...",Overall positive day with minor challenges.,,,2020-12-27,unknown,2020-12-27,no
+26/12/2020,Saturday,Normal,5,10,6,8,7.5,True,"Found positives: Reading, Learning, Walk",Overall positive day with minor challenges.,,,2020-12-26,unknown,2020-12-26,no
+25/12/2020,Friday,Good,8,9,10,10,7.5,False,"Great day! Good Friday. I spent time in prayer and reflection, immersed in reading and study, explored creative...",Overall positive day with minor challenges.,,,2020-12-25,unknown,2020-12-25,no
+24/12/2020,Thursday,Good,8,10,10,10,7.5,True,"Great day! Good Thursday. I engaged in mindful practices, dove deep into learning, explored creative pursuits, ...",,,2020-12-24,unknown,,2020-12-24,no
+23/12/2020,Wednesday,Good,8,10,10,10,7.5,False,"Great day! Good Wednesday. I spent time in prayer and reflection, dove deep into learning, explored creative pu...",Overall positive day with minor challenges.,,,2020-12-23,unknown,2020-12-23,no
+22/12/2020,Tuesday,Good,8,10,10,10,7.5,False,"Great day! Good Tuesday. I engaged in mindful practices, dove deep into learning, explored creative pursuits, p...",,,2020-12-22,unknown,,2020-12-22,no
+21/12/2020,Monday,Good,8,10,9,10,7.5,False,"Great day! Good Monday. I dove deep into learning, explored creative pursuits, prioritized self-care, and enjoy...",,,2020-12-21,unknown,,2020-12-21,no
+20/12/2020,Sunday,Good,8,10,10,10,7.5,True,"Great day! Good Sunday. I spent time in prayer and reflection, dove deep into learning, explored creative pursu...",Overall positive day with minor challenges.,,,2020-12-20,unknown,2020-12-20,no
+19/12/2020,Saturday,Good,8,10,10,10,7.5,False,"Great day! Good Saturday. I engaged in mindful practices, dove deep into learning, explored creative pursuits, ...",,,2020-12-19,unknown,,2020-12-19,no
+18/12/2020,Friday,Awful,1,8,3,6,7.5,False,"Found positives: Reading, Learning, Prayer","Feeling angry,,,2020-12-18,unknown",,,,,2020-12-18,no
+17/12/2020,Thursday,Awful,1,8,3,6,7.5,False,"Found positives: Reading, Learning, Art","Feeling triggered,,,2020-12-17,unknown",,,,,2020-12-17,no
+16/12/2020,Wednesday,Good,8,10,10,10,7.5,False,"Great day! Good Wednesday. I spent time in prayer and reflection, dove deep into learning, explored creative pu...",Overall positive day with minor challenges.,,,2020-12-16,unknown,2020-12-16,no
+15/12/2020,Tuesday,Good,8,10,10,10,7.5,True,"Great day! Good Tuesday. I engaged in mindful practices, dove deep into learning, explored creative pursuits, p...",,,2020-12-15,unknown,,2020-12-15,no
+14/12/2020,Monday,Good,8,10,9,10,7.5,True,"Great day! Good Monday. I engaged in mindful practices, dove deep into learning, explored creative pursuits, pr...",,,2020-12-14,unknown,,2020-12-14,no
+13/12/2020,Sunday,Good,8,10,10,10,7.5,True,"Great day! Good Sunday. I spent time in prayer and reflection, dove deep into learning, explored creative pursu...",Overall positive day with minor challenges.,,,2020-12-13,unknown,2020-12-13,no
+12/12/2020,Saturday,Bad,3,8,4,7,7.5,True,"Found positives: Learning, Art, Walk","Feeling worried,,,2020-12-12,unknown",,,,,2020-12-12,no
+11/12/2020,Friday,Awful,1,6,1,4,7.0,True,"Found positives: Learning, Walk, Audio Books","Had a awful day overall,,,2020-12-11,unknown",,,,,2020-12-11,no
+10/12/2020,Thursday,Good,8,10,10,10,7.5,True,"Great day! Good Thursday. I spent time in prayer and reflection, dove deep into learning, explored creative pur...",Overall positive day with minor challenges.,,,2020-12-10,unknown,2020-12-10,no
+09/12/2020,Wednesday,Good,8,10,10,10,7.5,True,"Great day! Good Wednesday. I engaged in mindful practices, dove deep into learning, explored creative pursuits,...",,,2020-12-09,unknown,,2020-12-09,no
+08/12/2020,Tuesday,Bad,3,8,5,7,7.0,True,"Found positives: Reading, Prayer, Fasting","Feeling worried,,,2020-12-08,unknown",,,,,2020-12-08,no
+07/12/2020,Monday,Good,8,10,10,10,7.5,True,"Great day! Good Monday. I engaged in mindful practices, dove deep into learning, explored creative pursuits, pr...",,,2020-12-07,unknown,,2020-12-07,no
+06/12/2020,Sunday,Bad,3,8,6,7,7.5,True,"Found positives: Reading, Learning, Prayer","Had a bad day overall,,,2020-12-06,unknown",,,,,2020-12-06,no
+05/12/2020,Saturday,Good,8,10,10,10,7.5,True,"Great day! Good Saturday. I spent time in prayer and reflection, dove deep into learning, explored creative pur...",Overall positive day with minor challenges.,,,2020-12-05,unknown,2020-12-05,no
+04/12/2020,Friday,Good,8,10,10,10,7.5,True,"Great day! Good Friday. I focused on spiritual practices, dove deep into learning, explored creative pursuits, ...",,,2020-12-04,unknown,,2020-12-04,no
+03/12/2020,Thursday,Good,8,10,10,10,7.5,True,"Great day! Good Thursday. I focused on spiritual practices, dove deep into learning, explored creative pursuits...",Overall positive day with minor challenges.,,,2020-12-03,unknown,2020-12-03,no
+02/12/2020,Wednesday,Normal,5,10,10,8,7.5,True,"Found positives: Reading, Learning, Art",Overall positive day with minor challenges.,,,2020-12-02,unknown,2020-12-02,no
+01/12/2020,Tuesday,Good,8,10,10,10,7.5,True,"Great day! Good Tuesday. I focused on spiritual practices, dove deep into learning, explored creative pursuits,...",,,2020-12-01,unknown,,2020-12-01,no
+30/11/2020,Monday,Good,8,10,10,10,7.5,False,"Great day! Good Monday. I engaged in mindful practices, dove deep into learning, explored creative pursuits, pr...",,,2020-11-30,unknown,,2020-11-30,no
+29/11/2020,Sunday,Normal,5,10,6,8,7.5,False,"Found positives: Reading, Fasting, Shower",Overall positive day with minor challenges.,,,2020-11-29,unknown,2020-11-29,no
+28/11/2020,Saturday,Good,8,10,10,10,7.5,True,"Great day! Good Saturday. I focused on spiritual practices, dove deep into learning, explored creative pursuits...",Overall positive day with minor challenges.,,,2020-11-28,unknown,2020-11-28,no
+27/11/2020,Friday,Normal,5,10,6,8,7.5,False,"Found positives: Learning, Prayer, Fasting",Overall positive day with minor challenges.,,,2020-11-27,unknown,2020-11-27,no
+26/11/2020,Thursday,Good,8,10,10,10,7.5,False,"Great day! Good Thursday. I focused on spiritual practices, dove deep into learning, explored creative pursuits...",Overall positive day with minor challenges.,,,2020-11-26,unknown,2020-11-26,no
+25/11/2020,Wednesday,Good,8,10,10,10,7.5,False,"Great day! Good Wednesday. I engaged in mindful practices, dove deep into learning, explored creative pursuits,...",,,2020-11-25,unknown,,2020-11-25,no
+24/11/2020,Tuesday,Good,8,10,9,10,7.5,False,"Great day! Good Tuesday. I spent time in prayer and reflection, dove deep into learning, explored creative purs...",Overall positive day with minor challenges.,,,2020-11-24,unknown,2020-11-24,no
+23/11/2020,Monday,Good,8,10,9,10,7.5,False,"Great day! Good Monday. I engaged in mindful practices, dove deep into learning, explored creative pursuits, pr...",,,2020-11-23,unknown,,2020-11-23,no
+22/11/2020,Sunday,Good,8,10,9,10,7.5,True,"Great day! Good Sunday. I engaged in mindful practices, dove deep into learning, explored creative pursuits, pr...",,,2020-11-22,unknown,,2020-11-22,no
+21/11/2020,Saturday,Good,8,10,9,10,7.5,False,"Great day! Good Saturday. I engaged in mindful practices, dove deep into learning, explored creative pursuits, ...",,,2020-11-21,unknown,,2020-11-21,no
+20/11/2020,Friday,Good,8,10,10,10,7.5,True,"Great day! Good Friday. I spent time in prayer and reflection, dove deep into learning, explored creative pursu...",Overall positive day with minor challenges.,,,2020-11-20,unknown,2020-11-20,no
+19/11/2020,Thursday,Amazing,10,10,10,10,7.5,True,"Great day! Amazing Thursday! I spent time in prayer and reflection, dove deep into learning, explored creative ...",Overall positive day with minor challenges.,,,2020-11-19,unknown,2020-11-19,no
+18/11/2020,Wednesday,Amazing,10,10,10,10,7.5,False,"Great day! Amazing Wednesday! I focused on spiritual practices, dove deep into learning, explored creative purs...",Overall positive day with minor challenges.,,,2020-11-18,unknown,2020-11-18,no
+18/11/2020,Wednesday,Good,8,10,10,10,7.5,True,"Great day! Good Wednesday. I focused on spiritual practices, dove deep into learning, explored creative pursuit...",Overall positive day with minor challenges.,,,2020-11-18,unknown,2020-11-18,no
+17/11/2020,Tuesday,Good,8,10,10,10,7.5,True,"Great day! Good Tuesday. I engaged in mindful practices, dove deep into learning, explored creative pursuits, p...",,,2020-11-17,unknown,,2020-11-17,no
+16/11/2020,Monday,Good,8,10,10,10,7.5,True,"Great day! Good Monday. I focused on spiritual practices, dove deep into learning, explored creative pursuits, ...",,,2020-11-16,unknown,,2020-11-16,no
+15/11/2020,Sunday,Good,8,10,9,10,7.5,False,"Great day! Good Sunday. I engaged in mindful practices, dove deep into learning, explored creative pursuits, pr...",,,2020-11-15,unknown,,2020-11-15,no
+14/11/2020,Saturday,Good,8,10,9,10,7.5,True,"Great day! Good Saturday. I engaged in mindful practices, dove deep into learning, explored creative pursuits, ...",,,2020-11-14,unknown,,2020-11-14,no
+13/11/2020,Friday,Good,8,10,10,10,7.5,True,"Great day! Good Friday. I spent time in prayer and reflection, dove deep into learning, explored creative pursu...",Overall positive day with minor challenges.,,,2020-11-13,unknown,2020-11-13,no
+12/11/2020,Thursday,Good,8,10,8,10,7.5,False,"Great day! Good Thursday. I engaged in mindful practices, dove deep into learning, explored creative pursuits, ...",,,2020-11-12,unknown,,2020-11-12,no
+11/11/2020,Wednesday,Amazing,10,10,10,10,7.5,True,"Great day! Amazing Wednesday! I spent time in prayer and reflection, dove deep into learning, explored creative...",Overall positive day with minor challenges.,,,2020-11-11,unknown,2020-11-11,no
+10/11/2020,Tuesday,Good,8,10,10,10,7.5,True,"Great day! Good Tuesday. I engaged in mindful practices, dove deep into learning, explored creative pursuits, p...",,,2020-11-10,unknown,,2020-11-10,no
+09/11/2020,Monday,Good,8,10,10,10,7.5,True,"Great day! Good Monday. I focused on spiritual practices, dove deep into learning, explored creative pursuits, ...",,,2020-11-09,unknown,,2020-11-09,no
+08/11/2020,Sunday,Good,8,10,9,10,7.5,False,"Great day! Good Sunday. I spent time in prayer and reflection, dove deep into learning, explored creative pursu...",Overall positive day with minor challenges.,,,2020-11-08,unknown,2020-11-08,no
+07/11/2020,Saturday,Amazing,10,10,10,10,7.5,True,"Great day! Amazing Saturday! I engaged in mindful practices, dove deep into learning, explored creative pursuit...",Overall positive day with minor challenges.,,,2020-11-07,unknown,2020-11-07,no
+06/11/2020,Friday,Good,8,10,9,10,7.5,True,"Great day! Good Friday. I spent time in prayer and reflection, dove deep into learning, explored creative pursu...",Overall positive day with minor challenges.,,,2020-11-06,unknown,2020-11-06,no
+05/11/2020,Thursday,Good,8,10,10,10,7.5,False,"Great day! Good Thursday. I engaged in mindful practices, dove deep into learning, explored creative pursuits, ...",,,2020-11-05,unknown,,2020-11-05,no
+04/11/2020,Wednesday,Good,8,10,9,10,7.5,True,"Great day! Good Wednesday. I engaged in mindful practices, dove deep into learning, explored creative pursuits,...",,,2020-11-04,unknown,,2020-11-04,no
+03/11/2020,Tuesday,Amazing,10,10,10,10,7.5,False,"Great day! Amazing Tuesday! I spent time in prayer and reflection, dove deep into learning, explored creative p...",Overall positive day with minor challenges.,,,2020-11-03,unknown,2020-11-03,no
+02/11/2020,Monday,Amazing,10,10,10,10,7.5,False,"Great day! Amazing Monday! I dove deep into learning, explored creative pursuits, prioritized self-care, and en...",,,2020-11-02,unknown,,2020-11-02,no
+01/11/2020,Sunday,Good,8,10,9,10,7.5,False,"Great day! Good Sunday. I engaged in mindful practices, dove deep into learning, explored creative pursuits, pr...",,,2020-11-01,unknown,,2020-11-01,no
+31/10/2020,Saturday,Good,8,10,9,10,7.5,True,"Great day! Good Saturday. I engaged in mindful practices, dove deep into learning, explored creative pursuits, ...",,,2020-10-31,unknown,,2020-10-31,no
+30/10/2020,Friday,Good,8,10,9,10,7.5,True,"Great day! Good Friday. I focused on spiritual practices, dove deep into learning, explored creative pursuits, ...",,,2020-10-30,unknown,,2020-10-30,no
+29/10/2020,Thursday,Good,8,10,10,10,7.5,True,"Great day! Good Thursday. I engaged in mindful practices, dove deep into learning, explored creative pursuits, ...",,,2020-10-29,unknown,,2020-10-29,no
+28/10/2020,Wednesday,Good,8,10,8,10,7.5,True,"Great day! Good Wednesday. I engaged in mindful practices, dove deep into learning, explored creative pursuits,...",,,2020-10-28,unknown,,2020-10-28,no
+27/10/2020,Tuesday,Good,8,10,10,10,7.5,True,"Great day! Good Tuesday. I focused on spiritual practices, dove deep into learning, explored creative pursuits,...",,,2020-10-27,unknown,,2020-10-27,no
+26/10/2020,Monday,Normal,5,10,7,8,7.5,True,"Found positives: Learning, Prayer, Fasting",Overall positive day with minor challenges.,,,2020-10-26,unknown,2020-10-26,no
+25/10/2020,Sunday,Good,8,10,8,10,7.5,True,"Great day! Good Sunday. I engaged in mindful practices, dove deep into learning, engaged in cooking, prioritize...",,,2020-10-25,unknown,,2020-10-25,no
+24/10/2020,Saturday,Good,8,10,10,10,7.5,True,"Great day! Good Saturday. I focused on spiritual practices, dove deep into learning, explored creative pursuits...",Overall positive day with minor challenges.,,,2020-10-24,unknown,2020-10-24,no
+23/10/2020,Friday,Normal,5,10,10,8,7.5,True,"Found positives: Reading, Learning, Art",Overall positive day with minor challenges.,,,2020-10-23,unknown,2020-10-23,no
+22/10/2020,Thursday,Good,8,10,10,10,7.5,True,"Great day! Good Thursday. I focused on spiritual practices, dove deep into learning, explored creative pursuits...",Overall positive day with minor challenges.,,,2020-10-22,unknown,2020-10-22,no
+21/10/2020,Wednesday,Good,8,10,9,10,7.5,True,"Great day! Good Wednesday. I engaged in mindful practices, dove deep into learning, explored creative pursuits,...",,,2020-10-21,unknown,,2020-10-21,no
+20/10/2020,Tuesday,Normal,5,10,5,8,7.5,True,"Found positives: Learning, Fasting, Walk",Overall positive day with minor challenges.,,,2020-10-20,unknown,2020-10-20,no
+19/10/2020,Monday,Awful,1,8,6,6,7.0,True,"Found positives: Reading, Learning, Prayer","Had a awful day overall,,,2020-10-19,unknown",,,,,2020-10-19,no
+18/10/2020,Sunday,Good,8,10,10,10,7.5,True,"Great day! Good Sunday. I focused on spiritual practices, dove deep into learning, explored creative pursuits, ...",,,2020-10-18,unknown,,2020-10-18,no
+17/10/2020,Saturday,Good,8,10,9,10,7.0,True,"Great day! Good Saturday. I focused on spiritual practices, dove deep into learning, engaged in writing, priori...",,,2020-10-17,unknown,,2020-10-17,no
+16/10/2020,Friday,Normal,5,10,8,8,7.5,True,"Found positives: Learning, Art, Prayer",Overall positive day with minor challenges.,,,2020-10-16,unknown,2020-10-16,no
+15/10/2020,Thursday,Good,8,10,10,10,7.5,True,"Great day! Good Thursday. I focused on spiritual practices, dove deep into learning, explored creative pursuits...",Overall positive day with minor challenges.,,,2020-10-15,unknown,2020-10-15,no
+14/10/2020,Wednesday,Good,8,10,9,10,7.5,True,"Great day! Good Wednesday. I engaged in mindful practices, dove deep into learning, explored creative pursuits,...",,,2020-10-14,unknown,,2020-10-14,no
+13/10/2020,Tuesday,Good,8,10,10,10,7.5,True,"Great day! Good Tuesday. I focused on spiritual practices, dove deep into learning, explored creative pursuits,...",,,2020-10-13,unknown,,2020-10-13,no
+12/10/2020,Monday,Good,8,10,10,10,7.5,True,"Great day! Good Monday. I focused on spiritual practices, dove deep into learning, explored creative pursuits, ...",,,2020-10-12,unknown,,2020-10-12,no
+11/10/2020,Sunday,Normal,5,9,6,8,7.5,True,"Found positives: Learning, Fasting, Walk","Feeling confused,,,2020-10-11,unknown",,,,,2020-10-11,no
+10/10/2020,Saturday,Bad,3,8,3,7,7.5,True,"Found positives: Learning, Fasting, Walk","Feeling worried,,,2020-10-10,unknown",,,,,2020-10-10,no
+09/10/2020,Friday,Bad,3,8,5,7,7.5,True,"Found positives: Learning, Prayer, Fasting","Feeling worried,,,2020-10-09,unknown",,,,,2020-10-09,no
+08/10/2020,Thursday,Normal,5,10,5,8,7.5,True,"Found positives: Art, Fasting, Walk",Overall positive day with minor challenges.,,,2020-10-08,unknown,2020-10-08,no
+07/10/2020,Wednesday,Normal,5,10,8,8,7.5,True,"Found positives: Learning, Art, Prayer","Feeling confused,,,2020-10-07,unknown",,,,,2020-10-07,no
+06/10/2020,Tuesday,Normal,5,10,10,8,7.5,True,"Found positives: Learning, Art, Prayer",Overall positive day with minor challenges.,,,2020-10-06,unknown,2020-10-06,no
+05/10/2020,Monday,Normal,5,10,5,8,7.5,True,"Found positives: Fasting, Walk, Shower",Overall positive day with minor challenges.,,,2020-10-05,unknown,2020-10-05,no
+04/10/2020,Sunday,Normal,5,10,6,8,7.5,False,"Found positives: Learning, Art, Audio Books",Overall positive day with minor challenges.,,,2020-10-04,unknown,2020-10-04,no
+03/10/2020,Saturday,Normal,5,10,6,8,7.5,True,"Found positives: Learning, Art, Fasting",Overall positive day with minor challenges.,,,2020-10-03,unknown,2020-10-03,no
+02/10/2020,Friday,Normal,5,10,8,8,7.5,True,"Found positives: Learning, Art, Prayer",Overall positive day with minor challenges.,,,2020-10-02,unknown,2020-10-02,no
+01/10/2020,Thursday,Good,8,10,10,10,7.5,True,"Great day! Good Thursday. I focused on spiritual practices, dove deep into learning, explored creative pursuits...",Overall positive day with minor challenges.,,,2020-10-01,unknown,2020-10-01,no
+30/09/2020,Wednesday,Normal,5,10,5,8,7.5,True,"Found positives: Art, Fasting, Walk",Overall positive day with minor challenges.,,,2020-09-30,unknown,2020-09-30,no
+29/09/2020,Tuesday,Bad,3,7,4,7,7.5,True,"Found positives: Art, Fasting, Walk","Had a bad day overall,,,2020-09-29,unknown",,,,,2020-09-29,no
+28/09/2020,Monday,Normal,5,10,10,8,7.5,True,"Found positives: Learning, Art, Prayer","Feeling confused,,,2020-09-28,unknown",,,,,2020-09-28,no
+27/09/2020,Sunday,Good,8,10,10,10,7.5,True,"Great day! Good Sunday. I focused on spiritual practices, dove deep into learning, engaged in cooking, prioriti...",,,2020-09-27,unknown,,2020-09-27,no
+26/09/2020,Saturday,Good,8,10,10,10,7.5,True,"Great day! Good Saturday. I focused on spiritual practices, dove deep into learning, prioritized self-care, and...",,,2020-09-26,unknown,,2020-09-26,no
+25/09/2020,Friday,Bad,3,7,6,7,7.5,True,"Found positives: Learning, Art, Prayer","Feeling worried,,,2020-09-25,unknown",,,,,2020-09-25,no
+24/09/2020,Thursday,Awful,1,6,2,6,7.0,True,"Found positives: Learning, Prayer, Fasting","Feeling triggered,,,2020-09-24,unknown",,,,,2020-09-24,no
+23/09/2020,Wednesday,Bad,3,7,3,7,7.5,False,"Found positives: Learning, Audio Books, Writing","Feeling worried,,,2020-09-23,unknown",,,,,2020-09-23,no
+22/09/2020,Tuesday,Normal,5,10,8,8,7.5,True,"Found positives: Learning, Art, Prayer",Overall positive day with minor challenges.,,,2020-09-22,unknown,2020-09-22,no
+21/09/2020,Monday,Good,8,10,10,10,7.5,True,"Great day! Good Monday. I focused on spiritual practices, dove deep into learning, engaged in cooking, prioriti...",,,2020-09-21,unknown,,2020-09-21,no
+20/09/2020,Sunday,Good,8,10,10,10,7.5,True,"Great day! Good Sunday. I focused on spiritual practices, dove deep into learning, engaged in cooking, prioriti...",,,2020-09-20,unknown,,2020-09-20,no
+19/09/2020,Saturday,Normal,5,10,8,8,7.0,True,"Found positives: Learning, Prayer, Fasting",Overall positive day with minor challenges.,,,2020-09-19,unknown,2020-09-19,no
+18/09/2020,Friday,Awful,1,8,4,6,7.0,True,"Found positives: Learning, Prayer, Fasting","Feeling triggered,,,2020-09-18,unknown",,,,,2020-09-18,no
+17/09/2020,Thursday,Good,8,10,10,10,7.0,True,"Great day! Good Thursday. I focused on spiritual practices, dove deep into learning, engaged in designing, prio...",,,2020-09-17,unknown,,2020-09-17,no
+16/09/2020,Wednesday,Awful,1,6,3,6,7.5,True,"Found positives: Art, Prayer, Fasting","Had a awful day overall,,,2020-09-16,unknown",,,,,2020-09-16,no
+15/09/2020,Tuesday,Good,8,10,8,10,7.5,False,"Great day! Good Tuesday. I dove deep into learning, engaged in cooking, prioritized self-care, and enjoyed some...",,,2020-09-15,unknown,,2020-09-15,no
+14/09/2020,Monday,Normal,5,10,10,8,7.0,True,"Found positives: Art, Prayer, Fasting",Overall positive day with minor challenges.,,,2020-09-14,unknown,2020-09-14,no
+13/09/2020,Sunday,Good,8,10,9,10,7.5,True,"Great day! Good Sunday. I engaged in mindful practices, dove deep into learning, engaged in cooking, prioritize...",,,2020-09-13,unknown,,2020-09-13,no
+12/09/2020,Saturday,Amazing,10,10,10,10,7.0,True,"Great day! Amazing Saturday! I focused on spiritual practices, dove deep into learning, engaged in art, priorit...",,,2020-09-12,unknown,,2020-09-12,no
+11/09/2020,Friday,Good,8,10,10,10,7.0,True,"Great day! Good Friday. I focused on spiritual practices, dove deep into learning, prioritized self-care, and e...",,,2020-09-11,unknown,,2020-09-11,no
+10/09/2020,Thursday,Amazing,10,10,10,10,7.0,True,"Great day! Amazing Thursday! I focused on spiritual practices, dove deep into learning, explored creative pursu...",Overall positive day with minor challenges.,,,2020-09-10,unknown,2020-09-10,no
+09/09/2020,Wednesday,Amazing,10,10,10,10,7.0,True,"Great day! Amazing Wednesday! I focused on spiritual practices, dove deep into learning, explored creative purs...",Overall positive day with minor challenges.,,,2020-09-09,unknown,2020-09-09,no
+08/09/2020,Tuesday,Amazing,10,10,10,10,7.0,True,"Great day! Amazing Tuesday! I focused on spiritual practices, dove deep into learning, engaged in writing, prio...",,,2020-09-08,unknown,,2020-09-08,no
+07/09/2020,Monday,Amazing,10,10,10,10,7.5,True,"Great day! Amazing Monday! I focused on spiritual practices, dove deep into learning, engaged in cooking, prior...",,,2020-09-07,unknown,,2020-09-07,no
+06/09/2020,Sunday,Amazing,10,10,10,10,7.5,True,"Great day! Amazing Sunday! I focused on spiritual practices, dove deep into learning, explored creative pursuit...",Overall positive day with minor challenges.,,,2020-09-06,unknown,2020-09-06,no
+05/09/2020,Saturday,Good,8,10,10,10,7.5,True,"Great day! Good Saturday. I focused on spiritual practices, dove deep into learning, explored creative pursuits...",Overall positive day with minor challenges.,,,2020-09-05,unknown,2020-09-05,no
+04/09/2020,Friday,Good,8,10,10,10,7.5,True,"Great day! Good Friday. I focused on spiritual practices, dove deep into learning, explored creative pursuits, ...",,,2020-09-04,unknown,,2020-09-04,no
+03/09/2020,Thursday,Good,8,10,10,10,7.5,True,"Great day! Good Thursday. I focused on spiritual practices, dove deep into learning, explored creative pursuits...",Overall positive day with minor challenges.,,,2020-09-03,unknown,2020-09-03,no
+02/09/2020,Wednesday,Normal,5,7,10,8,7.5,True,"Found positives: Reading, Learning, Art",Overall positive day with minor challenges.,,,2020-09-02,unknown,2020-09-02,no
+01/09/2020,Tuesday,Awful,1,1,1,6,7.0,True,"Found positives: Walk, Podcast, Audio Books","Feeling triggered,,,2020-09-01,unknown",,,,,2020-09-01,no
+01/09/2020,Tuesday,Good,8,10,10,10,7.5,True,"Great day! Good Tuesday. I focused on spiritual practices, dove deep into learning, explored creative pursuits,...",,,2020-09-01,unknown,,2020-09-01,no
+31/08/2020,Monday,Normal,5,9,5,8,7.0,True,"Found positives: Fasting, Walk, Meditation",Overall positive day with minor challenges.,,,2020-08-31,unknown,2020-08-31,no
+30/08/2020,Sunday,Normal,5,7,7,8,7.5,True,"Found positives: Prayer, Fasting, Quran",Overall positive day with minor challenges.,,,2020-08-30,unknown,2020-08-30,no
+29/08/2020,Saturday,Bad,3,5,6,7,7.0,True,"Found positives: Learning, Art, Prayer","Had a bad day overall,,,2020-08-29,unknown",,,,,2020-08-29,no
+28/08/2020,Friday,Awful,1,2,4,6,7.5,True,"Found positives: Prayer, Fasting, Quran","Had a awful day overall,,,2020-08-28,unknown",,,,,2020-08-28,no
+27/08/2020,Thursday,Normal,5,9,10,8,7.5,True,"Found positives: Art, Prayer, Exercise",Overall positive day with minor challenges.,,,2020-08-27,unknown,2020-08-27,no
+26/08/2020,Wednesday,Normal,5,10,6,8,7.0,False,"Found positives: Art, Meditation, Shower",Overall positive day with minor challenges.,,,2020-08-26,unknown,2020-08-26,no
+25/08/2020,Tuesday,Awful,1,5,2,6,7.5,True,"Found positives: Art, Fasting, Exercise","Feeling awful,,,2020-08-25,unknown",,,,,2020-08-25,no
+24/08/2020,Monday,Normal,5,9,8,8,7.0,True,"Found positives: Art, Write Dairy, Prayer",Overall positive day with minor challenges.,,,2020-08-24,unknown,2020-08-24,no
+23/08/2020,Sunday,Good,8,10,10,10,7.0,True,"Great day! Good Sunday. I focused on spiritual practices, dove deep into learning, explored creative pursuits, ...",,,2020-08-23,unknown,,2020-08-23,no
+22/08/2020,Saturday,Normal,5,7,8,8,7.5,True,"Found positives: Reading, Learning, Prayer",Overall positive day with minor challenges.,,,2020-08-22,unknown,2020-08-22,no
+21/08/2020,Friday,Good,8,10,10,10,7.0,True,"Great day! Good Friday. I focused on spiritual practices, dove deep into learning, engaged in art, prioritized ...",,,2020-08-21,unknown,,2020-08-21,no
+20/08/2020,Thursday,Bad,3,5,8,7,7.0,True,"Found positives: Reading, Art, Prayer","Feeling worried,,,2020-08-20,unknown",,,,,2020-08-20,no
+19/08/2020,Wednesday,Bad,3,5,8,7,7.0,True,"Found positives: Reading, Art, Prayer","Had a bad day overall,,,2020-08-19,unknown",,,,,2020-08-19,no
+19/08/2020,Wednesday,Bad,3,4,2,4,7.0,False,"Found positives: Fasting, News Update, Good Meal","Feeling worried,,,2020-08-19,unknown",,,,,2020-08-19,no
+18/08/2020,Tuesday,Awful,1,1,3,6,7.0,True,"Found positives: Prayer, Fasting, Quran","Had a awful day overall,,,2020-08-18,unknown",,,,,2020-08-18,no
+17/08/2020,Monday,Normal,5,6,7,8,7.5,True,"Found positives: Prayer, Fasting, Quran","Feeling confused,,,2020-08-17,unknown",,,,,2020-08-17,no
+16/08/2020,Sunday,Awful,1,3,4,6,7.0,True,"Found positives: Art, Write Dairy, Prayer","Feeling awful,,,2020-08-16,unknown",,,,,2020-08-16,no
+16/08/2020,Sunday,Awful,1,1,2,6,7.0,False,"Found positives: Art, Fasting, Meditation","Had a awful day overall,,,2020-08-16,unknown",,,,,2020-08-16,no
+15/08/2020,Saturday,Bad,3,2,3,7,7.0,True,"Found positives: Art, Walk, Podcast","Had a bad day overall,,,2020-08-15,unknown",,,,,2020-08-15,no
+15/08/2020,Saturday,Normal,5,6,7,8,7.0,True,"Found positives: Learning, Prayer, Quran","Feeling confused,,,2020-08-15,unknown",,,,,2020-08-15,no
+15/08/2020,Saturday,Awful,1,6,1,4,7.5,True,"Found positives: Learning, Walk, Shower","Feeling angry,,,2020-08-15,unknown",,,,,2020-08-15,no
+14/08/2020,Friday,Normal,5,4,7,8,7.0,True,"Found positives: Prayer, Fasting, Quran",Overall positive day with minor challenges.,,,2020-08-14,unknown,2020-08-14,no
+13/08/2020,Thursday,Bad,3,4,4,7,7.0,True,"Found positives: Write Dairy, Prayer, Fasting","Feeling worried,,,2020-08-13,unknown",,,,,2020-08-13,no
+12/08/2020,Wednesday,Normal,5,10,8,8,7.5,True,"Found positives: Art, Prayer, Fasting",Overall positive day with minor challenges.,,,2020-08-12,unknown,2020-08-12,no
+11/08/2020,Tuesday,Normal,5,7,10,8,7.5,True,"Found positives: Reading, Art, Prayer",Overall positive day with minor challenges.,,,2020-08-11,unknown,2020-08-11,no
+10/08/2020,Monday,Normal,5,7,10,8,7.5,True,"Found positives: Reading, Art, Prayer",Overall positive day with minor challenges.,,,2020-08-10,unknown,2020-08-10,no
+09/08/2020,Sunday,Good,8,9,10,10,7.5,True,"Great day! Good Sunday. I focused on spiritual practices, immersed in reading and study, engaged in writing, pr...",,,2020-08-09,unknown,,2020-08-09,no
+08/08/2020,Saturday,Good,8,10,9,10,7.0,False,"Great day! Good Saturday. I focused on spiritual practices, focused on personal growth, engaged in writing, pri...",,,2020-08-08,unknown,,2020-08-08,no
+07/08/2020,Friday,Awful,1,3,6,6,7.5,True,"Found positives: Reading, Learning, Art","Feeling angry,,,2020-08-07,unknown",,,,,2020-08-07,no
+06/08/2020,Thursday,Bad,3,5,6,7,7.5,True,"Found positives: Art, Prayer, Fasting","Had a bad day overall,,,2020-08-06,unknown",,,,,2020-08-06,no
+05/08/2020,Wednesday,Awful,1,5,6,6,7.5,True,"Found positives: Reading, Learning, Art","Feeling awful,,,2020-08-05,unknown",,,,,2020-08-05,no
+04/08/2020,Tuesday,Bad,3,7,5,7,7.5,True,"Found positives: Prayer, Fasting, Exercise","Had a bad day overall,,,2020-08-04,unknown",,,,,2020-08-04,no
+03/08/2020,Monday,Good,8,9,10,10,7.5,True,"Great day! Good Monday. I focused on spiritual practices, focused on personal growth, explored creative pursuit...",Overall positive day with minor challenges.,,,2020-08-03,unknown,2020-08-03,no
+02/08/2020,Sunday,Normal,5,9,8,8,7.5,True,"Found positives: Reading, Prayer, Fasting",Overall positive day with minor challenges.,,,2020-08-02,unknown,2020-08-02,no
+01/08/2020,Saturday,Normal,5,7,8,8,7.5,True,"Found positives: Art, Prayer, Fasting",Overall positive day with minor challenges.,,,2020-08-01,unknown,2020-08-01,no
+31/07/2020,Friday,Good,8,10,10,10,7.5,True,"Great day! Good Friday. I focused on spiritual practices, dove deep into learning, explored creative pursuits, ...",,,2020-07-31,unknown,,2020-07-31,no
+30/07/2020,Thursday,Normal,5,9,10,8,7.0,True,"Found positives: Reading, Learning, Art",Overall positive day with minor challenges.,,,2020-07-30,unknown,2020-07-30,no
+29/07/2020,Wednesday,Awful,1,3,3,6,7.5,True,"Found positives: Write Dairy, Prayer, Quran","Feeling angry,,,2020-07-29,unknown",,,,,2020-07-29,no
+28/07/2020,Tuesday,Good,8,9,10,10,7.5,True,"Great day! Good Tuesday. I focused on spiritual practices, focused on personal growth, explored creative pursui...",Overall positive day with minor challenges.,,,2020-07-28,unknown,2020-07-28,no
+27/07/2020,Monday,Good,8,10,10,10,7.5,True,"Great day! Good Monday. I focused on spiritual practices, focused on personal growth, explored creative pursuit...",Overall positive day with minor challenges.,,,2020-07-27,unknown,2020-07-27,no
+26/07/2020,Sunday,Normal,5,6,8,8,7.5,True,"Found positives: Art, Prayer, Fasting",Overall positive day with minor challenges.,,,2020-07-26,unknown,2020-07-26,no
+25/07/2020,Saturday,Normal,5,9,8,8,7.5,True,"Found positives: Learning, Art, Prayer",Overall positive day with minor challenges.,,,2020-07-25,unknown,2020-07-25,no
+24/07/2020,Friday,Normal,5,7,8,8,7.5,True,"Found positives: Learning, Art, Write Dairy",Overall positive day with minor challenges.,,,2020-07-24,unknown,2020-07-24,no
+23/07/2020,Thursday,Amazing,10,10,10,10,7.0,True,"Great day! Amazing Thursday! I focused on spiritual practices, dove deep into learning, explored creative pursu...",Overall positive day with minor challenges.,,,2020-07-23,unknown,2020-07-23,no
+22/07/2020,Wednesday,Good,8,10,10,10,7.5,True,"Great day! Good Wednesday. I focused on spiritual practices, dove deep into learning, explored creative pursuit...",Overall positive day with minor challenges.,,,2020-07-22,unknown,2020-07-22,no
+21/07/2020,Tuesday,Good,8,10,10,10,7.5,True,"Great day! Good Tuesday. I focused on spiritual practices, dove deep into learning, explored creative pursuits,...",,,2020-07-21,unknown,,2020-07-21,no
+20/07/2020,Monday,Normal,5,10,10,8,7.5,True,"Found positives: Reading, Learning, Art",Overall positive day with minor challenges.,,,2020-07-20,unknown,2020-07-20,no
+19/07/2020,Sunday,Normal,5,6,8,8,7.5,True,"Found positives: Learning, Art, Prayer","Feeling confused,,,2020-07-19,unknown",,,,,2020-07-19,no
+18/07/2020,Saturday,Good,8,10,10,10,7.5,True,"Great day! Good Saturday. I focused on spiritual practices, dove deep into learning, explored creative pursuits...",Overall positive day with minor challenges.,,,2020-07-18,unknown,2020-07-18,no
+17/07/2020,Friday,Bad,3,7,8,7,7.5,True,"Found positives: Reading, Learning, Art","Had a bad day overall,,,2020-07-17,unknown",,,,,2020-07-17,no
+16/07/2020,Thursday,Good,8,9,10,10,7.5,True,"Great day! Good Thursday. I focused on spiritual practices, focused on personal growth, explored creative pursu...",Overall positive day with minor challenges.,,,2020-07-16,unknown,2020-07-16,no
+15/07/2020,Wednesday,Good,8,10,10,10,7.5,True,"Great day! Good Wednesday. I focused on spiritual practices, dove deep into learning, explored creative pursuit...",Overall positive day with minor challenges.,,,2020-07-15,unknown,2020-07-15,no
+14/07/2020,Tuesday,Good,8,10,10,10,7.5,True,"Great day! Good Tuesday. I focused on spiritual practices, dove deep into learning, explored creative pursuits,...",,,2020-07-14,unknown,,2020-07-14,no
+13/07/2020,Monday,Normal,5,6,7,8,7.0,True,"Found positives: Art, Prayer, Quran","Feeling confused,,,2020-07-13,unknown",,,,,2020-07-13,no
+12/07/2020,Sunday,Good,8,9,10,10,7.5,True,"Great day! Good Sunday. I focused on spiritual practices, focused on personal growth, explored creative pursuit...",Overall positive day with minor challenges.,,,2020-07-12,unknown,2020-07-12,no
+11/07/2020,Saturday,Amazing,10,10,10,10,7.5,True,"Great day! Amazing Saturday! I focused on spiritual practices, dove deep into learning, explored creative pursu...",Overall positive day with minor challenges.,,,2020-07-11,unknown,2020-07-11,no
+10/07/2020,Friday,Good,8,9,10,10,7.0,True,"Great day! Good Friday. I focused on spiritual practices, dove deep into learning, explored creative pursuits, ...",,,2020-07-10,unknown,,2020-07-10,no
+09/07/2020,Thursday,Good,8,10,10,10,7.5,False,"Great day! Good Thursday. I focused on spiritual practices, dove deep into learning, explored creative pursuits...",Overall positive day with minor challenges.,,,2020-07-09,unknown,2020-07-09,no
+08/07/2020,Wednesday,Good,8,9,10,10,7.5,True,"Great day! Good Wednesday. I focused on spiritual practices, immersed in reading and study, engaged in writing,...",,,2020-07-08,unknown,,2020-07-08,no
+07/07/2020,Tuesday,Normal,5,6,8,8,7.0,True,"Found positives: Reading, Prayer, Fasting",Overall positive day with minor challenges.,,,2020-07-07,unknown,2020-07-07,no
+06/07/2020,Monday,Good,8,7,9,10,7.5,True,"Great day! Good Monday. I spent time in prayer and reflection, immersed in reading and study, prioritized self-...",Overall positive day with minor challenges.,,,2020-07-06,unknown,2020-07-06,no
+05/07/2020,Sunday,Normal,5,3,10,4,7.5,False,"Found positives: Reading, Art, Write Dairy",Overall positive day with minor challenges.,,,2020-07-05,unknown,2020-07-05,no
+04/07/2020,Saturday,Awful,1,1,4,6,7.0,True,"Found positives: Reading, Art, Prayer","Feeling angry,,,2020-07-04,unknown",,,,,2020-07-04,no
+03/07/2020,Friday,Normal,5,4,10,8,7.0,True,"Found positives: Reading, Art, Prayer",Overall positive day with minor challenges.,,,2020-07-03,unknown,2020-07-03,no
+02/07/2020,Thursday,Good,8,10,10,10,7.5,True,"Great day! Good Thursday. I focused on spiritual practices, dove deep into learning, engaged in writing, priori...",,,2020-07-02,unknown,,2020-07-02,no
+01/07/2020,Wednesday,Good,8,9,10,10,7.5,True,"Great day! Good Wednesday. I focused on spiritual practices, dove deep into learning, engaged in writing, prior...",,,2020-07-01,unknown,,2020-07-01,no
+30/06/2020,Tuesday,Good,8,7,9,10,7.5,True,"Great day! Good Tuesday. I spent time in prayer and reflection, explored creative pursuits, prioritized self-ca...",Overall positive day with minor challenges.,,,2020-06-30,unknown,2020-06-30,no
+29/06/2020,Monday,Normal,5,3,5,4,7.0,True,"Found positives: Art, Walk, Audio Books",Overall positive day with minor challenges.,,,2020-06-29,unknown,2020-06-29,no
+28/06/2020,Sunday,Normal,5,6,7,8,7.0,True,"Found positives: Write Dairy, Prayer, Quran","Feeling confused,,,2020-06-28,unknown",,,,,2020-06-28,no
+27/06/2020,Saturday,Amazing,10,10,10,10,7.5,True,"Great day! Amazing Saturday! I focused on spiritual practices, dove deep into learning, explored creative pursu...",Overall positive day with minor challenges.,,,2020-06-27,unknown,2020-06-27,no
+26/06/2020,Friday,Normal,5,7,10,8,7.5,True,"Found positives: Reading, Learning, Art",Overall positive day with minor challenges.,,,2020-06-26,unknown,2020-06-26,no
+25/06/2020,Thursday,Amazing,10,9,10,10,7.5,True,"Great day! Amazing Thursday! I focused on spiritual practices, dove deep into learning, engaged in art, priorit...",,,2020-06-25,unknown,,2020-06-25,no
+24/06/2020,Wednesday,Good,8,7,10,10,7.5,True,"Great day! Good Wednesday. I focused on spiritual practices, immersed in reading and study, explored creative p...",Overall positive day with minor challenges.,,,2020-06-24,unknown,2020-06-24,no
+23/06/2020,Tuesday,Normal,5,10,10,8,7.0,True,"Found positives: Reading, Learning, Art",Overall positive day with minor challenges.,,,2020-06-23,unknown,2020-06-23,no
+22/06/2020,Monday,Normal,5,10,10,8,7.0,True,"Found positives: Reading, Learning, Art","Feeling confused,,,2020-06-22,unknown",,,,,2020-06-22,no
+21/06/2020,Sunday,Good,8,10,10,10,7.0,True,"Great day! Good Sunday. I focused on spiritual practices, dove deep into learning, explored creative pursuits, ...",,,2020-06-21,unknown,,2020-06-21,no
+20/06/2020,Saturday,Normal,5,4,8,8,7.5,True,"Found positives: Reading, Prayer, Fasting",Overall positive day with minor challenges.,,,2020-06-20,unknown,2020-06-20,no
+19/06/2020,Friday,Amazing,10,10,10,10,7.5,True,"Great day! Amazing Friday! I focused on spiritual practices, immersed in reading and study, explored creative p...",Overall positive day with minor challenges.,,,2020-06-19,unknown,2020-06-19,no
+18/06/2020,Thursday,Good,8,9,10,10,7.5,True,"Great day! Good Thursday. I focused on spiritual practices, dove deep into learning, engaged in art, prioritize...",,,2020-06-18,unknown,,2020-06-18,no
+17/06/2020,Wednesday,Good,8,6,10,4,7.0,True,"Great day! Good Wednesday. I focused on spiritual practices, immersed in reading and study, prioritized self-ca...",Overall positive day with minor challenges.,,,2020-06-17,unknown,2020-06-17,no
+16/06/2020,Tuesday,Good,8,9,9,10,7.5,True,"Great day! Good Tuesday. I engaged in mindful practices, dove deep into learning, engaged in writing, prioritiz...",,,2020-06-16,unknown,,2020-06-16,no
+15/06/2020,Monday,Good,8,9,8,10,7.0,True,"Great day! Good Monday. I focused on personal growth, engaged in art, prioritized self-care, and enjoyed some e...",,,2020-06-15,unknown,,2020-06-15,no
+14/06/2020,Sunday,Amazing,10,10,10,10,7.0,True,"Great day! Amazing Sunday! I immersed in reading and study, engaged in writing, prioritized self-care, and enjo...",,,2020-06-14,unknown,,2020-06-14,no
+13/06/2020,Saturday,Amazing,10,10,9,4,7.5,True,"Great day! Amazing Saturday! I focused on personal growth, engaged in writing, prioritized self-care, and enjoy...",,,2020-06-13,unknown,,2020-06-13,no
+12/06/2020,Friday,Good,8,7,7,4,7.5,True,"Great day! Good Friday. I focused on personal growth, prioritized self-care, and enjoyed some entertainment. Li...",Overall positive day with minor challenges.,,,2020-06-12,unknown,2020-06-12,no
+11/06/2020,Thursday,Normal,5,6,5,8,7.5,True,"Found positives: Walk, Meditation, Shower",Overall positive day with minor challenges.,,,2020-06-11,unknown,2020-06-11,no
+10/06/2020,Wednesday,Good,8,9,10,10,7.5,True,"Great day! Good Wednesday. I engaged in mindful practices, focused on personal growth, explored creative pursui...",Overall positive day with minor challenges.,,,2020-06-10,unknown,2020-06-10,no
+09/06/2020,Tuesday,Good,8,7,7,4,7.5,True,"Great day! Good Tuesday. I focused on personal growth, prioritized self-care, and enjoyed some entertainment. L...",Overall positive day with minor challenges.,,,2020-06-09,unknown,2020-06-09,no
+08/06/2020,Monday,Normal,5,4,4,4,7.0,True,"Found positives: Walk, Watching Series, Good Meal",Overall positive day with minor challenges.,,,2020-06-08,unknown,2020-06-08,no
+07/06/2020,Sunday,Bad,3,4,4,7,7.5,True,"Found positives: Reading, Art, Write Dairy","Feeling worried,,,2020-06-07,unknown",,,,,2020-06-07,no
+06/06/2020,Saturday,Normal,5,4,6,8,7.0,True,"Found positives: Reading, Prayer, Walk","Feeling confused,,,2020-06-06,unknown",,,,,2020-06-06,no
+05/06/2020,Friday,Normal,5,4,5,8,7.5,False,"Found positives: Art, Fasting, Good Meal","Feeling confused,,,2020-06-05,unknown",,,,,2020-06-05,no
+04/06/2020,Thursday,Normal,5,6,5,8,7.5,True,"Found positives: Fasting, Walk, Meditation","Feeling confused,,,2020-06-04,unknown",,,,,2020-06-04,no
+03/06/2020,Wednesday,Normal,5,4,5,8,7.5,True,"Found positives: Art, Walk, Shower","Feeling confused,,,2020-06-03,unknown",,,,,2020-06-03,no
+02/06/2020,Tuesday,Bad,3,2,3,7,7.0,False,"Found positives: Art, Fasting, Dota 2","Feeling worried,,,2020-06-02,unknown",,,,,2020-06-02,no
+01/06/2020,Monday,Good,8,9,10,10,7.5,True,"Great day! Good Monday. I focused on spiritual practices, focused on personal growth, engaged in writing, prior...",,,2020-06-01,unknown,,2020-06-01,no
+31/05/2020,Sunday,Normal,5,6,8,8,7.5,True,"Found positives: Reading, Write Dairy, Prayer",Overall positive day with minor challenges.,,,2020-05-31,unknown,2020-05-31,no
+30/05/2020,Saturday,Normal,5,6,6,8,7.0,True,"Found positives: Learning, Prayer, Fasting",Overall positive day with minor challenges.,,,2020-05-30,unknown,2020-05-30,no
+29/05/2020,Friday,Normal,5,4,4,4,7.5,True,"Found positives: Learning, Write Dairy, Fasting","Feeling confused,,,2020-05-29,unknown",,,,,2020-05-29,no
+28/05/2020,Thursday,Good,8,9,10,10,7.5,True,"Great day! Good Thursday. I focused on spiritual practices, focused on personal growth, engaged in writing, pri...",,,2020-05-28,unknown,,2020-05-28,no
+27/05/2020,Wednesday,Amazing,10,8,10,4,7.0,False,"Great day! Amazing Wednesday! I spent time in prayer and reflection, prioritized self-care, and enjoyed some en...",Overall positive day with minor challenges.,,,2020-05-27,unknown,2020-05-27,no
+26/05/2020,Tuesday,Amazing,10,10,10,10,7.0,True,"Great day! Amazing Tuesday! I focused on spiritual practices, dove deep into learning, explored creative pursui...",Overall positive day with minor challenges.,,,2020-05-26,unknown,2020-05-26,no
+25/05/2020,Monday,Amazing,10,10,10,10,7.0,True,"Great day! Amazing Monday! I focused on spiritual practices, dove deep into learning, explored creative pursuit...",Overall positive day with minor challenges.,,,2020-05-25,unknown,2020-05-25,no
+24/05/2020,Sunday,Amazing,10,8,10,4,7.0,False,"Great day! Amazing Sunday! I spent time in prayer and reflection, prioritized self-care, and enjoyed some enter...",Overall positive day with minor challenges.,,,2020-05-24,unknown,2020-05-24,no
+23/05/2020,Saturday,Good,8,9,10,10,7.5,True,"Great day! Good Saturday. I focused on spiritual practices, dove deep into learning, explored creative pursuits...",Overall positive day with minor challenges.,,,2020-05-23,unknown,2020-05-23,no
+22/05/2020,Friday,Good,8,6,9,4,7.0,True,"Great day! Good Friday. I spent time in prayer and reflection, prioritized self-care, and enjoyed some entertai...",Overall positive day with minor challenges.,,,2020-05-22,unknown,2020-05-22,no
+21/05/2020,Thursday,Normal,5,7,10,8,7.5,False,"Found positives: Reading, Learning, Art",Overall positive day with minor challenges.,,,2020-05-21,unknown,2020-05-21,no
+20/05/2020,Wednesday,Awful,1,3,6,6,7.5,True,"Found positives: Reading, Learning, Art","Feeling angry,,,2020-05-20,unknown",,,,,2020-05-20,no
+19/05/2020,Tuesday,Bad,3,5,8,7,7.0,True,"Found positives: Reading, Learning, Art","Feeling worried,,,2020-05-19,unknown",,,,,2020-05-19,no
+18/05/2020,Monday,Amazing,10,10,10,10,7.0,True,"Great day! Amazing Monday! I focused on spiritual practices, dove deep into learning, engaged in art, prioritiz...",,,2020-05-18,unknown,,2020-05-18,no
+17/05/2020,Sunday,Amazing,10,10,10,10,7.5,True,"Great day! Amazing Sunday! I focused on spiritual practices, dove deep into learning, explored creative pursuit...",Overall positive day with minor challenges.,,,2020-05-17,unknown,2020-05-17,no
+16/05/2020,Saturday,Amazing,10,10,10,10,7.5,True,"Great day! Amazing Saturday! I focused on spiritual practices, dove deep into learning, explored creative pursu...",Overall positive day with minor challenges.,,,2020-05-16,unknown,2020-05-16,no
+15/05/2020,Friday,Good,8,10,10,10,7.0,True,"Great day! Good Friday. I focused on spiritual practices, dove deep into learning, explored creative pursuits, ...",,,2020-05-15,unknown,,2020-05-15,no
+14/05/2020,Thursday,Amazing,10,10,10,10,7.5,True,"Great day! Amazing Thursday! I focused on spiritual practices, dove deep into learning, explored creative pursu...",Overall positive day with minor challenges.,,,2020-05-14,unknown,2020-05-14,no
+13/05/2020,Wednesday,Amazing,10,10,10,10,7.0,True,"Great day! Amazing Wednesday! I focused on spiritual practices, dove deep into learning, explored creative purs...",Overall positive day with minor challenges.,,,2020-05-13,unknown,2020-05-13,no
+12/05/2020,Tuesday,Amazing,10,10,10,10,7.0,True,"Great day! Amazing Tuesday! I focused on spiritual practices, dove deep into learning, explored creative pursui...",Overall positive day with minor challenges.,,,2020-05-12,unknown,2020-05-12,no
+11/05/2020,Monday,Amazing,10,10,10,10,7.5,True,"Great day! Amazing Monday! I focused on spiritual practices, dove deep into learning, explored creative pursuit...",Overall positive day with minor challenges.,,,2020-05-11,unknown,2020-05-11,no
+10/05/2020,Sunday,Amazing,10,10,10,10,7.0,True,"Great day! Amazing Sunday! I focused on spiritual practices, dove deep into learning, engaged in art, prioritiz...",,,2020-05-10,unknown,,2020-05-10,no
+09/05/2020,Saturday,Good,8,10,10,10,7.0,True,"Great day! Good Saturday. I focused on spiritual practices, dove deep into learning, explored creative pursuits...",Overall positive day with minor challenges.,,,2020-05-09,unknown,2020-05-09,no
+08/05/2020,Friday,Amazing,10,10,10,10,7.0,True,"Great day! Amazing Friday! I focused on spiritual practices, dove deep into learning, explored creative pursuit...",Overall positive day with minor challenges.,,,2020-05-08,unknown,2020-05-08,no
+07/05/2020,Thursday,Amazing,10,10,10,10,7.5,True,"Great day! Amazing Thursday! I focused on spiritual practices, immersed in reading and study, explored creative...",Overall positive day with minor challenges.,,,2020-05-07,unknown,2020-05-07,no
+06/05/2020,Wednesday,Amazing,10,9,10,10,7.5,True,"Great day! Amazing Wednesday! I focused on spiritual practices, focused on personal growth, engaged in art, pri...",,,2020-05-06,unknown,,2020-05-06,no
+05/05/2020,Tuesday,Good,8,7,10,10,7.5,True,"Great day! Good Tuesday. I focused on spiritual practices, focused on personal growth, engaged in art, prioriti...",,,2020-05-05,unknown,,2020-05-05,no
+04/05/2020,Monday,Good,8,7,10,10,7.5,True,"Great day! Good Monday. I focused on spiritual practices, immersed in reading and study, engaged in art, priori...",,,2020-05-04,unknown,,2020-05-04,no
+03/05/2020,Sunday,Normal,5,3,7,4,7.5,True,"Found positives: Prayer, Fasting, Quran","Feeling confused,,,2020-05-03,unknown",,,,,2020-05-03,no
+02/05/2020,Saturday,Amazing,10,9,10,10,7.5,True,"Great day! Amazing Saturday! I focused on spiritual practices, immersed in reading and study, prioritized self-...",Overall positive day with minor challenges.,,,2020-05-02,unknown,2020-05-02,no
+01/05/2020,Friday,Good,8,7,10,10,7.5,True,"Great day! Good Friday. I focused on spiritual practices, immersed in reading and study, engaged in designing, ...",,,2020-05-01,unknown,,2020-05-01,no
+30/04/2020,Thursday,Good,8,9,10,10,7.0,True,"Great day! Good Thursday. I focused on spiritual practices, immersed in reading and study, prioritized self-car...",Overall positive day with minor challenges.,,,2020-04-30,unknown,2020-04-30,no
+29/04/2020,Wednesday,Normal,5,6,8,8,7.5,True,"Found positives: Reading, Learning, Prayer",Overall positive day with minor challenges.,,,2020-04-29,unknown,2020-04-29,no
+28/04/2020,Tuesday,Good,8,7,10,10,7.5,True,"Great day! Good Tuesday. I focused on spiritual practices, immersed in reading and study, engaged in designing,...",,,2020-04-28,unknown,,2020-04-28,no
+27/04/2020,Monday,Amazing,10,10,10,10,7.5,True,"Great day! Amazing Monday! I focused on spiritual practices, immersed in reading and study, engaged in writing,...",,,2020-04-27,unknown,,2020-04-27,no
+26/04/2020,Sunday,Amazing,10,10,10,10,7.5,True,"Great day! Amazing Sunday! I focused on spiritual practices, immersed in reading and study, engaged in writing,...",,,2020-04-26,unknown,,2020-04-26,no
+25/04/2020,Saturday,Good,8,7,10,10,7.5,True,"Great day! Good Saturday. I focused on spiritual practices, explored creative pursuits, prioritized self-care, ...",,,2020-04-25,unknown,,2020-04-25,no
+24/04/2020,Friday,Good,8,6,7,2,7.0,True,Great day! Good Friday. I prioritized self-care and enjoyed some entertainment. Feeling focused....,Overall positive day with minor challenges.,"Continue with Walk, Watching Series and maintain positive momentum.",,,2020-04-24,2020-04-24,no
+23/04/2020,Thursday,Amazing,10,9,10,10,7.0,True,"Great day! Amazing Thursday! I focused on spiritual practices, explored creative pursuits, prioritized self-car...",Overall positive day with minor challenges.,,,2020-04-23,unknown,2020-04-23,no
+22/04/2020,Wednesday,Bad,3,2,6,7,7.5,True,"Found positives: Art, Prayer, Quran","Had a bad day overall,,,2020-04-22,unknown",,,,,2020-04-22,no
+21/04/2020,Tuesday,Amazing,10,8,10,4,7.5,True,"Great day! Amazing Tuesday! I focused on spiritual practices, prioritized self-care, and enjoyed some entertain...",Overall positive day with minor challenges.,,,2020-04-21,unknown,2020-04-21,no
+20/04/2020,Monday,Good,8,6,10,4,7.5,False,"Great day! Good Monday. I focused on spiritual practices, prioritized self-care, and enjoyed some entertainment...",Overall positive day with minor challenges.,,,2020-04-20,unknown,2020-04-20,no
+19/04/2020,Sunday,Normal,5,3,6,4,7.5,True,"Found positives: Prayer, Walk, Meditation","Feeling confused,,,2020-04-19,unknown",,,,,2020-04-19,no
+18/04/2020,Saturday,Good,8,7,10,10,7.5,True,"Great day! Good Saturday. I focused on spiritual practices, explored creative pursuits, prioritized self-care, ...",,,2020-04-18,unknown,,2020-04-18,no
+17/04/2020,Friday,Good,8,7,9,10,7.5,True,"Great day! Good Friday. I spent time in prayer and reflection, engaged in writing, prioritized self-care, and e...",,,2020-04-17,unknown,,2020-04-17,no
+16/04/2020,Thursday,Amazing,10,8,10,4,7.5,True,"Great day! Amazing Thursday! I spent time in prayer and reflection, prioritized self-care, and enjoyed some ent...",Overall positive day with minor challenges.,,,2020-04-16,unknown,2020-04-16,no

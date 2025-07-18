@@ -55,7 +55,7 @@ export const saveDailyLogTemplate = mutation({
         throw new ConvexError("Template not found");
       }
       
-      if (existingTemplate.userId !== args.userId) {
+      if (existingTemplate.userId !== args.userId as any) {
         throw new ConvexError("You don't have permission to update this template");
       }
 
@@ -75,7 +75,7 @@ export const saveDailyLogTemplate = mutation({
         const activeTemplates = await ctx.db
           .query("dailyLogTemplates")
           .withIndex("by_user_id_and_active", (q) => 
-            q.eq("userId", args.userId).eq("isActive", true)
+            q.eq("userId", args.userId as any).eq("isActive", true)
           )
           .collect();
 
@@ -86,7 +86,7 @@ export const saveDailyLogTemplate = mutation({
 
       return await ctx.db.insert("dailyLogTemplates", {
         name: args.name,
-        userId: args.userId,
+        userId: args.userId as any,
         fields: args.fields,
         isActive: args.isActive ?? false,
         createdAt: now,
@@ -106,7 +106,7 @@ export const getUserDailyLogTemplates = query({
   handler: async (ctx, args) => {
     return await ctx.db
       .query("dailyLogTemplates")
-      .withIndex("by_user_id", (q) => q.eq("userId", args.userId))
+      .withIndex("by_user_id", (q) => q.eq("userId", args.userId as any))
       .order("desc")
       .collect();
   },
@@ -123,7 +123,7 @@ export const getActiveDailyLogTemplate = query({
     return await ctx.db
       .query("dailyLogTemplates")
       .withIndex("by_user_id_and_active", (q) => 
-        q.eq("userId", args.userId).eq("isActive", true)
+        q.eq("userId", args.userId as any).eq("isActive", true)
       )
       .first();
   },
@@ -157,7 +157,7 @@ export const setTemplateActive = mutation({
       throw new ConvexError("Template not found");
     }
     
-    if (template.userId !== args.userId) {
+    if (template.userId !== args.userId as any) {
       throw new ConvexError("You don't have permission to modify this template");
     }
 
@@ -165,7 +165,7 @@ export const setTemplateActive = mutation({
     const activeTemplates = await ctx.db
       .query("dailyLogTemplates")
       .withIndex("by_user_id_and_active", (q) => 
-        q.eq("userId", args.userId).eq("isActive", true)
+        q.eq("userId", args.userId as any).eq("isActive", true)
       )
       .collect();
 
@@ -199,7 +199,7 @@ export const deleteDailyLogTemplate = mutation({
       throw new ConvexError("Template not found");
     }
     
-    if (template.userId !== args.userId) {
+    if (template.userId !== args.userId as any) {
       throw new ConvexError("You don't have permission to delete this template");
     }
 
@@ -225,7 +225,7 @@ export const duplicateDailyLogTemplate = mutation({
       throw new ConvexError("Template not found");
     }
     
-    if (template.userId !== args.userId) {
+    if (template.userId !== args.userId as any) {
       throw new ConvexError("You don't have permission to duplicate this template");
     }
 
@@ -234,11 +234,12 @@ export const duplicateDailyLogTemplate = mutation({
 
     return await ctx.db.insert("dailyLogTemplates", {
       name: newName,
-      userId: args.userId,
+      userId: args.userId as any,
       fields: template.fields,
       isActive: false, // Duplicated templates are not active by default
       createdAt: now,
       updatedAt: now,
     });
   },
-}); 
+});
+

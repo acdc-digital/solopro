@@ -28,6 +28,7 @@ import { CommentSection } from "./CommentSection";
 import FeedFooter from "./FeedFooter";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { TagSelector, TagBadge, Tag, TagColors } from "./Tags";
+import ReactMarkdown from "react-markdown";
 
 // Define Comment type locally to reduce dependencies
 type Comment = {
@@ -499,8 +500,36 @@ export default function Feed({ onTagsUpdate }: FeedProps) {
                 className="transition-all duration-200 hover:shadow-md bg-white border-gray-200 shadow-sm"
               >
                 <CardContent className="pt-4">
-                  <div className="prose prose-zinc max-w-none text-gray-900">
-                    <p>{msg.message}</p>
+                  <div className="prose prose-zinc max-w-none text-gray-900 prose-headings:text-gray-900 prose-strong:text-gray-900 prose-code:text-gray-800 prose-code:bg-gray-100 prose-code:px-1 prose-code:py-0.5 prose-code:rounded">
+                    <ReactMarkdown
+                      components={{
+                        // Customize how certain elements are rendered
+                        p: ({ children }) => <p className="mb-3 last:mb-0">{children}</p>,
+                        ul: ({ children }) => <ul className="list-disc pl-5 mb-3 space-y-1">{children}</ul>,
+                        ol: ({ children }) => <ol className="list-decimal pl-5 mb-3 space-y-1">{children}</ol>,
+                        li: ({ children }) => <li className="text-gray-700">{children}</li>,
+                        h1: ({ children }) => <h1 className="text-xl font-semibold mb-3 text-gray-900">{children}</h1>,
+                        h2: ({ children }) => <h2 className="text-lg font-semibold mb-2 text-gray-900">{children}</h2>,
+                        h3: ({ children }) => <h3 className="text-base font-semibold mb-2 text-gray-900">{children}</h3>,
+                        blockquote: ({ children }) => (
+                          <blockquote className="border-l-4 border-blue-200 pl-4 py-2 mb-3 bg-blue-50 text-gray-700 italic">
+                            {children}
+                          </blockquote>
+                        ),
+                        code: ({ children }) => (
+                          <code className="bg-gray-100 text-gray-800 px-1 py-0.5 rounded text-sm font-mono">
+                            {children}
+                          </code>
+                        ),
+                        pre: ({ children }) => (
+                          <pre className="bg-gray-100 text-gray-800 p-3 rounded mb-3 overflow-x-auto text-sm font-mono">
+                            {children}
+                          </pre>
+                        ),
+                      }}
+                    >
+                      {msg.message}
+                    </ReactMarkdown>
                   </div>
                 </CardContent>
                 <CardFooter className="flex flex-col text-xs text-gray-600 pt-0">

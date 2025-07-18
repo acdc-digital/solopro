@@ -153,7 +153,10 @@ export const listAllUserLogs = query({
       _id: log._id,
       userId: log.userId,
       date: log.date,
+      score: log.score,
+      answers: log.answers,
       createdAt: new Date(log.createdAt).toISOString(),
+      updatedAt: log.updatedAt ? new Date(log.updatedAt).toISOString() : undefined,
     }));
   },
 });

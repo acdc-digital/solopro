@@ -1,0 +1,372 @@
+{
+  "metadata": {
+    "totalSampleForecasts": 30,
+    "totalLogsAvailable": 380,
+    "successRate": 100,
+    "avgAccuracy": 89.3,
+    "avgScoreDiff": 10.7,
+    "avgConfidence": 85,
+    "maxAccuracy": 100,
+    "minAccuracy": 59,
+    "distribution": {
+      "excellent": 22,
+      "good": 4,
+      "fair": 4,
+      "poor": 0
+    }
+  },
+  "comparisons": [
+    {
+      "date": "2020-04-20",
+      "predictedScore": 49,
+      "actualScore": 80,
+      "scoreDifference": 31,
+      "accuracy": 69,
+      "description": "Mild Challenges",
+      "actualHighlights": "Great day! Good Monday. I focused on spiritual practices, prioritized self-care, and enjoyed some entertainment...",
+      "trend": "stable",
+      "confidence": 85
+    },
+    {
+      "date": "2020-05-02",
+      "predictedScore": 90,
+      "actualScore": 100,
+      "scoreDifference": 10,
+      "accuracy": 90,
+      "description": "Exceptional Day",
+      "actualHighlights": "Great day! Amazing Saturday! I focused on spiritual practices, immersed in reading and study, prioritized self-...",
+      "trend": "stable",
+      "confidence": 85
+    },
+    {
+      "date": "2020-05-14",
+      "predictedScore": 100,
+      "actualScore": 100,
+      "scoreDifference": 0,
+      "accuracy": 100,
+      "description": "Exceptional Day",
+      "actualHighlights": "Great day! Amazing Thursday! I focused on spiritual practices, dove deep into learning, explored creative pursu...",
+      "trend": "stable",
+      "confidence": 85
+    },
+    {
+      "date": "2020-05-26",
+      "predictedScore": 100,
+      "actualScore": 100,
+      "scoreDifference": 0,
+      "accuracy": 100,
+      "description": "Exceptional Day",
+      "actualHighlights": "Great day! Amazing Tuesday! I focused on spiritual practices, dove deep into learning, explored creative pursui...",
+      "trend": "stable",
+      "confidence": 85
+    },
+    {
+      "date": "2020-06-07",
+      "predictedScore": 50,
+      "actualScore": 40,
+      "scoreDifference": 10,
+      "accuracy": 90,
+      "description": "Balanced Day",
+      "actualHighlights": "Found positives: Reading, Art, Write Dairy",
+      "trend": "stable",
+      "confidence": 85
+    },
+    {
+      "date": "2020-06-19",
+      "predictedScore": 90,
+      "actualScore": 100,
+      "scoreDifference": 10,
+      "accuracy": 90,
+      "description": "Exceptional Day",
+      "actualHighlights": "Great day! Amazing Friday! I focused on spiritual practices, immersed in reading and study, explored creative p...",
+      "trend": "stable",
+      "confidence": 85
+    },
+    {
+      "date": "2020-07-01",
+      "predictedScore": 90,
+      "actualScore": 90,
+      "scoreDifference": 0,
+      "accuracy": 100,
+      "description": "Exceptional Day",
+      "actualHighlights": "Great day! Good Wednesday. I focused on spiritual practices, dove deep into learning, engaged in writing, prior...",
+      "trend": "stable",
+      "confidence": 85
+    },
+    {
+      "date": "2020-07-13",
+      "predictedScore": 91,
+      "actualScore": 60,
+      "scoreDifference": 31,
+      "accuracy": 69,
+      "description": "Exceptional Day",
+      "actualHighlights": "Found positives: Art, Prayer, Quran",
+      "trend": "stable",
+      "confidence": 85
+    },
+    {
+      "date": "2020-07-25",
+      "predictedScore": 70,
+      "actualScore": 70,
+      "scoreDifference": 0,
+      "accuracy": 100,
+      "description": "Very Good Day",
+      "actualHighlights": "Found positives: Learning, Art, Prayer",
+      "trend": "stable",
+      "confidence": 85
+    },
+    {
+      "date": "2020-08-06",
+      "predictedScore": 40,
+      "actualScore": 50,
+      "scoreDifference": 10,
+      "accuracy": 90,
+      "description": "Mild Challenges",
+      "actualHighlights": "Found positives: Art, Prayer, Fasting",
+      "trend": "stable",
+      "confidence": 85
+    },
+    {
+      "date": "2020-08-18",
+      "predictedScore": 60,
+      "actualScore": 30,
+      "scoreDifference": 30,
+      "accuracy": 70,
+      "description": "Good Day",
+      "actualHighlights": "Found positives: Prayer, Fasting, Quran",
+      "trend": "stable",
+      "confidence": 85
+    },
+    {
+      "date": "2020-08-30",
+      "predictedScore": 39,
+      "actualScore": 70,
+      "scoreDifference": 31,
+      "accuracy": 69,
+      "description": "Challenging Day",
+      "actualHighlights": "Found positives: Prayer, Fasting, Quran",
+      "trend": "stable",
+      "confidence": 85
+    },
+    {
+      "date": "2020-09-11",
+      "predictedScore": 100,
+      "actualScore": 90,
+      "scoreDifference": 10,
+      "accuracy": 90,
+      "description": "Exceptional Day",
+      "actualHighlights": "Great day! Good Friday. I focused on spiritual practices, dove deep into learning, prioritized self-care, and e...",
+      "trend": "stable",
+      "confidence": 85
+    },
+    {
+      "date": "2020-09-23",
+      "predictedScore": 70,
+      "actualScore": 40,
+      "scoreDifference": 30,
+      "accuracy": 70,
+      "description": "Very Good Day",
+      "actualHighlights": "Found positives: Learning, Audio Books, Writing",
+      "trend": "stable",
+      "confidence": 85
+    },
+    {
+      "date": "2020-10-05",
+      "predictedScore": 61,
+      "actualScore": 70,
+      "scoreDifference": 9,
+      "accuracy": 91,
+      "description": "Good Day",
+      "actualHighlights": "Found positives: Fasting, Walk, Shower",
+      "trend": "stable",
+      "confidence": 85
+    },
+    {
+      "date": "2020-10-17",
+      "predictedScore": 69,
+      "actualScore": 90,
+      "scoreDifference": 21,
+      "accuracy": 79,
+      "description": "Good Day",
+      "actualHighlights": "Great day! Good Saturday. I focused on spiritual practices, dove deep into learning, engaged in writing, priori...",
+      "trend": "stable",
+      "confidence": 85
+    },
+    {
+      "date": "2020-10-29",
+      "predictedScore": 89,
+      "actualScore": 90,
+      "scoreDifference": 1,
+      "accuracy": 99,
+      "description": "Excellent Day",
+      "actualHighlights": "Great day! Good Thursday. I engaged in mindful practices, dove deep into learning, explored creative pursuits, ...",
+      "trend": "stable",
+      "confidence": 85
+    },
+    {
+      "date": "2020-11-10",
+      "predictedScore": 91,
+      "actualScore": 90,
+      "scoreDifference": 1,
+      "accuracy": 99,
+      "description": "Exceptional Day",
+      "actualHighlights": "Great day! Good Tuesday. I engaged in mindful practices, dove deep into learning, explored creative pursuits, p...",
+      "trend": "stable",
+      "confidence": 85
+    },
+    {
+      "date": "2020-11-22",
+      "predictedScore": 90,
+      "actualScore": 90,
+      "scoreDifference": 0,
+      "accuracy": 100,
+      "description": "Exceptional Day",
+      "actualHighlights": "Great day! Good Sunday. I engaged in mindful practices, dove deep into learning, explored creative pursuits, pr...",
+      "trend": "stable",
+      "confidence": 85
+    },
+    {
+      "date": "2020-12-04",
+      "predictedScore": 89,
+      "actualScore": 90,
+      "scoreDifference": 1,
+      "accuracy": 99,
+      "description": "Excellent Day",
+      "actualHighlights": "Great day! Good Friday. I focused on spiritual practices, dove deep into learning, explored creative pursuits, ...",
+      "trend": "stable",
+      "confidence": 85
+    },
+    {
+      "date": "2020-12-16",
+      "predictedScore": 89,
+      "actualScore": 90,
+      "scoreDifference": 1,
+      "accuracy": 99,
+      "description": "Excellent Day",
+      "actualHighlights": "Great day! Good Wednesday. I spent time in prayer and reflection, dove deep into learning, explored creative pu...",
+      "trend": "stable",
+      "confidence": 85
+    },
+    {
+      "date": "2020-12-28",
+      "predictedScore": 90,
+      "actualScore": 90,
+      "scoreDifference": 0,
+      "accuracy": 100,
+      "description": "Exceptional Day",
+      "actualHighlights": "Great day! Good Monday. I engaged in mindful practices, dove deep into learning, explored creative pursuits, pr...",
+      "trend": "stable",
+      "confidence": 85
+    },
+    {
+      "date": "2021-01-09",
+      "predictedScore": 100,
+      "actualScore": 90,
+      "scoreDifference": 10,
+      "accuracy": 90,
+      "description": "Exceptional Day",
+      "actualHighlights": "Great day! Good Saturday. I engaged in mindful practices, dove deep into learning, explored creative pursuits, ...",
+      "trend": "stable",
+      "confidence": 85
+    },
+    {
+      "date": "2021-01-21",
+      "predictedScore": 91,
+      "actualScore": 90,
+      "scoreDifference": 1,
+      "accuracy": 99,
+      "description": "Exceptional Day",
+      "actualHighlights": "Great day! Good Thursday. I engaged in mindful practices, dove deep into learning, explored creative pursuits, ...",
+      "trend": "stable",
+      "confidence": 85
+    },
+    {
+      "date": "2021-02-02",
+      "predictedScore": 100,
+      "actualScore": 100,
+      "scoreDifference": 0,
+      "accuracy": 100,
+      "description": "Exceptional Day",
+      "actualHighlights": "Great day! Amazing Tuesday! I engaged in mindful practices, dove deep into learning, explored creative pursuits...",
+      "trend": "stable",
+      "confidence": 85
+    },
+    {
+      "date": "2021-02-14",
+      "predictedScore": 91,
+      "actualScore": 50,
+      "scoreDifference": 41,
+      "accuracy": 59,
+      "description": "Exceptional Day",
+      "actualHighlights": "Found positives: Reading, Learning, Fasting",
+      "trend": "stable",
+      "confidence": 85
+    },
+    {
+      "date": "2021-02-26",
+      "predictedScore": 90,
+      "actualScore": 90,
+      "scoreDifference": 0,
+      "accuracy": 100,
+      "description": "Exceptional Day",
+      "actualHighlights": "Great day! Good Friday. I focused on spiritual practices, dove deep into learning, explored creative pursuits, ...",
+      "trend": "stable",
+      "confidence": 85
+    },
+    {
+      "date": "2021-03-10",
+      "predictedScore": 91,
+      "actualScore": 90,
+      "scoreDifference": 1,
+      "accuracy": 99,
+      "description": "Exceptional Day",
+      "actualHighlights": "Great day! Good Wednesday. I spent time in prayer and reflection, dove deep into learning, explored creative pu...",
+      "trend": "stable",
+      "confidence": 85
+    },
+    {
+      "date": "2021-03-22",
+      "predictedScore": 69,
+      "actualScore": 90,
+      "scoreDifference": 21,
+      "accuracy": 79,
+      "description": "Good Day",
+      "actualHighlights": "Great day! Good Monday. I engaged in mindful practices, dove deep into learning, explored creative pursuits, pr...",
+      "trend": "stable",
+      "confidence": 85
+    },
+    {
+      "date": "2021-04-03",
+      "predictedScore": 100,
+      "actualScore": 90,
+      "scoreDifference": 10,
+      "accuracy": 90,
+      "description": "Exceptional Day",
+      "actualHighlights": "Great day! Good Saturday. I focused on spiritual practices, dove deep into learning, explored creative pursuits...",
+      "trend": "stable",
+      "confidence": 85
+    }
+  ],
+  "bestForecast": {
+    "date": "2020-05-14",
+    "predictedScore": 100,
+    "actualScore": 100,
+    "scoreDifference": 0,
+    "accuracy": 100,
+    "description": "Exceptional Day",
+    "actualHighlights": "Great day! Amazing Thursday! I focused on spiritual practices, dove deep into learning, explored creative pursu...",
+    "trend": "stable",
+    "confidence": 85
+  },
+  "worstForecast": {
+    "date": "2021-02-14",
+    "predictedScore": 91,
+    "actualScore": 50,
+    "scoreDifference": 41,
+    "accuracy": 59,
+    "description": "Exceptional Day",
+    "actualHighlights": "Found positives: Reading, Learning, Fasting",
+    "trend": "stable",
+    "confidence": 85
+  }
+}

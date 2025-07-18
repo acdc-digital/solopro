@@ -214,13 +214,16 @@ export default function Dashboard() {
   const [showTemplates, setShowTemplates] = useState(false);
   const [isCreatingNewTemplate, setIsCreatingNewTemplate] = useState(false);
   
-  // Templates hook
+  // Templates hook - pass selectedDate for per-day state management
   const {
     activeTemplate,
     saveTemplate,
     templates,
     setActiveTemplate,
-  } = useTemplates({ userId: convexUserId || undefined });
+  } = useTemplates({ 
+    userId: convexUserId || undefined, 
+    selectedDate: selectedDate || undefined 
+  });
 
   /* ───────────────────────────────────────────── */
   /*  Sync user from Convex → Zustand store        */
@@ -428,6 +431,7 @@ export default function Dashboard() {
             <span className="font-semibold">Daily Log Form</span>
             <TemplateSelector
               userId={convexUserId || undefined}
+              selectedDate={selectedDate ? parseISO(selectedDate) : null}
               onCreateNew={() => {
                 // Open templates in creation mode (without currentTemplate)
                 setIsCreatingNewTemplate(true);
@@ -447,6 +451,7 @@ export default function Dashboard() {
           </span>
           <TemplateSelector
             userId={convexUserId || undefined}
+            selectedDate={selectedDate ? parseISO(selectedDate) : null}
             onCreateNew={() => {
               // Open templates in creation mode (without currentTemplate)
               setIsCreatingNewTemplate(true);
