@@ -150,13 +150,29 @@ export const storeFeedMessage = mutation({
     message: v.string(),
   },
   handler: async ({ db }, { userId, date, message }) => {
-    // Insert into "feed" table (defined in your schema)
-    return db.insert("feed", {
-      userId,
-      date,
-      message,
-      createdAt: Date.now(),
-    });
+    // Check if a feed message already exists for this user and date
+    const existingFeed = await db
+      .query("feed")
+      .filter((q) => q.eq(q.field("userId"), userId))
+      .filter((q) => q.eq(q.field("date"), date))
+      .first();
+
+    if (existingFeed) {
+      // Update the existing feed message
+      await db.patch(existingFeed._id, {
+        message,
+        createdAt: Date.now(), // Update timestamp to reflect regeneration
+      });
+      return existingFeed._id;
+    } else {
+      // Insert new feed message
+      return db.insert("feed", {
+        userId,
+        date,
+        message,
+        createdAt: Date.now(),
+      });
+    }
   },
 });
 

@@ -410,7 +410,6 @@ ${formattedSevenDayData}`;
         ],
         temperature: config.temperature,
         max_tokens: config.max_tokens,
-        response_format: config.response_format,
       };
 
       const response = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -463,6 +462,25 @@ ${formattedSevenDayData}`;
           }
         } catch (e: any) {
           console.error("[Action generateWeeklyInsights] Error parsing AI response content:", e.message, "Raw content:", content);
+          
+          // Fallback: try to extract insights from plain text response
+          try {
+            // Split by newlines and filter out empty lines, then take the meaningful ones
+            const fallbackInsights = content
+              .split('\n')
+              .map((line: string) => line.trim())
+              .filter((line: string) => line.length > 0 && !line.startsWith('{') && !line.startsWith('}'))
+              .filter((line: string) => line.length > 20) // Filter out very short lines
+              .slice(0, 5); // Take max 5 insights
+            
+            if (fallbackInsights.length > 0) {
+              console.log("[Action generateWeeklyInsights] Fallback parsing successful:", fallbackInsights);
+              return { success: true, insights: fallbackInsights };
+            }
+          } catch (fallbackError) {
+            console.error("[Action generateWeeklyInsights] Fallback parsing also failed:", fallbackError);
+          }
+          
           return { success: false, error: "AI response format error. Could not parse insights." };
         }
       } else {

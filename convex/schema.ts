@@ -33,7 +33,7 @@ export default defineSchema({
   .index("byRole", ["role"]),
 
    feedTags: defineTable({
-    userId: v.id("users"), // Use v.id("users") for consistency
+    userId: v.string(), // Use string to match the actual usage in the codebase
     feedId: v.id("feed"),
     tagId: v.string(),
     tagName: v.string(),
@@ -45,19 +45,19 @@ export default defineSchema({
   .index("byUserIdAndTagId", ["userId", "tagId"]),
 
   feed: defineTable({
-    userId: v.id("users"), // Use v.id("users") for consistency
+    userId: v.string(), // Use string to match the actual usage in the codebase
     date: v.string(),
     message: v.string(),
     createdAt: v.number(),
     comments: v.optional(v.array(v.object({
-      userId: v.id("users"), // Use v.id("users") for consistency
+      userId: v.string(), // Use string to match the actual usage
       userName: v.string(),
       userImage: v.optional(v.string()),
       content: v.string(),
       createdAt: v.number(),
     }))),
     feedback: v.optional(v.array(v.object({
-      userId: v.id("users"), // Use v.id("users") for consistency
+      userId: v.string(), // Use string to match the actual usage
       isLiked: v.boolean(),
       createdAt: v.number(),
     }))),

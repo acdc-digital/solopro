@@ -195,9 +195,14 @@ export const getTestSevenDayForecast = query({
     console.log(`Found ${logs.length} logs in selected range`);
 
     // Map dates to scores (null if score missing)
+    // Also map dates to answers for consulting functionality
     // Normalize log dates to YYYY-MM-DD for reliable matching
     const logMap = new Map<string, number | null>(
       logs.map(l => [l.date.slice(0, 10), l.score ?? null])
+    );
+
+    const answersMap = new Map<string, any>(
+      logs.map(l => [l.date.slice(0, 10), l.answers])
     );
 
     // Fetch historical forecasts for the 4-day past period (startDate to endDate)
@@ -228,6 +233,7 @@ export const getTestSevenDayForecast = query({
       
       // Use normalized ISO string for logMap lookup
       const score = logMap.get(iso) ?? null;
+      const answers = answersMap.get(iso) ?? null;
       console.log(`Adding past day ${i+1}: ${iso} - ${d.toLocaleDateString()} (${d.toLocaleDateString('en-US', { weekday: 'long' })}) - Score: ${score}`);
       
       sevenDayData.push({
@@ -239,6 +245,7 @@ export const getTestSevenDayForecast = query({
         isToday: isSameDay(d, referenceToday),
         isPast: d < referenceToday && !isSameDay(d, referenceToday),
         isFuture: false,
+        answers: answers,
       });
     }
 

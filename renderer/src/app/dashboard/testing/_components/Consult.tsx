@@ -6,12 +6,13 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useQuery, useAction } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { Sparkles, RefreshCw, AlertCircle, Loader2 } from "lucide-react";
+import { Sparkles, RefreshCw, AlertCircle, Loader2, CalendarX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card } from "@/components/ui/card";
-import { format, addDays } from 'date-fns'; // Added for date manipulation if needed for full range display
-import { useTestingStore } from "../../../../store/Testingstore"; // Import store
+import { format, addDays } from 'date-fns';
+import ReactMarkdown from 'react-markdown';
+import { useTestingStore } from "../../../../store/Testingstore";
 
 // Define a more specific type for the items in sevenDayData, aligning with ForecastDay from testing/page.tsx
 interface SevenDayDataItem {
@@ -42,17 +43,80 @@ interface ConsultProps {
 // Helper to format log answers into a string for context
 const formatLogAnswersForContext = (answers: any): string => {
   if (!answers) return "No specific details logged.";
-  if (typeof answers === 'string') return answers; // If answers is already a simple string note
+  if (typeof answers === 'string' && answers.trim()) return answers;
   
-  let notes = [];
-  if (answers.mood) notes.push(`Mood: ${answers.mood}`);
-  if (answers.activities && Array.isArray(answers.activities) && answers.activities.length > 0) {
-    notes.push(`Activities: ${answers.activities.join(", ")}`);
+  if (typeof answers === 'object' && answers !== null) {
+    let notes = [];
+    
+    // Try common field names that might contain user input
+    const possibleFields = ['mood', 'notes', 'activities', 'workSatisfaction', 'personalSatisfaction', 'energy', 'sleep', 'reflection', 'summary'];
+    
+    for (const field of possibleFields) {
+      const value = answers[field];
+      if (value !== null && value !== undefined && value !== '') {
+        if (Array.isArray(value) && value.length > 0) {
+          notes.push(`${field}: ${value.join(", ")}`);
+        } else if (typeof value === 'string' && value.trim()) {
+          notes.push(`${field}: ${value}`);
+        } else if (typeof value === 'number') {
+          notes.push(`${field}: ${value}/10`);
+        }
+      }
+    }
+    
+    // If no standard fields, try to extract any meaningful content
+    if (notes.length === 0) {
+      const meaningfulEntries = Object.entries(answers)
+        .filter(([key, value]) => 
+          value !== null && 
+          value !== undefined && 
+          value !== '' &&
+          !(Array.isArray(value) && value.length === 0)
+        )
+        .slice(0, 5); // Limit to first 5 meaningful entries
+      
+      notes = meaningfulEntries.map(([key, value]) => {
+        if (Array.isArray(value)) return `${key}: ${value.join(", ")}`;
+        return `${key}: ${value}`;
+      });
+    }
+    
+    return notes.length > 0 ? notes.join("; ") : "Basic log entry recorded.";
   }
-  // It's common for the main textual input to be under a 'notes' field in an object
-  if (answers.notes) notes.push(`General Notes: ${answers.notes}`); 
   
-  return notes.length > 0 ? notes.join("; ") : "No specific details logged.";
+  return "Basic log entry recorded.";
+};
+
+// Helper to check if a day has actual user logs (not just forecast data)
+const dayHasUserLogs = (day: SevenDayDataItem): boolean => {
+  // For future days, they don't have user logs
+  if (day.isFuture) return false;
+  
+  // If there's a score, assume there are logs (even if minimal)
+  if (day.emotionScore !== null && day.emotionScore !== undefined) return true;
+  
+  // Check if answers contains any meaningful data
+  if (!day.answers) return false;
+  
+  if (typeof day.answers === 'string' && day.answers.trim().length > 0) return true;
+  if (typeof day.answers === 'object' && day.answers !== null) {
+    // Check for any populated fields that indicate user input
+    const hasContent = day.answers.mood || 
+                      day.answers.notes || 
+                      (day.answers.activities && Array.isArray(day.answers.activities) && day.answers.activities.length > 0) ||
+                      day.answers.workSatisfaction ||
+                      day.answers.personalSatisfaction ||
+                      day.answers.energy ||
+                      day.answers.sleep ||
+                      // More generic check for any property with meaningful content
+                      Object.values(day.answers).some((value: any) => 
+                        value !== null && value !== undefined && value !== '' && 
+                        !(Array.isArray(value) && value.length === 0)
+                      );
+    return !!hasContent;
+  }
+  
+  return false;
 };
 
 export default function Consult({ userId, selectedDay, selectedDateRange, sevenDayData }: ConsultProps) {
@@ -120,6 +184,14 @@ export default function Consult({ userId, selectedDay, selectedDateRange, sevenD
       return;
     }
 
+    // Check if the selected day has user logs (for past days)
+    if (!selectedDay.isFuture && !dayHasUserLogs(selectedDay)) {
+      setError("No logs found for this day. Please log your daily activities first.");
+      setCurrentDetail(null);
+      setIsGenerating(false);
+      return;
+    }
+
     // 1. Check Cache First (unless forcing regeneration)
     if (!forceRegenerate && dailyDetailsCache[dateKey]) {
       console.log(`[Consult] Cache hit for ${dateKey}`);
@@ -177,6 +249,14 @@ export default function Consult({ userId, selectedDay, selectedDateRange, sevenD
   useEffect(() => {
     const dateKey = selectedDay?.date;
     if (dateKey && userId) {
+      // Check if this is a past day without logs
+      if (!selectedDay.isFuture && !dayHasUserLogs(selectedDay)) {
+        setError("No logs found for this day. Please log your daily activities first.");
+        setCurrentDetail(null);
+        setIsGenerating(false);
+        return;
+      }
+
       if (dailyDetailsCache[dateKey]) {
         // Load from cache immediately if available
         console.log(`[Consult useEffect] Loading from cache for ${dateKey}`);
@@ -217,15 +297,25 @@ export default function Consult({ userId, selectedDay, selectedDateRange, sevenD
 
   // Render error state
   if (error) {
+    const isNoLogsError = error.includes("No logs found");
+    
     return (
       <Card className="p-4 min-h-[200px]">
         <div className="flex flex-col items-center gap-2 text-center">
-          <AlertCircle className="h-8 w-8 text-rose-500" />
-          <h3 className="text-base font-medium">Unable to Generate Details</h3>
+          {isNoLogsError ? (
+            <CalendarX className="h-8 w-8 text-amber-500" />
+          ) : (
+            <AlertCircle className="h-8 w-8 text-rose-500" />
+          )}
+          <h3 className="text-base font-medium">
+            {isNoLogsError ? "No Daily Log Found" : "Unable to Generate Details"}
+          </h3>
           <p className="text-zinc-600 dark:text-zinc-400 text-sm mb-3">{error}</p>
-          <Button onClick={() => handleGenerateConsultation(true)} variant="outline" size="sm">
-            <RefreshCw className="h-4 w-4 mr-2" /> Try Again
-          </Button>
+          {!isNoLogsError && (
+            <Button onClick={() => handleGenerateConsultation(true)} variant="outline" size="sm">
+              <RefreshCw className="h-4 w-4 mr-2" /> Try Again
+            </Button>
+          )}
         </div>
       </Card>
     );
@@ -255,7 +345,17 @@ export default function Consult({ userId, selectedDay, selectedDateRange, sevenD
         </div>
         
         <div className="prose prose-sm dark:prose-invert max-w-none">
-          <p className="my-1">{currentDetail}</p>
+          <ReactMarkdown
+            components={{
+              p: ({ children }) => <p className="my-2 leading-relaxed">{children}</p>,
+              strong: ({ children }) => <strong className="font-semibold text-zinc-900 dark:text-zinc-100">{children}</strong>,
+              em: ({ children }) => <em className="italic text-zinc-700 dark:text-zinc-300">{children}</em>,
+              ul: ({ children }) => <ul className="list-disc list-inside my-2 space-y-1">{children}</ul>,
+              ol: ({ children }) => <ol className="list-decimal list-inside my-2 space-y-1">{children}</ol>,
+            }}
+          >
+            {currentDetail}
+          </ReactMarkdown>
         </div>
         
         <div className="mt-3 pt-3 border-t border-zinc-200 dark:border-zinc-700 text-xs text-zinc-500 dark:text-zinc-400">
@@ -276,10 +376,20 @@ export default function Consult({ userId, selectedDay, selectedDateRange, sevenD
         <p className="text-zinc-600 dark:text-zinc-400 text-sm mb-3">
           Ready to generate insights for {selectedDay.day}.
         </p>
-        <Button onClick={() => handleGenerateConsultation()} variant="outline" size="sm" disabled={!selectedDay?.date || !userId || isGenerating}>
+        <Button 
+          onClick={() => handleGenerateConsultation()} 
+          variant="outline" 
+          size="sm" 
+          disabled={!selectedDay?.date || !userId || isGenerating || (!selectedDay.isFuture && !dayHasUserLogs(selectedDay))}
+        >
           {isGenerating ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4 mr-2" />}
           Get Details
         </Button>
+        {!selectedDay.isFuture && !dayHasUserLogs(selectedDay) && (
+          <p className="text-xs text-amber-600 dark:text-amber-400 mt-2">
+            Please log your daily activities first
+          </p>
+        )}
       </div>
     </Card>
   );

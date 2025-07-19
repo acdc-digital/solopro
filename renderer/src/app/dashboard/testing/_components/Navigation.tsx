@@ -1,13 +1,13 @@
-// TESTING NAVIGATION COMPONENT
+// NAVIGATION COMPONENT
 // /Users/matthewsimon/Documents/Github/electron-nextjs/renderer/src/app/dashboard/testing/_components/Navigation.tsx
 
 "use client";
 
 import { useMemo, useState, useEffect, useCallback } from "react";
-import { Calendar } from "@/components/ui/calendar";
+import { NavCalendar } from "./navCalendar";
 import { Button } from "@/components/ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon, RefreshCcw } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { ChevronRight } from "lucide-react";
 import { format, addDays, differenceInCalendarDays, isBefore, isAfter } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useTestingStore } from "../../../../store/Testingstore";
@@ -17,8 +17,8 @@ interface NavigationProps {
 }
 
 export default function Navigation({ onGenerateForecast }: NavigationProps) {
-  const { 
-    selectedDateRange, 
+  const {
+    selectedDateRange,
     setSelectedDateRange,
     isGeneratingForecast,
     forecastGenerated,
@@ -26,223 +26,209 @@ export default function Navigation({ onGenerateForecast }: NavigationProps) {
     clearDailyDetailsCache,
     clearWeeklyInsightsCache
   } = useTestingStore();
-  
+
   const [isOpen, setIsOpen] = useState(false);
-  const [calendarKey, setCalendarKey] = useState(0); // Key to force re-rendering
 
   /** Temporary range the user is choosing in the calendar */
-  const [tempRange, setTempRange] = useState<{ from: Date | null; to: Date | null }>({
-    from: selectedDateRange.start,
-    to: selectedDateRange.end,
+  const [tempRange, setTempRange] = useState<{ from: Date | undefined; to: Date | undefined }>({
+    from: selectedDateRange.start || undefined,
+    to: selectedDateRange.end || undefined,
   });
 
-  // When the popover opens, reset the temp range
+  // When the popover opens, initialize the temp range with current selection
   useEffect(() => {
     if (isOpen) {
-      // Smooth transition - small delay before resetting
-      const timer = setTimeout(() => {
-        setTempRange({ from: null, to: null });
-        setCalendarKey(prev => prev + 1); // Force calendar re-render with new key
-      }, 50);
-      return () => clearTimeout(timer);
-    } else if (!isOpen && !tempRange.from && !tempRange.to) {
-      // When closing without selection, restore the previous selection
-      setTempRange({
-        from: selectedDateRange.start,
-        to: selectedDateRange.end,
+      setTempRange({ 
+        from: selectedDateRange.start || undefined, 
+        to: selectedDateRange.end || undefined 
       });
     }
   }, [isOpen, selectedDateRange.start, selectedDateRange.end]);
 
-  // Memoized default month to prevent jumping
-  const defaultMonth = useMemo(() => {
-    return tempRange.from || selectedDateRange.start || new Date();
-  }, [tempRange.from, selectedDateRange.start]);
-
   // Commit a range only when it's exactly four consecutive days
   const handleRangeSelect = useCallback((range: { from?: Date; to?: Date } | undefined) => {
-    if (!range) return;
-    
-    const from = range.from ?? null;
-    const to = range.to ?? null;
-    
+    if (!range) {
+      setTempRange({ from: undefined, to: undefined });
+      return;
+    }
+
+    const from = range.from;
+    const to = range.to;
+
     setTempRange({ from, to });
 
     if (from && to) {
       const start = isBefore(from, to) ? from : to;
       const end = isAfter(to, from) ? to : from;
       const diff = differenceInCalendarDays(end, start);
-      
+
       if (diff <= 3) {
         const finalEnd = diff < 3 ? addDays(start, 3) : end;
-        
-        setTimeout(() => {
-          // Clear caches BEFORE setting the new range
-          clearDailyDetailsCache(); 
-          clearWeeklyInsightsCache();
-          setSelectedDateRange({ 
-            start: start, 
-            end: finalEnd 
-          });
-          setIsOpen(false);
-        }, 150);
+
+        clearDailyDetailsCache();
+        clearWeeklyInsightsCache();
+        setSelectedDateRange({
+          start: start,
+          end: finalEnd
+        });
+        setIsOpen(false);
       }
     }
   }, [setSelectedDateRange, clearDailyDetailsCache, clearWeeklyInsightsCache]);
 
   const handleReset = useCallback(() => {
-    // Clear caches as part of the reset
-    clearDailyDetailsCache(); 
+    clearDailyDetailsCache();
     clearWeeklyInsightsCache();
-    resetState(); // resetState also clears the caches now, but explicit call is fine
-    setTempRange({ from: null, to: null });
-    setCalendarKey(prev => prev + 1); 
-    
+    resetState();
+    setTempRange({ from: undefined, to: undefined });
+
     const today = new Date();
     const start = new Date(today);
     start.setDate(today.getDate() - 3);
-    
-    setTimeout(() => {
-      setSelectedDateRange({ 
-        start: start, 
-        end: today 
-      });
-    }, 100);
-    
-    setTimeout(() => setIsOpen(false), 150);
+
+    setSelectedDateRange({
+      start: start,
+      end: today
+    });
+
+    setIsOpen(false);
   }, [resetState, setSelectedDateRange, clearDailyDetailsCache, clearWeeklyInsightsCache]);
-    
+
   // Format the range for display
   const formatRange = useCallback(() => {
     if (selectedDateRange.start && selectedDateRange.end) {
-      return `${format(selectedDateRange.start, 'MMM d, yyyy')} - ${format(selectedDateRange.end, 'MMM d, yyyy')}`;
-    } else if (selectedDateRange.start) {
-      return `${format(selectedDateRange.start, 'MMM d, yyyy')} - Select end date`;
-    } else {
-      return "Select date range";
+      const sameMonth = format(selectedDateRange.start, 'MMM') === format(selectedDateRange.end, 'MMM');
+      const sameYear = format(selectedDateRange.start, 'yyyy') === format(selectedDateRange.end, 'yyyy');
+
+      if (sameMonth && sameYear) {
+        return `${format(selectedDateRange.start, 'MMM d')} - ${format(selectedDateRange.end, 'd, yyyy')}`;
+      } else if (sameYear) {
+        return `${format(selectedDateRange.start, 'MMM d')} - ${format(selectedDateRange.end, 'MMM d, yyyy')}`;
+      } else {
+        return `${format(selectedDateRange.start, 'MMM d, yyyy')} - ${format(selectedDateRange.end, 'MMM d, yyyy')}`;
+      }
     }
+    return "Select a date range";
   }, [selectedDateRange.start, selectedDateRange.end]);
-  
+
   // Calculate forecast dates
   const forecastDates = useMemo(() => {
     if (!selectedDateRange.end) return null;
-    
+
     const forecastStart = addDays(selectedDateRange.end, 1);
-    const forecastEnd = addDays(forecastStart, 3); // 4 days total
+    const forecastEnd = addDays(forecastStart, 2); // Changed from 3 to 2 to match 3-day forecast
     return { forecastStart, forecastEnd };
   }, [selectedDateRange.end]);
 
   return (
-    <div className="flex flex-col gap-3 p-3 border rounded-lg bg-white dark:bg-zinc-900 shadow-sm">
-      <div className="flex items-center justify-between mb-1">
-        <h3 className="text-base font-semibold">Date Range Selection</h3>
-        <div className="flex gap-2">
-          {/* <Button
-            variant="outline"
-            size="sm"
-            onClick={handleReset}
-            className="text-zinc-500 h-7 text-xs px-2 transition-all duration-200"
-            disabled={!selectedDateRange.start}
-          >
-            <RefreshCcw className="mr-1 h-3 w-3" />
-            Reset
-          </Button> */}
-          <Button
-            onClick={onGenerateForecast}
-            disabled={
-              !selectedDateRange.start ||
-              !selectedDateRange.end ||
-              isGeneratingForecast ||
-              forecastGenerated
-            }
-            variant={forecastGenerated ? "ghost" : "default"}
-            className={cn(
-              "transition-all duration-200 h-7 text-xs px-2",
-              forecastGenerated && "bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400"
-            )}
-            size="sm"
-          >
-            {isGeneratingForecast
-              ? "Generating..."
-              : forecastGenerated
-                ? "Forecast Generated"
-                : "Generate Forecast"}
-          </Button>
+    <div className="flex flex-col gap-4 p-5 rounded-xl bg-white shadow-sm hover:shadow-md transition-shadow duration-300">
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="text-lg font-semibold text-black flex items-center gap-2">
+            <div className="w-1 h-5 bg-blue-500 rounded-full"></div>
+            Date Range Selection
+          </h3>
+          <p className="text-sm text-black/70 mt-1">
+            Select historical data range for AI-powered forecast analysis
+          </p>
         </div>
+        <Button
+          onClick={onGenerateForecast}
+          disabled={
+            !selectedDateRange.start ||
+            !selectedDateRange.end ||
+            isGeneratingForecast ||
+            forecastGenerated
+          }
+          variant="outline"
+          className={cn(
+            "transition-all duration-200 h-9 px-4 bg-white border-black text-black hover:bg-gray-50",
+            forecastGenerated && "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100"
+          )}
+          size="sm"
+        >
+          {isGeneratingForecast
+            ? "Generating..."
+            : forecastGenerated
+              ? "✓ Generated"
+              : "Generate Forecast"}
+        </Button>
       </div>
-      
-      {/* Date picker */}
-      <div>
-        <Popover open={isOpen} onOpenChange={setIsOpen}>
-          <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              className={cn(
-                "w-full h-8 justify-start text-left font-normal text-sm transition-all duration-200",
-                !selectedDateRange.start && "text-muted-foreground"
-              )}
-            >
-              <CalendarIcon className="mr-2 h-3.5 w-3.5" />
-              <span className="truncate">{formatRange()}</span>
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-0" align="start">
-            <div className="p-2 border-b">
-              <div className="text-xs text-zinc-500">
-                Select 4 consecutive days
-              </div>
-            </div>
-            <div className="transition-opacity duration-200 ease-in-out">
-              <Calendar
-                key={calendarKey}
-                mode="range"
-                numberOfMonths={1}
-                selected={{
-                  from: tempRange.from ?? undefined,
-                  to: tempRange.to ?? undefined,
-                }}
-                onSelect={handleRangeSelect}
-                disabled={(date) => {
-                  // If there's an anchor date, only allow dates within range of ±3 days
-                  if (tempRange.from && !tempRange.to) {
-                    const diff = differenceInCalendarDays(date, tempRange.from);
-                    return Math.abs(diff) > 3; 
-                  }
-                  
-                  if (!tempRange.from && tempRange.to) {
-                    const diff = differenceInCalendarDays(date, tempRange.to);
-                    return Math.abs(diff) > 3;
-                  }
-                  
-                  return false;
-                }}
-                defaultMonth={defaultMonth}
-                className="transition-all duration-300"
-              />
-            </div>
-          </PopoverContent>
-        </Popover>
-      </div>
-      
+
+      {/* Date picker using NavCalendar component */}
+      <NavCalendar
+        isOpen={isOpen}
+        onOpenChange={setIsOpen}
+        selectedRange={tempRange}
+        onSelect={handleRangeSelect}
+        onReset={handleReset}
+        triggerText={formatRange()}
+        disabled={false}
+        defaultMonth={selectedDateRange.start || undefined}
+      />
+
       {/* Range display */}
       {selectedDateRange.start && selectedDateRange.end && (
-        <div className="mt-1 p-2.5 bg-zinc-50 dark:bg-zinc-800/50 rounded-md border border-zinc-100 dark:border-zinc-800 transition-all duration-300 animate-in fade-in-50">
-          <div className="space-y-2">
-            <div className="flex items-center">
-              <div className="w-1.5 h-1.5 bg-primary rounded-full mr-1"></div>
-              <span className="text-xs text-zinc-500 mr-2">Selected:</span>
-              <span className="text-xs font-medium">
-                {format(selectedDateRange.start, 'MMM d, yyyy')} - {format(selectedDateRange.end, 'MMM d, yyyy')}
-              </span>
+        <div className="mt-3 rounded-xl border border-zinc-200 dark:border-zinc-700 overflow-hidden bg-gradient-to-b from-white to-zinc-50/50 dark:from-zinc-900 dark:to-zinc-800/50 transition-all duration-500 animate-in slide-in-from-bottom-2 fade-in-50">
+          <div className="p-4 space-y-3">
+            {/* Historical Period */}
+            <div className="flex items-center justify-between group">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/30 transition-transform group-hover:scale-110">
+                  <div className="w-2.5 h-2.5 bg-blue-600 dark:bg-blue-400 rounded-full"></div>
+                </div>
+                <div>
+                  <span className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
+                    Historical Period
+                  </span>
+                  <div className="text-sm font-medium text-zinc-900 dark:text-zinc-100 mt-0.5">
+                    {format(selectedDateRange.start, 'MMM d')} → {format(selectedDateRange.end, 'MMM d, yyyy')}
+                  </div>
+                </div>
+              </div>
+              <Badge
+                variant="secondary"
+                className="text-xs px-2.5 py-1 bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800"
+              >
+                4 days
+              </Badge>
             </div>
-            
-            {forecastDates && (
-              <div className="flex items-center">
-                <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-1"></div>
-                <span className="text-xs text-zinc-500 mr-2">Forecast:</span>
-                <span className="text-xs font-medium">
-                  {format(forecastDates.forecastStart, 'MMM d, yyyy')} - {format(forecastDates.forecastEnd, 'MMM d, yyyy')}
+
+            {/* Divider */}
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-zinc-200 dark:border-zinc-700"></div>
+              </div>
+              <div className="relative flex justify-center">
+                <span className="px-3 bg-white dark:bg-zinc-900 text-xs text-zinc-400 dark:text-zinc-500 flex items-center gap-1">
+                  <ChevronRight className="w-3 h-3" />
+                  then
                 </span>
+              </div>
+            </div>
+
+            {/* Forecast Period */}
+            {forecastDates && (
+              <div className="flex items-center justify-between group">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 transition-transform group-hover:scale-110">
+                    <div className="w-2.5 h-2.5 bg-emerald-600 dark:bg-emerald-400 rounded-full"></div>
+                  </div>
+                  <div>
+                    <span className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
+                      Forecast Period
+                    </span>
+                    <div className="text-sm font-medium text-zinc-900 dark:text-zinc-100 mt-0.5">
+                      {format(forecastDates.forecastStart, 'MMM d')} → {format(forecastDates.forecastEnd, 'MMM d, yyyy')}
+                    </div>
+                  </div>
+                </div>
+                <Badge
+                  variant="outline"
+                  className="text-xs px-2.5 py-1 border-emerald-200 text-emerald-700 bg-emerald-50 dark:border-emerald-800 dark:text-emerald-300 dark:bg-emerald-900/20"
+                >
+                  3 days
+                </Badge>
               </div>
             )}
           </div>

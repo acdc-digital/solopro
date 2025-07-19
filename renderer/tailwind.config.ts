@@ -7,6 +7,7 @@ export default {
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/auth/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/lib/**/*.{js,ts,jsx,tsx,mdx}",
+	"./renderer/src/**/*.{js,ts,jsx,tsx,mdx}", 
   ],
   darkMode: ["class"],
   theme: {
