@@ -8,7 +8,7 @@ import { NavCalendar } from "./navCalendar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ChevronRight } from "lucide-react";
-import { format, addDays, differenceInCalendarDays, isBefore, isAfter } from "date-fns";
+import { format, addDays } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useTestingStore } from "../../../../store/Testingstore";
 
@@ -29,58 +29,45 @@ export default function Navigation({ onGenerateForecast }: NavigationProps) {
 
   const [isOpen, setIsOpen] = useState(false);
 
-  /** Temporary range the user is choosing in the calendar */
-  const [tempRange, setTempRange] = useState<{ from: Date | undefined; to: Date | undefined }>({
-    from: selectedDateRange.start || undefined,
-    to: selectedDateRange.end || undefined,
-  });
+  /** Temporary date the user is choosing in the calendar */
+  const [tempDate, setTempDate] = useState<Date | undefined>(
+    selectedDateRange.start || undefined
+  );
 
-  // When the popover opens, initialize the temp range with current selection
+  // When the popover opens, initialize the temp date with current selection
   useEffect(() => {
     if (isOpen) {
-      setTempRange({ 
-        from: selectedDateRange.start || undefined, 
-        to: selectedDateRange.end || undefined 
-      });
+      setTempDate(selectedDateRange.start || undefined);
     }
-  }, [isOpen, selectedDateRange.start, selectedDateRange.end]);
+  }, [isOpen, selectedDateRange.start]);
 
-  // Commit a range only when it's exactly four consecutive days
-  const handleRangeSelect = useCallback((range: { from?: Date; to?: Date } | undefined) => {
-    if (!range) {
-      setTempRange({ from: undefined, to: undefined });
+  // Handle date selection - automatically calculate 4-day range from selected start date
+  const handleDateSelect = useCallback((date: Date | undefined) => {
+    if (!date) {
+      setTempDate(undefined);
       return;
     }
 
-    const from = range.from;
-    const to = range.to;
+    setTempDate(date);
 
-    setTempRange({ from, to });
+    // Automatically calculate the 4-day range (start date + 3 more days)
+    const start = date;
+    const end = addDays(start, 3);
 
-    if (from && to) {
-      const start = isBefore(from, to) ? from : to;
-      const end = isAfter(to, from) ? to : from;
-      const diff = differenceInCalendarDays(end, start);
-
-      if (diff <= 3) {
-        const finalEnd = diff < 3 ? addDays(start, 3) : end;
-
-        clearDailyDetailsCache();
-        clearWeeklyInsightsCache();
-        setSelectedDateRange({
-          start: start,
-          end: finalEnd
-        });
-        setIsOpen(false);
-      }
-    }
+    clearDailyDetailsCache();
+    clearWeeklyInsightsCache();
+    setSelectedDateRange({
+      start: start,
+      end: end
+    });
+    setIsOpen(false);
   }, [setSelectedDateRange, clearDailyDetailsCache, clearWeeklyInsightsCache]);
 
   const handleReset = useCallback(() => {
     clearDailyDetailsCache();
     clearWeeklyInsightsCache();
     resetState();
-    setTempRange({ from: undefined, to: undefined });
+    setTempDate(undefined);
 
     const today = new Date();
     const start = new Date(today);
@@ -159,8 +146,8 @@ export default function Navigation({ onGenerateForecast }: NavigationProps) {
       <NavCalendar
         isOpen={isOpen}
         onOpenChange={setIsOpen}
-        selectedRange={tempRange}
-        onSelect={handleRangeSelect}
+        selectedDate={tempDate}
+        onSelect={handleDateSelect}
         onReset={handleReset}
         triggerText={formatRange()}
         disabled={false}

@@ -9,17 +9,14 @@ import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { CalendarIcon, RefreshCcw } from "lucide-react";
-import { format, differenceInCalendarDays } from "date-fns";
+import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 
 interface NavCalendarProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
-  selectedRange: {
-    from: Date | undefined;
-    to: Date | undefined;
-  };
-  onSelect: (range: { from?: Date; to?: Date } | undefined) => void;
+  selectedDate: Date | undefined; // Changed from selectedRange to selectedDate
+  onSelect: (date: Date | undefined) => void; // Changed to single date selection
   onReset: () => void;
   triggerText: string;
   disabled?: boolean;
@@ -30,7 +27,7 @@ interface NavCalendarProps {
 export function NavCalendar({
   isOpen,
   onOpenChange,
-  selectedRange,
+  selectedDate, // Changed from selectedRange
   onSelect,
   onReset,
   triggerText,
@@ -49,7 +46,7 @@ export function NavCalendar({
             "border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900",
             "hover:border-zinc-300 dark:hover:border-zinc-600 hover:shadow-sm",
             "focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-zinc-900",
-            !selectedRange.from && "text-zinc-500 dark:text-zinc-400",
+            !selectedDate && "text-zinc-500 dark:text-zinc-400",
             className
           )}
           disabled={disabled}
@@ -68,7 +65,7 @@ export function NavCalendar({
 
       {/* This PopoverContent is the calendar that appears when you click the trigger button. */}
       <PopoverContent
-        className="w-auto p-0"
+        className="w-fit p-0"
         align="start"
         sideOffset={8}
       >
@@ -78,10 +75,10 @@ export function NavCalendar({
             <div className="flex items-center justify-between">
               <div>
                 <h4 className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
-                  Select Analysis Period
+                  Select Starting Date
                 </h4>
                 <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
-                  Choose 4 consecutive days
+                  Choose start date<br />(auto-calculates 4-day period)
                 </p>
               </div>
               <Button
@@ -89,7 +86,7 @@ export function NavCalendar({
                 size="sm"
                 onClick={onReset}
                 className="text-zinc-500 hover:text-zinc-600 dark:text-zinc-400 dark:hover:text-zinc-300 h-8 px-2 text-xs"
-                disabled={!selectedRange.from}
+                disabled={!selectedDate}
               >
                 <RefreshCcw className="h-3 w-3 mr-1" />
                 Reset
@@ -100,28 +97,16 @@ export function NavCalendar({
           {/* Calendar Container */}
           <div className="p-0">
             <Calendar
-              mode="range"
+              mode="single"
               numberOfMonths={1}
-              selected={selectedRange}
+              selected={selectedDate}
               onSelect={onSelect}
               disabled={(date) => {
                 const today = new Date();
                 today.setHours(23, 59, 59, 999);
-                if (date > today) return true;
-                
-                if (selectedRange.from && !selectedRange.to) {
-                  const diff = differenceInCalendarDays(date, selectedRange.from);
-                  return Math.abs(diff) > 3; 
-                }
-                
-                if (!selectedRange.from && selectedRange.to) {
-                  const diff = differenceInCalendarDays(date, selectedRange.to);
-                  return Math.abs(diff) > 3;
-                }
-                
-                return false;
+                return date > today; // Only disable future dates
               }}
-              defaultMonth={defaultMonth || selectedRange.from || new Date()}
+              defaultMonth={defaultMonth || selectedDate || new Date()}
               captionLayout="dropdown"
               fromYear={2020}
               toYear={2030}
@@ -133,7 +118,7 @@ export function NavCalendar({
           {/* Footer Section */}
           <div className="px-4 py-3 border-t border-zinc-200 dark:border-zinc-700 bg-zinc-50/30 dark:bg-zinc-800/30">
             <div className="text-xs text-zinc-500 dark:text-zinc-400">
-              <span className="font-medium">Tip:</span> Select start date, then end date
+              <span className="font-medium">Tip:</span> Select any date to automatically create<br />a 4-day analysis period
             </div>
           </div>
         </div>
